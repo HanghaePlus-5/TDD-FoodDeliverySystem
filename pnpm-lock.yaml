@@ -64,6 +64,9 @@ devDependencies:
   jest:
     specifier: 29.5.0
     version: 29.5.0(@types/node@18.15.11)(ts-node@10.0.0)
+  prisma:
+    specifier: ^4.15.0
+    version: 4.15.0
   source-map-support:
     specifier: ^0.5.20
     version: 0.5.20
@@ -964,6 +967,11 @@ packages:
       open: 9.1.0
       picocolors: 1.0.0
       tslib: 2.5.3
+    dev: true
+
+  /@prisma/engines@4.15.0:
+    resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
+    requiresBuild: true
     dev: true
 
   /@sinclair/typebox@0.25.24:
@@ -4504,6 +4512,15 @@ packages:
       '@jest/schemas': 29.4.3
       ansi-styles: 5.2.0
       react-is: 18.2.0
+    dev: true
+
+  /prisma@4.15.0:
+    resolution: {integrity: sha512-iKZZpobPl48gTcSZVawLMQ3lEy6BnXwtoMj7hluoGFYu2kQ6F9LBuBrUyF95zRVnNo8/3KzLXJXJ5TEnLSJFiA==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.15.0
     dev: true
 
   /process-nextick-args@2.0.1:
