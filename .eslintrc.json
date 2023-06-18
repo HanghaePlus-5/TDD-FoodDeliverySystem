@@ -89,13 +89,13 @@
           "caseInsensitive": true
         },
         "distinctGroup": false,
-        "newlines-between": "ignore"
+        "newlines-between": "always"
       }
     ],
     "import/prefer-default-export": "off",
     "indent": [
       "error",
-      2,
+      4,
       {
           "MemberExpression": 1,
           "ignoredNodes": [
