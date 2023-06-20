@@ -81,7 +81,11 @@ describe('UsersService', () => {
         expect(result).toEqual(testUser);
       });
 
-      it.todo('should return null if user does not exist.');
+      it('should return null if user does not exist.', async () => {
+        const where = { email: signupForm.email };
+        const result = await service.findUserByEmail(where);
+        expect(result).toBe(null);
+      });
     });
 
     describe('Encrypt user password', () => {});
