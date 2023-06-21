@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
@@ -88,7 +89,11 @@ describe('UsersService', () => {
       });
     });
 
-    describe('Encrypt user password', () => {});
+    describe('Encrypt user password', () => {
+      const hashedPassword = 'HASHED';
+      const bcryptHash = jest.spyOn(bcrypt, 'hash')
+        .mockImplementation(() => Promise.resolve(hashedPassword));
+    });
 
     describe('Save user to database', () => {});
   });
