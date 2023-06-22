@@ -15,7 +15,7 @@ export class UsersService {
 
   async findUserByEmail(
     where: Prisma.UserWhereUniqueInput
-  ): Promise<User> {
+  ): Promise<User|null> {
     return this.prisma.user.findUnique({ where });
   }
 }
