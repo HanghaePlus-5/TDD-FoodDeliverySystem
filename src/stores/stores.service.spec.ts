@@ -1,14 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StoresService } from './stores.service';
 import { UsersService } from 'src/users/users.service';
+import { async } from 'rxjs';
 
 describe('StoresService', () => {
   let storeService: StoresService;
-  let usersService: UsersService;
+  let usersService: any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StoresService, UsersService],
+      providers: [StoresService, {
+        provide: UsersService,
+        useValue: {
+          getUser: jest.fn(),
+        }
+      }],
     }).compile();
 
     storeService = module.get<StoresService>(StoresService);
@@ -19,8 +25,15 @@ describe('StoresService', () => {
     expect(storeService).toBeDefined();
   });
 
-    
   describe('createStore', () => {
+    it('should handle error when getUser fail', async () => {
+      const userId = 1;
+      const mockGetUser = jest.fn().mockRejectedValue(null);
+      usersService.getUser = mockGetUser;
+
+      await expect(storeService.createStore(userId)).rejects.toThrow('Invalid userId');
+    });
+
     it('should check user type', async () => {});
 
     it('should check validation', async () => {});
