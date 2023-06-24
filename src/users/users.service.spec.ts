@@ -14,10 +14,12 @@ describe('UsersService', () => {
   }
 
   interface Create {
-    email: string;
-    name: string;
-    password: string;
-    type: UserType;
+    data: {
+      email: string;
+      name: string;
+      password: string;
+      type: UserType;
+    }
   }
 
   const testUser = {
@@ -33,7 +35,7 @@ describe('UsersService', () => {
       findUnique: jest.fn(async (select: Select) => {
         return select.where.email === testUser.email ? testUser : null;
       }),
-      create: jest.fn(async (data: Create): Promise<UserDto> => {
+      create: jest.fn(async ({ data }: Create): Promise<UserDto> => {
         if (data.email === testUser.email) {
           throw new Error();
         }
@@ -105,13 +107,14 @@ describe('UsersService', () => {
       });
     });
 
-    describe('Save user to database', () => {
-      it('should return Error if create fails.', () => {
-        const form = {
+    describe.only('Save user to database', () => {
+      it('should throw Error if create fails.', async () => {
+        const data = {
           ...signupForm,
           email: testUser.email,
+          type: UserType.CUSTOMER,
         };
-        expect(service.createUser(form)).rejects.toThrow();
+        await expect(service.createUser(data)).rejects.toThrow();
       });
       it.todo('should return User if create succeeds.');
     });

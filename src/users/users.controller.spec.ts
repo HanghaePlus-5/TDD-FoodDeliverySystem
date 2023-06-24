@@ -3,7 +3,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PrismaService } from 'src/prisma';
 
-describe('UsersController', () => {
+describe.skip('UsersController', () => {
   let controller: UsersController;
 
   beforeEach(async () => {

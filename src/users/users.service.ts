@@ -18,7 +18,9 @@ export class UsersService {
     return this.prisma.user.findUnique({ where });
   }
 
-  async createUser(form: any) {
-    return true;
+  async createUser(
+    data: Prisma.UserCreateInput
+  ) {
+    return this.prisma.user.create({ data });
   }
 }
