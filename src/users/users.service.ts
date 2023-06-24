@@ -1,17 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma';
-import { UserType } from 'src/types';
+import { bcryptHash } from 'src/lib/bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
   ) {}
-  isUserType(userType: string|undefined): userType is UserType {
-    return Object.values(UserType).includes(userType as UserType);
-  }
-
   async findUserByEmail(
     where: Prisma.UserWhereUniqueInput
   ): Promise<User|null> {
@@ -19,8 +15,12 @@ export class UsersService {
   }
 
   async createUser(
-    data: Prisma.UserCreateInput
+    form: Prisma.UserCreateInput
   ) {
+    const data = {
+      ...form,
+      password: await bcryptHash(form.password),
+    }
     return this.prisma.user.create({ data });
   }
 }

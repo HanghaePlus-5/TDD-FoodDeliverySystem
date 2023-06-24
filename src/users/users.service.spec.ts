@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { is } from 'typia';
 import { UsersService } from './users.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 import { UserDto } from './dto';
-import { is } from 'typia';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -76,20 +76,20 @@ describe('UsersService', () => {
     describe('Check UserType', () => {
       it('should return false if UserType is undefined.', () => {
         const userType = undefined;
-        const result = service.isUserType(userType);
+        const result = is<UserType>(userType);
         expect(result).toBe(false);
       });
   
       it('should return false if UserType is not a valid UserType.', () => {
         const userType = 'admin';
-        const result = service.isUserType(userType);
+        const result = is<UserType>(userType);
         expect(result).toBe(false);
       });
   
       it('should return true if UserType is a valid UserType.', () => {
         const userTypes = Object.values(UserType);
         const userType = userTypes[Math.floor(Math.random() * userTypes.length)];
-        const result = service.isUserType(userType);
+        const result = is<UserType>(userType);
         expect(result).toBe(true);
       });
     });
@@ -108,7 +108,7 @@ describe('UsersService', () => {
       });
     });
 
-    describe.only('Save user to database', () => {
+    describe('Save user to database', () => {
       it('should throw Error if create fails.', async () => {
         const data = {
           ...signupForm,
