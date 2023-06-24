@@ -33,14 +33,17 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockRejectedValue(null);
       usersService.getUser = mockGetUser;
 
-      await expect(storesService.createStore(userId)).rejects.toThrow();
+      await expect(storesService.createStore(userId, null)).rejects.toThrow();
     });
 
     it('should check user type as business', async () => {
       checkUserType('createStore', 'customer');
     });
 
-    it('should check validation', async () => {});
+    it('should throw error for store name including english', async () => {
+      const dto = { name: 'english' };
+      await expect(storesService.checkValidation(dto)).rejects.toThrow();
+    });
 
     it('should check store name duplication', () => {});
 
@@ -55,6 +58,6 @@ describe('StoresService', () => {
     usersService.getUser = mockGetUser;
 
     const actionFn = storesService[actionType];
-    await expect(actionFn(userId)).rejects.toThrow();
+    await expect(actionFn(userId, null)).rejects.toThrow();
   };
 });
