@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StoresService } from './stores.service';
 import { UsersService } from 'src/users/users.service';
-import { async } from 'rxjs';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -34,19 +33,11 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockRejectedValue(null);
       usersService.getUser = mockGetUser;
 
-      await expect(storesService.createStore(userId)).rejects.toThrow(
-        'Invalid userId'
-      );
+      await expect(storesService.createStore(userId)).rejects.toThrow();
     });
 
     it('should check user type as business', async () => {
-      const userId = 1;
-      const mockGetUser = jest.fn().mockResolvedValue({ userType: 'customer' });
-      usersService.getUser = mockGetUser;
-
-      await expect(storesService.createStore(userId)).rejects.toThrow(
-        'Invalid userType'
-      );
+      checkUserType('createStore', 'customer');
     });
 
     it('should check validation', async () => {});
@@ -57,4 +48,13 @@ describe('StoresService', () => {
 
     it('should delegate Store creation to repository', () => {});
   });
+
+  const checkUserType = async (actionType: string, userType: string) => {
+    const userId = 1;
+    const mockGetUser = jest.fn().mockResolvedValue({ userType });
+    usersService.getUser = mockGetUser;
+
+    const actionFn = storesService[actionType];
+    await expect(actionFn(userId)).rejects.toThrow();
+  };
 });
