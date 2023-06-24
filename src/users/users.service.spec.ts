@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
+import { UserDto } from './dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -11,6 +11,13 @@ describe('UsersService', () => {
     where: {
       email: string;
     };
+  }
+
+  interface Create {
+    email: string;
+    name: string;
+    password: string;
+    type: UserType;
   }
 
   const testUser = {
@@ -25,6 +32,15 @@ describe('UsersService', () => {
     user: {
       findUnique: jest.fn(async (select: Select) => {
         return select.where.email === testUser.email ? testUser : null;
+      }),
+      create: jest.fn(async (data: Create): Promise<UserDto> => {
+        if (data.email === testUser.email) {
+          throw new Error();
+        }
+        return {
+          ...data,
+          userId: 2,
+        }
       }),
     }
   }
@@ -89,12 +105,15 @@ describe('UsersService', () => {
       });
     });
 
-    describe('Encrypt user password', () => {
-      const hashedPassword = 'HASHED';
-      const bcryptHash = jest.spyOn(bcrypt, 'hash')
-        .mockImplementation(() => Promise.resolve(hashedPassword));
+    describe('Save user to database', () => {
+      it('should return Error if create fails.', () => {
+        const form = {
+          ...signupForm,
+          email: testUser.email,
+        };
+        expect(service.createUser(form)).rejects.toThrow();
+      });
+      it.todo('should return User if create succeeds.');
     });
-
-    describe('Save user to database', () => {});
   });
 });

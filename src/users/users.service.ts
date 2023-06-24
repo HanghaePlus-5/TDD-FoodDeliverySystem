@@ -17,4 +17,8 @@ export class UsersService {
   ): Promise<User|null> {
     return this.prisma.user.findUnique({ where });
   }
+
+  async createUser(form: any) {
+    return true;
+  }
 }
