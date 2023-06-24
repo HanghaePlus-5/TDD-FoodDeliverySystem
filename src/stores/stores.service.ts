@@ -6,7 +6,7 @@ export class StoresService {
     throw new Error();
   }
 
-  async checkValidation(dto: any) {
-    throw new Error();
+  async checkValidation(dto: any): Promise<boolean> {
+    return false;
   }
 }
