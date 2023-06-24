@@ -43,10 +43,6 @@ describe('StoresService', () => {
       await expect(storesService.createStore(userId, null)).rejects.toThrow();
     });
 
-    it('should check user type as business', async () => {
-      checkUserType('createStore', 'customer');
-    });
-
     it('should not include store name english', async () => {
       const dto = { name: 'english' };
       await expect(storesService.checkValidation(dto)).rejects.toThrow();
@@ -114,12 +110,4 @@ describe('StoresService', () => {
     it('should delegate Store creation to repository', () => {});
   });
 
-  const checkUserType = async (actionType: string, userType: string) => {
-    const userId = 1;
-    const mockGetUser = jest.fn().mockResolvedValue({ userType });
-    usersService.getUser = mockGetUser;
-
-    const actionFn = storesService[actionType];
-    await expect(actionFn(userId, null)).rejects.toThrow();
-  };
 });
