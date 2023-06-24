@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 import { UserDto } from './dto';
+import { is } from 'typia';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -116,7 +117,16 @@ describe('UsersService', () => {
         };
         await expect(service.createUser(data)).rejects.toThrow();
       });
-      it.todo('should return User if create succeeds.');
+
+      it('should return User if create succeeds.', async () => {
+        const data = {
+          ...signupForm,
+          type: UserType.CUSTOMER,
+        };
+        const result = await service.createUser(data);
+        expect(result.userId).toBe(2);
+        expect(is<UserDto>(result)).toBe(true);
+      });
     });
   });
 });
