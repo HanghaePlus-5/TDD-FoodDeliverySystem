@@ -31,9 +31,9 @@ describe('UsersController', () => {
       password: 'qwe1234',
     }
 
-    it('should throw Error if invalid user type.', () => {
+    it('should throw Error if invalid user type.', async () => {
       const result = controller.signup(signupForm, { type: 'invalid' });
-      expect(result).rejects.toThrowError();
+      await expect(result).rejects.toThrowError();
     });
     it.todo('should throw Error if duplicated user.');
     it.todo('should throw Error if create fails.');
