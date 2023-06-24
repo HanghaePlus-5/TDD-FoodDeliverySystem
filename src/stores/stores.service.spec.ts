@@ -34,7 +34,13 @@ describe('StoresService', () => {
       await expect(storeService.createStore(userId)).rejects.toThrow('Invalid userId');
     });
 
-    it('should check user type', async () => {});
+    it('should check user type as business', async () => {
+      const userId = 1;
+      const mockGetUser = jest.fn().mockResolvedValue({ userType: 'customer' });
+      usersService.getUser = mockGetUser;
+
+      await expect(storeService.createStore(userId)).rejects.toThrow('Invalid userType')
+    });
 
     it('should check validation', async () => {});
 
