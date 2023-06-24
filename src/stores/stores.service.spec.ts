@@ -4,25 +4,28 @@ import { UsersService } from 'src/users/users.service';
 import { async } from 'rxjs';
 
 describe('StoresService', () => {
-  let storeService: StoresService;
+  let storesService: StoresService;
   let usersService: any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StoresService, {
-        provide: UsersService,
-        useValue: {
-          getUser: jest.fn(),
-        }
-      }],
+      providers: [
+        StoresService,
+        {
+          provide: UsersService,
+          useValue: {
+            getUser: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
-    storeService = module.get<StoresService>(StoresService);
+    storesService = module.get<StoresService>(StoresService);
     usersService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
-    expect(storeService).toBeDefined();
+    expect(storesService).toBeDefined();
   });
 
   describe('createStore', () => {
@@ -31,7 +34,9 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockRejectedValue(null);
       usersService.getUser = mockGetUser;
 
-      await expect(storeService.createStore(userId)).rejects.toThrow('Invalid userId');
+      await expect(storesService.createStore(userId)).rejects.toThrow(
+        'Invalid userId'
+      );
     });
 
     it('should check user type as business', async () => {
@@ -39,7 +44,9 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockResolvedValue({ userType: 'customer' });
       usersService.getUser = mockGetUser;
 
-      await expect(storeService.createStore(userId)).rejects.toThrow('Invalid userType')
+      await expect(storesService.createStore(userId)).rejects.toThrow(
+        'Invalid userType'
+      );
     });
 
     it('should check validation', async () => {});
