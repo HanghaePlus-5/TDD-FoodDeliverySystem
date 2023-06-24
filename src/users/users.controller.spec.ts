@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { is } from 'typia';
+import { PrismaService } from 'src/prisma';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { PrismaService } from 'src/prisma';
+import { UserDto } from './dto';
 
-describe.skip('UsersController', () => {
+describe('UsersController', () => {
   let controller: UsersController;
 
   beforeEach(async () => {
@@ -20,5 +22,21 @@ describe.skip('UsersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('signup', () => {
+    const signupForm = {
+      email: 'test1@delivery.com',
+      name: 'Test Kim',
+      password: 'qwe1234',
+    }
+
+    it('should throw Error if invalid user type.', () => {
+      const result = controller.signup(signupForm, { type: 'invalid' });
+      expect(result).rejects.toThrowError();
+    });
+    it.todo('should throw Error if duplicated user.');
+    it.todo('should throw Error if create fails.');
+    it.todo('should return User if create success.');
   });
 });
