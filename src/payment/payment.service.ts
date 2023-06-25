@@ -1,39 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { BadRequestException, HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PaymentDto } from 'src/payment/dto/payment.dto';
+import { TypedBody } from '@nestia/core';
 
 @Injectable()
 export class PaymentService {
-  create(createPaymentDto: CreatePaymentDto) {
-    return 'This action adds a new payment';
-  }
 
-  findAll() {
-    return `This action returns all payment`;
+  
+ 
+  sendPaymentRequestToPG(paymentInfo : PaymentDto, customerName:string){
+    if(!this.validatePaymentInfo(paymentInfo, customerName)) throw new BadRequestException()
+    if(paymentInfo.cardNumber == '1111-1111-1111-1111')
+    throw new BadRequestException()
+    return HttpStatus.ACCEPTED;
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
+  validatePaymentInfo(paymentInfo : PaymentDto, customerName : string){
+    return this._validCardHolder(paymentInfo.cardHolderName, customerName) 
+            && this._validateCardNumber(paymentInfo.cardNumber);
   }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
+  _validCardHolder(cardHolderName : string, customerName : string){
+    return cardHolderName == customerName
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
+  _validateCardNumber(cardNumber:string){
+    cardNumber = cardNumber.replace(/[-\s]/g, '');
+    return cardNumber.length == 16;
   }
-
-  isCardNameUserNameIdentical(){
-
-  }
-  validateCardFormat(){
-
-  }
-  sendPaymentRequestToPG(){
-      // 3 test cases
-  }
-    
 
 
 
