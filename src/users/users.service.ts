@@ -15,6 +15,10 @@ export class UsersService {
     return this.prisma.user.findUnique({ where });
   }
 
+  async findUserByEmailAndPassword(email, password) {
+    return true;
+  }
+
   async createUser(
     form: Prisma.UserCreateInput,
   ) {

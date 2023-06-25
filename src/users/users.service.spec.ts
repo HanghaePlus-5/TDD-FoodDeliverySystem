@@ -128,8 +128,21 @@ describe('UsersService', () => {
   });
 
   describe('User Signin', () => {
+    const signinForm = {
+      email: 'test@delivery.com',
+      password: 'qwe1234',
+    }
+
     describe('Find user from database.', () => {
-      it.todo('should return null if no user match.');
+      it('should return null if no user match.', async () => {
+        mockPrisma.user.findUnique.mockResolvedValueOnce(null);
+        const result = await service.findUserByEmailAndPassword(
+          signinForm.email,
+          signinForm.password
+        );
+
+        expect(result).toBe(null);
+      });
       it.todo('should return the User if user match.');
     });
     describe('Create JWT token.', () => {
