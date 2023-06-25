@@ -1,8 +1,8 @@
-import { type } from "os";
+import { type } from 'os';
 
 export interface PaymentDto {
     /**
-     * Payment PK    
+     * Payment PK
      * @type int
     */
     paymentId: number;
@@ -23,15 +23,15 @@ export interface PaymentDto {
 
     /**
      * @type int
-     * @minimum 2023 
+     * @minimum 2023
      */
     cardExpiryYear: number;
-    
+
     /**
      * CardHolderName
      */
     cardHolderName: string;
-    
+
     /**
      * CardIssuer
      */
