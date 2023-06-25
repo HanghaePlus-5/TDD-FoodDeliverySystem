@@ -13,8 +13,26 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Store` (
     `storeId` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `type` ENUM('한식', '중식', '일식', '양식', '카페') NOT NULL,
+    `status` ENUM('등록', '오픈', '휴무', '해지', '폐업') NOT NULL,
+    `businessNumber` CHAR(12) NOT NULL,
+    `phoneNumber` CHAR(13) NOT NULL,
+    `postalNumber` CHAR(5) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
+    `openingTime` INTEGER NOT NULL,
+    `closingTime` INTEGER NOT NULL,
+    `cookingTime` INTEGER NOT NULL,
+    `reviewNumber` INTEGER NOT NULL DEFAULT 0,
+    `averageScore` INTEGER NOT NULL DEFAULT 0,
+    `origin` VARCHAR(191) NULL,
+    `description` VARCHAR(191) NULL,
+    `registrationDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    PRIMARY KEY (`storeId`)
+    PRIMARY KEY (`storeId`),
+    UNIQUE INDEX `Store_Name_key`(`name`),
+    INDEX `Store_type_key`(`type`),
+    UNIQUE `Store_businessNumber_key`(`businessNumber`),
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable

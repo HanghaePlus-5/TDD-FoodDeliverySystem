@@ -1,6 +1,6 @@
 export const UserType = {
-    CUSTOMER: 'CUSTOMER',
-    BUSINESS: 'BUSINESS',
+  CUSTOMER: 'CUSTOMER',
+  BUSINESS: 'BUSINESS',
 } as const;
 
 declare global {

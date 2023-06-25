@@ -8,15 +8,15 @@ import { TypiaModule } from './typia/typia.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-    imports: [
+  imports: [
+    AuthModule,
     UsersModule,
     TypiaModule,
     StoresModule,
     ReviewsModule,
-    FavouritesModule,
-    AuthModule
-    ],
-    controllers: [],
-    providers: [],
-    })
+    FavouritesModule
+  ],
+  controllers: [],
+  providers: [],
+})
 export class AppModule {}
