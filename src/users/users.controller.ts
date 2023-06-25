@@ -12,6 +12,12 @@ export class UsersController {
     if (!is<UserType>(query.type)) {
       throw new BadRequestException();
     }
+
+    const user = await this.usersService.findUserByEmail({ email: form.email });
+    if (is<User>(user)) {
+      throw new BadRequestException();
+    }
+
     return true;
   }
 }
