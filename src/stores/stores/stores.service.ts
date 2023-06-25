@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { StoreCreateDto } from './dto';
+import { UsersService } from '../../users/users.service';
+import { StoreCreateDto } from '../dto';
 
 @Injectable()
 export class StoresService {
-  private readonly MIN_COOKING_TIME:number = parseInt(process.env.MIN_COOKING_TIME || '5')
-  private readonly MAX_COOKING_TIME:number = parseInt(process.env.MAX_COOKING_TIME || '120')
+  private readonly MIN_COOKING_TIME: number = parseInt(
+    process.env.MIN_COOKING_TIME || '5'
+  );
+  private readonly MAX_COOKING_TIME: number = parseInt(
+    process.env.MAX_COOKING_TIME || '120'
+  );
   constructor(private readonly usersService: UsersService) {}
   async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
     // const user = await this.usersService.getUser(userId);

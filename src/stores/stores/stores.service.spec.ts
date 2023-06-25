@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StoresService } from './stores.service';
 import { UsersService } from 'src/users/users.service';
-import { StoreCreateDto } from './dto';
+import { StoreCreateDto } from '../dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
