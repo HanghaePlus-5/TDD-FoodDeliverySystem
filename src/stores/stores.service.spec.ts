@@ -54,14 +54,14 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockRejectedValue(null);
       usersService.getUser = mockGetUser;
 
-      await expect(storesService.createStore(userId, null)).rejects.toThrow();
+      await expect(storesService.createStore(userId, null)).resolves.toThrow();
     });
 
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(storesService, 'checkValidation');
       mockCheckValidation.mockResolvedValue(false);
 
-      await expect(storesService.createStore(1, null)).rejects.toThrow();
+      await expect(storesService.createStore(1, null)).resolves.toThrow('Validation Error');
       expect(mockCheckValidation).toHaveBeenCalled();
       expect(mockCheckValidation).toHaveReturnedWith(false);
     });
