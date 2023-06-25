@@ -7,14 +7,14 @@ import { TypiaModule } from './typia/typia.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-    imports: [
-    UsersModule,
-    TypiaModule,
-    StoresModule,
-    ReviewsModule,
-    FavouritesModule
-    ],
-    controllers: [],
-    providers: [],
-    })
+  imports: [
+  UsersModule,
+  TypiaModule,
+  StoresModule,
+  ReviewsModule,
+  FavouritesModule
+  ],
+  controllers: [],
+  providers: [],
+  })
 export class AppModule {}

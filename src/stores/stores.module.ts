@@ -7,9 +7,9 @@ import { StoresService } from './stores/stores.service';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-    imports: [UsersModule],
-    controllers: [StoresController, MenusController],
-    providers: [StoresService, MenusService],
-    exports: [StoresService, MenusService],
-    })
+  imports: [UsersModule],
+  controllers: [StoresController, MenusController],
+  providers: [StoresService, MenusService],
+  exports: [StoresService, MenusService],
+  })
 export class StoresModule {}
