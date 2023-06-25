@@ -131,11 +131,11 @@ describe('UsersService', () => {
     const signinForm = {
       email: 'test@delivery.com',
       password: 'qwe1234',
-    }
+    };
 
     describe('Find user from database.', () => {
       it('should return null if invalid form.', async () => {
-        const form = { email: signinForm.email }
+        const form = { email: signinForm.email };
 
         const result = await service.findUserByEmailAndPassword(form);
 
@@ -144,12 +144,19 @@ describe('UsersService', () => {
 
       it('should return null if no user match.', async () => {
         mockPrisma.user.findFirst.mockResolvedValueOnce(null);
-        
+
         const result = await service.findUserByEmailAndPassword(signinForm);
 
         expect(result).toBe(null);
       });
-      it.todo('should return the User if user match.');
+
+      it('should return the User if user match.', async () => {
+        mockPrisma.user.findFirst.mockResolvedValueOnce(testUser);
+
+        const result = await service.findUserByEmailAndPassword(signinForm);
+
+        expect(result).toEqual(testUser);
+      });
     });
     describe('Create JWT token.', () => {
       it.todo('should return null if create fails.');

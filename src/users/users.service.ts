@@ -9,6 +9,7 @@ export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
   ) {}
+
   async findUserByEmail(
     where: Prisma.UserWhereUniqueInput,
   ): Promise<User|null> {
@@ -19,11 +20,11 @@ export class UsersService {
     { email, password }: Prisma.UserWhereInput,
   ) {
     if (!email || typeof password !== 'string') return null;
-    
+
     const where = {
       email,
       password: await bcryptHash(password),
-    }
+    };
     return this.prisma.user.findFirst({ where });
   }
 
