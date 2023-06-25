@@ -1,13 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { is } from 'typia';
+import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
+import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'src/prisma';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UserDto } from './dto';
 import { UserType } from 'src/types';
 
 describe('UsersController', () => {
   let controller: UsersController;
+  let mockPrisma: DeepMockProxy<PrismaClient>;
+
+  const testUser = {
+    userId: 1,
+    email: 'test1@delivery.com',
+    name: 'Test Kim',
+    password: 'qwe1234',
+    type: UserType.CUSTOMER,
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,9 +25,16 @@ describe('UsersController', () => {
         UsersService,
         PrismaService,
       ],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(mockDeep<PrismaClient>())
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
+    mockPrisma = module.get(PrismaService);
+  });
+
+  beforeAll(() => {
   });
 
   it('should be defined', () => {
@@ -31,6 +47,7 @@ describe('UsersController', () => {
       name: 'Test Kim',
       password: 'qwe1234',
     }
+    const userTypes = Object.values(UserType);
 
     it('should throw Error if invalid user type.', async () => {
       const result = controller.signup(signupForm, { type: 'invalid' });
@@ -42,8 +59,17 @@ describe('UsersController', () => {
       await expect(result).rejects.toThrowError();
     });
     
-    it.todo('should throw Error if duplicated user.');
+    it('should throw Error if duplicated user.', async () => {
+      const type = userTypes[Math.random() * userTypes.length | 0];
+      mockPrisma.user.findUnique.mockResolvedValueOnce(testUser);
+
+      const result = controller.signup(signupForm, { type });
+
+      await expect(result).rejects.toThrowError();
+    });
+
     it.todo('should throw Error if create fails.');
+    
     it.todo('should return User if create success.');
   });
 });
