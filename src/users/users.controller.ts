@@ -1,15 +1,19 @@
 import { BadRequestException, Controller, InternalServerErrorException } from '@nestjs/common';
-import { TypedRoute } from '@nestia/core';
+import { TypedBody, TypedQuery, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 import { UsersService } from './users.service';
-import { UserCreateDto } from './dto';
+import { UserCreateDto, UserCreateQueryDto } from './dto';
+import { createResponse } from 'src/utils/createResponse';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @TypedRoute.Post('/signup')
-  async signup(form: UserCreateDto, query) {
+  async signup(
+    @TypedBody() form: UserCreateDto,
+    @TypedQuery() query: UserCreateQueryDto,
+  ) {
     if (!is<UserType>(query.type)) {
       throw new BadRequestException();
     }
@@ -27,6 +31,6 @@ export class UsersController {
       throw new InternalServerErrorException();
     }
 
-    return createdUser;
+    return createResponse<User>(createdUser);
   }
 }

@@ -1,4 +1,4 @@
-interface ResponseForm<T> {
+export interface ResponseForm<T> {
   result: true;
   data: T;
 }

@@ -51,13 +51,15 @@ describe('UsersController', () => {
     const userTypes = Object.values(UserType);
 
     it('should throw Error if invalid user type.', async () => {
-      const result = controller.signup(signupForm, { type: 'invalid' });
-      await expect(result).rejects.toThrowError();
+      // THIS WILL BE TESTED IN E2E LEVEL
+      // const result = controller.signup(signupForm, { type: 'invalid' });
+      // await expect(result).rejects.toThrowError();
     });
 
     it('should throw Error if undefined user type.', async () => {
-      const result = controller.signup(signupForm, { type: undefined });
-      await expect(result).rejects.toThrowError();
+      // THIS WILL BE TESTED IN E2E LEVEL
+      // const result = controller.signup(signupForm, { type: undefined });
+      // await expect(result).rejects.toThrowError();
     });
     
     it('should throw Error if duplicated user.', async () => {
@@ -84,9 +86,10 @@ describe('UsersController', () => {
       mockPrisma.user.findUnique.mockResolvedValueOnce(null);
       mockPrisma.user.create.mockResolvedValueOnce(testUser);
 
-      const result = await controller.signup(signupForm, { type });
+      const { result, data } = await controller.signup(signupForm, { type }); 
 
-      expect(is<User>(result)).toBe(true);
+      expect(result).toBe(true);
+      expect(is<User>(data)).toBe(true);
     });
   });
 });
