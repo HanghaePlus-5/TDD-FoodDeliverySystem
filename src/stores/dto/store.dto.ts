@@ -1,5 +1,5 @@
 export interface StoreDto {
-  idx: number;
+  storeId: number;
   name: string;
   type: StoreType;
   status: StoreStatus;

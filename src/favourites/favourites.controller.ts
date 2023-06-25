@@ -4,5 +4,5 @@ import { FavouritesService } from './favourites.service';
 
 @Controller('favourites')
 export class FavouritesController {
-    constructor(private readonly favouritesService: FavouritesService) {}
+  constructor(private readonly favouritesService: FavouritesService) {}
 }

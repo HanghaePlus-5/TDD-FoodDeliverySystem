@@ -89,7 +89,7 @@
     "import/prefer-default-export": "off",
     "indent": [
       "error",
-      4,
+      2,
       {
         "MemberExpression": 1,
         "ignoredNodes": [
