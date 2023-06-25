@@ -134,12 +134,18 @@ describe('UsersService', () => {
     }
 
     describe('Find user from database.', () => {
+      it('should return null if invalid form.', async () => {
+        const form = { email: signinForm.email }
+
+        const result = await service.findUserByEmailAndPassword(form);
+
+        expect(result).toBe(null);
+      });
+
       it('should return null if no user match.', async () => {
         mockPrisma.user.findFirst.mockResolvedValueOnce(null);
-        const result = await service.findUserByEmailAndPassword(
-          signinForm.email,
-          signinForm.password
-        );
+        
+        const result = await service.findUserByEmailAndPassword(signinForm);
 
         expect(result).toBe(null);
       });

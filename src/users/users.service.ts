@@ -15,7 +15,11 @@ export class UsersService {
     return this.prisma.user.findUnique({ where });
   }
 
-  async findUserByEmailAndPassword(email, password) {
+  async findUserByEmailAndPassword(
+    { email, password }: Prisma.UserWhereInput,
+  ) {
+    if (!email || typeof password !== 'string') return null;
+    
     const where = {
       email,
       password: await bcryptHash(password),
