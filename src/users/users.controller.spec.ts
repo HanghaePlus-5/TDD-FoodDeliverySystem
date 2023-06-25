@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { PrismaClient } from '@prisma/client';
+import { is } from 'typia';
 import { PrismaService } from 'src/prisma';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -78,6 +79,14 @@ describe('UsersController', () => {
       await expect(result).rejects.toThrowError();
     });
 
-    it.todo('should return User if create success.');
+    it('should return User if create success.', async () => {
+      const type = userTypes[Math.random() * userTypes.length | 0];
+      mockPrisma.user.findUnique.mockResolvedValueOnce(null);
+      mockPrisma.user.create.mockResolvedValueOnce(testUser);
+
+      const result = await controller.signup(signupForm, { type });
+
+      expect(is<User>(result)).toBe(true);
+    });
   });
 });
