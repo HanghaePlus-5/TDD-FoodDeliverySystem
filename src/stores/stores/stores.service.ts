@@ -18,7 +18,7 @@ export class StoresService {
     return true;
   }
 
-  async checkValidation(dto: StoreCreateDto): Promise<boolean> {
+  private async checkValidation(dto: StoreCreateDto): Promise<boolean> {
     if (
       !dto.name
       || !dto.businessNumber
