@@ -1,21 +1,21 @@
-module.export = {
-  env: {
-    node: true,
-    es6: true,
-    jest: true,
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true
   },
-  overrides: [],
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaVersion: "latest",
-    project: process.env.ESLINT_PROJECT_PATH,
-    tsconfigRootDir: "./",
-    sourceType: "module",
+  "overrides": [],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./",
+    "sourceType": "module"
   },
-  root: true,
-  extends: ["airbnb-base", "plugin:@typescript-eslint/recommended"],
-  plugins: ["import", "@typescript-eslint"],
-  rules: {
+  "root": true,
+  "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["import", "@typescript-eslint"],
+  "rules": {
     "arrow-body-style": "off",
     "class-methods-use-this": "off",
     "function-paren-newline": ["error", "consistent"],
@@ -24,88 +24,88 @@ module.export = {
     "import/order": [
       "error",
       {
-        groups: [
+        "groups": [
           ["builtin", "external"],
           "internal",
           ["sibling", "parent", "index"],
-          ["type", "unknown"],
+          ["type", "unknown"]
         ],
-        pathGroups: [
+        "pathGroups": [
           {
-            pattern: "@nestjs/common",
-            group: "external",
-            position: "before",
+            "pattern": "@nestjs/common",
+            "group": "external",
+            "position": "before"
           },
           {
-            pattern: "@nestjs/**",
-            group: "external",
-            position: "before",
+            "pattern": "@nestjs/**",
+            "group": "external",
+            "position": "before"
           },
           {
-            pattern: "express",
-            group: "external",
-            position: "before",
+            "pattern": "express",
+            "group": "external",
+            "position": "before"
           },
           {
-            pattern: "src/config/**",
-            group: "internal",
-            position: "before",
+            "pattern": "src/config/**",
+            "group": "internal",
+            "position": "before"
           },
           {
-            pattern: "src/common/**",
-            group: "internal",
-            position: "before",
+            "pattern": "src/common/**",
+            "group": "internal",
+            "position": "before"
           },
           {
-            pattern: "src/{auth,redis}",
-            group: "internal",
-            position: "before",
+            "pattern": "src/{auth,redis}",
+            "group": "internal",
+            "position": "before"
           },
           {
-            pattern: "src/types",
-            group: "type",
-            position: "before",
+            "pattern": "src/types",
+            "group": "type",
+            "position": "before"
           },
           {
-            pattern: "src/utilities/**",
-            group: "internal",
-            position: "before",
+            "pattern": "src/utilities/**",
+            "group": "internal",
+            "position": "before"
           },
           {
-            pattern: "src/**",
-            group: "internal",
-            position: "before",
-          },
+            "pattern": "src/**",
+            "group": "internal",
+            "position": "before"
+          }
         ],
-        pathGroupsExcludedImportTypes: [],
-        alphabetize: {
-          order: "asc",
-          caseInsensitive: true,
+        "pathGroupsExcludedImportTypes": [],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
         },
-        distinctGroup: false,
-        "newlines-between": "always",
-      },
+        "distinctGroup": false,
+        "newlines-between": "always"
+      }
     ],
     "import/prefer-default-export": "off",
-    indent: [
+    "indent": [
       "error",
       4,
       {
-        MemberExpression: 1,
-        ignoredNodes: [
+        "MemberExpression": 1,
+        "ignoredNodes": [
           "FunctionExpression > .params[decorators.length > 0]",
           "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
-          "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
-        ],
-      },
+          "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key"
+        ]
+      }
     ],
     "lines-between-class-members": "off",
     "no-console": "off",
     "no-param-reassign": [
       "error",
       {
-        props: true,
-      },
+        "props": true
+      }
     ],
     "no-shadow": "off",
     "no-underscore-dangle": "off",
@@ -116,28 +116,28 @@ module.export = {
     "@typescript-eslint/naming-convention": [
       "error",
       {
-        selector: "default",
-        format: ["camelCase"],
-        leadingUnderscore: "forbid",
-        trailingUnderscore: "forbid",
+        "selector": "default",
+        "format": ["camelCase"],
+        "leadingUnderscore": "forbid",
+        "trailingUnderscore": "forbid"
       },
       {
-        selector: "variable",
-        format: ["camelCase", "UPPER_CASE"],
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE"]
       },
       {
-        selector: "enumMember",
-        format: ["UPPER_CASE"],
+        "selector": "enumMember",
+        "format": ["UPPER_CASE"]
       },
       {
-        selector: "typeLike",
-        format: ["PascalCase"],
-      },
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
     ],
     "@typescript-eslint/no-shadow": [
       "warn",
       {
-        allow: [
+        "allow": [
           "error",
           "done",
           "resolve",
@@ -277,19 +277,19 @@ module.export = {
           "onended",
           "onerror",
           "onfocus",
-          "oninput",
-        ],
-      },
-    ],
+          "oninput"
+        ]
+      }
+    ]
   },
-  settings: {
+  "settings": {
     "import/resolver": {
-      typescript: {
-        extensions: [".ts"],
+      "typescript": {
+        "extensions": [".ts"]
       },
-      node: {
-        extensions: [".ts"],
-      },
-    },
-  },
-};
+      "node": {
+        "extensions": [".ts"]
+      }
+    }
+  }
+}
