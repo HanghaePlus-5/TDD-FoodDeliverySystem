@@ -40,13 +40,7 @@ describe('UsersService', () => {
         expect(service).toBeDefined();
     });
 
-    describe('User Signup', () => {
-        const signupForm = {
-            email: 'test2@delivery.com',
-            name: 'Test Kim',
-            password: 'qwe1234',
-        };
-
+    describe('User Shared Units', () => {
         describe('Check UserType', () => {
             it('should return false if UserType is undefined.', () => {
                 const userType = undefined;
@@ -73,6 +67,14 @@ describe('UsersService', () => {
                 expect(result).toBe(true);
             });
         });
+    });
+
+    describe('User Signup', () => {
+        const signupForm = {
+            email: 'test2@delivery.com',
+            name: 'Test Kim',
+            password: 'qwe1234',
+        };
 
         describe('Check user duplication', () => {
             it('should return a User if user exists.', async () => {
@@ -124,4 +126,6 @@ describe('UsersService', () => {
             });
         });
     });
+
+    describe('User Signin', () => {});
 });
