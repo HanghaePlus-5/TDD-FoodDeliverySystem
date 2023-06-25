@@ -9,7 +9,7 @@ export interface PaymentDto {
 
     /**
      * CardNumber
-     * @pattern ^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$
+     * @pattern ^(\\d{4}-){3}\\d{4}$|^(\\d{4} ){3}\\d{4}$|^\\d{16}$
      */
     cardNumber: string;
 
