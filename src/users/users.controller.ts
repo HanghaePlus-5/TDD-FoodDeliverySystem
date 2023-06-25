@@ -27,6 +27,6 @@ export class UsersController {
       throw new InternalServerErrorException();
     }
 
-    return true;
+    return createdUser;
   }
 }
