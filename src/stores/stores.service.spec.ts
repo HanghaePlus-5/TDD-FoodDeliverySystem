@@ -55,18 +55,19 @@ describe('StoresService', () => {
       const mockGetUser = jest.fn().mockRejectedValue(null);
       usersService.getUser = mockGetUser;
 
-      await expect(storesService.createStore(userId, null)).resolves.toThrow();
+      await expect(
+        storesService.createStore(userId, sampleCreateStoreDto)
+      ).resolves.toThrow();
     });
 
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(storesService, 'checkValidation');
       mockCheckValidation.mockResolvedValue(false);
 
-      await expect(storesService.createStore(1, null)).resolves.toThrow(
-        'Validation Error'
-      );
+      const result = await storesService.createStore(1, sampleCreateStoreDto);
+      expect(result).toBe(false);
+
       expect(mockCheckValidation).toHaveBeenCalled();
-      expect(mockCheckValidation).toHaveReturnedWith(false);
     });
 
     it('should check store name duplication', () => {});
@@ -76,74 +77,75 @@ describe('StoresService', () => {
     it('should delegate Store creation to repository', () => {});
   });
 
-  describe('checkValidation', () => {});
-  it('should not include store name english', () => {
-    const dto = sampleCreateStoreDto;
-    dto.name = 'english';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+  describe('checkValidation', () => {
+    it('should not include store name english', () => {
+      const dto = sampleCreateStoreDto;
+      dto.name = 'english';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include store name special character', () => {
-    const dto = sampleCreateStoreDto;
-    dto.name = '커피커피!';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include store name special character', () => {
+      const dto = sampleCreateStoreDto;
+      dto.name = '커피커피!';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should include store type', () => {
-    const dto = sampleCreateStoreDto;
-    dto.type = '카페';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should include store type', () => {
+      const dto = sampleCreateStoreDto;
+      dto.type = '카페';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should include businessNumber length 12', () => {
-    const dto = sampleCreateStoreDto;
-    dto.businessNumber = '123-12-1234';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should include businessNumber length 12', () => {
+      const dto = sampleCreateStoreDto;
+      dto.businessNumber = '123-12-1234';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include phoneNumber length < 11', () => {
-    const dto = sampleCreateStoreDto;
-    dto.phoneNumber = '02-123-123';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include phoneNumber length < 11', () => {
+      const dto = sampleCreateStoreDto;
+      dto.phoneNumber = '02-123-123';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include phoneNumber length > 13', () => {
-    const dto = sampleCreateStoreDto;
-    dto.phoneNumber = '031-1234-12345';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include phoneNumber length > 13', () => {
+      const dto = sampleCreateStoreDto;
+      dto.phoneNumber = '031-1234-12345';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should include postalNumber length 5', () => {
-    const dto = sampleCreateStoreDto;
-    dto.postalNumber = '1234';
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should include postalNumber length 5', () => {
+      const dto = sampleCreateStoreDto;
+      dto.postalNumber = '1234';
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include openingTime over 23', () => {
-    const dto = sampleCreateStoreDto;
-    dto.openingTime = 24;
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include openingTime over 23', () => {
+      const dto = sampleCreateStoreDto;
+      dto.openingTime = 24;
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include closingTime under 0', () => {
-    const dto = sampleCreateStoreDto;
-    dto.closingTime = -1;
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include closingTime under 0', () => {
+      const dto = sampleCreateStoreDto;
+      dto.closingTime = -1;
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include cookingTime under min time', () => {
-    const dto = sampleCreateStoreDto;
-    dto.cookingTime = MIN_COOKING_TIME - 1;
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include cookingTime under min time', () => {
+      const dto = sampleCreateStoreDto;
+      dto.cookingTime = MIN_COOKING_TIME - 1;
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should not include cookingTime over max time', () => {
-    const dto = sampleCreateStoreDto;
-    dto.cookingTime = MAX_COOKING_TIME + 1;
-    expect(storesService.checkValidation(dto)).toBe(false);
-  });
+    it('should not include cookingTime over max time', () => {
+      const dto = sampleCreateStoreDto;
+      dto.cookingTime = MAX_COOKING_TIME + 1;
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
 
-  it('should pass validation', () => {
-    expect(storesService.checkValidation(sampleCreateStoreDto)).toBe(true);
+    it('should pass validation', () => {
+      expect(storesService.checkValidation(sampleCreateStoreDto)).toBe(true);
+    });
   });
 });

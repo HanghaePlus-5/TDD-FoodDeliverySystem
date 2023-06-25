@@ -5,15 +5,26 @@ import { StoreCreateDto } from './dto';
 @Injectable()
 export class StoresService {
   constructor(private readonly usersService: UsersService) {}
-  async createStore(userId: number, dto: any) {
+  async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
     // const user = await this.usersService.getUser(userId);
-    const isValidation = this.checkValidation(dto);
+    const isValidation = await this.checkValidation(dto);
     if (!isValidation) {
-      throw new Error('Validation Error');
+      return false;
     }
+    return true;
   }
 
   async checkValidation(dto: StoreCreateDto): Promise<boolean> {
-    return false;
+    if (!dto.name) {
+      return false;
+    }
+
+    if (/[a-zA-Z]/.test(dto.name)) {
+      return false;
+    }
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(dto.name)) {
+      return false;
+    }
+    return true;
   }
 }
