@@ -135,7 +135,7 @@ describe('UsersService', () => {
 
     describe('Find user from database.', () => {
       it('should return null if no user match.', async () => {
-        mockPrisma.user.findUnique.mockResolvedValueOnce(null);
+        mockPrisma.user.findFirst.mockResolvedValueOnce(null);
         const result = await service.findUserByEmailAndPassword(
           signinForm.email,
           signinForm.password

@@ -16,7 +16,11 @@ export class UsersService {
   }
 
   async findUserByEmailAndPassword(email, password) {
-    return true;
+    const where = {
+      email,
+      password: await bcryptHash(password),
+    }
+    return this.prisma.user.findFirst({ where });
   }
 
   async createUser(
