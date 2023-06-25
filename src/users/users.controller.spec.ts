@@ -68,8 +68,16 @@ describe('UsersController', () => {
       await expect(result).rejects.toThrowError();
     });
 
-    it.todo('should throw Error if create fails.');
-    
+    it('should throw Error if create fails.', async () => {
+      const type = userTypes[Math.random() * userTypes.length | 0];
+      mockPrisma.user.findUnique.mockResolvedValueOnce(null);
+      mockPrisma.user.create.mockRejectedValueOnce(new Error());
+
+      const result = controller.signup(signupForm, { type });
+
+      await expect(result).rejects.toThrowError();
+    });
+
     it.todo('should return User if create success.');
   });
 });
