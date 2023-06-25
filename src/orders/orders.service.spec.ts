@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrdersService } from './orders.service';
+import { CustomOrder } from './orders.entity';
 
 describe('OrdersService', () => {
   let service: OrdersService;
+
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,11 +20,18 @@ describe('OrdersService', () => {
   describe('Order Creation', () => {
     describe('Order Creates normally', () => {
       it('should return id value of the created order.', () => {
-        const order = undefined;
-        const result = undefined;
-        expect(result).toBe(true);
+        const order1 = new CustomOrder('Junho');
+
+        service.addOrder(order1);
+        
+        const result = service.Orders;
+        console.log(service.Orders);
+        expect(result).toContain(order1);
       });
 
+    
+
     });
+
   });
 });
