@@ -7,10 +7,10 @@ describe('StoresService', () => {
   let storesService: StoresService;
 
   const MIN_COOKING_TIME: number = parseInt(
-    process.env.MIN_COOKING_TIME || '5'
+    process.env.MIN_COOKING_TIME || '5',
   );
   const MAX_COOKING_TIME: number = parseInt(
-    process.env.MAX_COOKING_TIME || '120'
+    process.env.MAX_COOKING_TIME || '120',
   );
 
   const sampleCreateStoreDto: StoreCreateDto = {
@@ -121,7 +121,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(await storesService.checkValidation(sampleCreateStoreDto)).toBe(
-        true
+        true,
       );
     });
   });

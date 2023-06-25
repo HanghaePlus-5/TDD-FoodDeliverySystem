@@ -2,27 +2,26 @@ import {
   BadRequestException, HttpCode, HttpException, HttpStatus, Injectable,
 } from '@nestjs/common';
 
-import { PaymentDto } from 'src/payment/dto/payment.dto';
 import { PrismaService } from 'src/prisma';
+import { PaymentDto } from 'src/payment/dto/payment.dto';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
   ) {}
-  
-  //payment request
-  makePayment(paymentInfo : PaymentDto, customerName:string){
+
+  // payment request
+  makePayment(paymentInfo : PaymentDto, customerName:string) {
     if (!this.validatePaymentInfo(paymentInfo, customerName)) throw new BadRequestException();
-    
+
     try {
-    this.sendPaymentRequestToPG(paymentInfo)
-    //create payment data
-    //return PaymentDto or Success
+      this.sendPaymentRequestToPG(paymentInfo);
+    // create payment data
+    // return PaymentDto or Success
     } catch (error) {
       throw new Error(error);
     }
-
   }
   sendPaymentRequestToPG(paymentInfo : PaymentDto) {
     if (paymentInfo.cardNumber == '1111-1111-1111-1111') throw new BadRequestException();
@@ -40,26 +39,24 @@ export class PaymentService {
     return cardNumber.length == 16;
   }
 
-  //cancel request
-  cancelPayment(){
-    
-  }
-  sendCancelRequestToPG (){
+  // cancel request
+  cancelPayment() {
 
   }
-  validateCancelRequest(){
-    return
+  sendCancelRequestToPG() {
+
+  }
+  validateCancelRequest() {
+
   }
 
-  isExistingOrder(){
-    return 
-  }
-  isOrderStatusAccepted(){
-    return
-  }
-  isPaymentStatusCompleted(){
-    return
-  }
+  isExistingOrder() {
 
+  }
+  isOrderStatusAccepted() {
 
+  }
+  isPaymentStatusCompleted() {
+
+  }
 }
