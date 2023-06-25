@@ -1,4 +1,4 @@
-import { UserDto } from "src/users/dto";
+import { UserDto } from 'src/users/dto';
 
 export interface ReviewDto {
   /**
@@ -31,7 +31,7 @@ export interface ReviewDto {
    * @type int
    */
   score: number;
-  
+
   createdAt: Date;
   updatedAt: Date;
 }
