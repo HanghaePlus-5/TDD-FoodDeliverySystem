@@ -5,7 +5,7 @@ import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 import { UserDto } from './dto';
 
-describe.skip('UsersService', () => {
+describe('UsersService', () => {
   let service: UsersService;
 
   interface Select {
@@ -125,7 +125,7 @@ describe.skip('UsersService', () => {
         };
         const result = await service.createUser(data);
         expect(result.userId).toBe(2);
-        expect(is<UserDto>(result)).toBe(true);
+        expect(is<User>(result)).toBe(true);
       });
     });
   });
