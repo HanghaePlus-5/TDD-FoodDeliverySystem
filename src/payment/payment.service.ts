@@ -24,7 +24,7 @@ export class PaymentService {
     }
   }
   sendPaymentRequestToPG(paymentInfo : PaymentDto) {
-    if (paymentInfo.cardNumber == '1111-1111-1111-1111') throw new BadRequestException();
+    if (paymentInfo.cardNumber === '1111-1111-1111-1111') throw new BadRequestException();
     return HttpStatus.ACCEPTED;
   }
   validatePaymentInfo(paymentInfo : PaymentDto, customerName : string) {
@@ -32,11 +32,11 @@ export class PaymentService {
             && this.validateCardNumber(paymentInfo.cardNumber);
   }
   validateCardHolder(cardHolderName : string, customerName : string) {
-    return cardHolderName == customerName;
+    return cardHolderName === customerName;
   }
   validateCardNumber(cardNumber:string) {
     cardNumber = cardNumber.replace(/[-\s]/g, '');
-    return cardNumber.length == 16;
+    return cardNumber.length === 16;
   }
 
   // cancel request

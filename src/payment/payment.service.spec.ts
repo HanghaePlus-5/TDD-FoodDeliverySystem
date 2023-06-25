@@ -20,7 +20,8 @@ describe('PaymentService', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
-      .compile(); service = module.get<PaymentService>(PaymentService);
+      .compile();
+    service = module.get<PaymentService>(PaymentService);
   });
 
   it('should be defined', () => {
