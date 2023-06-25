@@ -42,8 +42,18 @@
             "position": "before"
           },
           {
+            "pattern": "@nestia/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
             "pattern": "express",
             "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "src/prisma",
+            "group": "internal",
             "position": "before"
           },
           {
@@ -52,23 +62,13 @@
             "position": "before"
           },
           {
-            "pattern": "src/common/**",
-            "group": "internal",
-            "position": "before"
-          },
-          {
-            "pattern": "src/{auth,redis}",
+            "pattern": "src/{auth,lib,utils}/**",
             "group": "internal",
             "position": "before"
           },
           {
             "pattern": "src/types",
             "group": "type",
-            "position": "before"
-          },
-          {
-            "pattern": "src/utilities/**",
-            "group": "internal",
             "position": "before"
           },
           {
@@ -100,6 +100,7 @@
       }
     ],
     "lines-between-class-members": "off",
+    "max-len": "off",
     "no-console": "off",
     "no-param-reassign": [
       "error",
@@ -123,6 +124,10 @@
       },
       {
         "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      },
+      {
+        "selector": "property",
         "format": ["camelCase", "UPPER_CASE"]
       },
       {
