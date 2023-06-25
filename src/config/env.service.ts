@@ -1,5 +1,6 @@
 import { ConsoleLogger, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import Env from './env';
 
 @Injectable()
@@ -28,7 +29,7 @@ export class EnvService {
     }).filter(Boolean);
 
     if (missingKeys.length > 0) {
-      throw new Error(`Missing env variables detected!!`);
+      throw new Error('Missing env variables detected!!');
     } else {
       this.logger.log('All env variables clear');
     }
