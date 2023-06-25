@@ -127,5 +127,15 @@ describe('UsersService', () => {
     });
   });
 
-  describe('User Signin', () => {});
+  describe('User Signin', () => {
+    describe('Find user from database.', () => {
+      it.todo('should return null if no user match.');
+      it.todo('should return the User if user match.');
+    });
+    describe('Create JWT token.', () => {
+      it.todo('should return null if create fails.');
+      it.todo('should return null if invalid user payload.');
+      it.todo('should return jwt token if create succeeds.');
+    });
+  });
 });
