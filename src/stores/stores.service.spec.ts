@@ -13,6 +13,20 @@ describe('StoresService', () => {
     process.env.MIN_COOKING_TIME || '120'
   );
 
+  const sampleCreateStoreDto = {
+    name: '커피커피',
+    type: '카페',
+    businessNumber: '123-12-12345',
+    phoneNumber: '02-1234-1234',
+    postalNumber: '06210',
+    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
+    openingTime: 9,
+    closingTime: 22,
+    cookingTime: 10,
+    origin: '커피원두(국내산), 우유(국내산)',
+    description: '코딩이 맛있어요!',
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -80,18 +94,23 @@ describe('StoresService', () => {
       expect(storesService.checkValidation(dto)).toBe(false);
     });
 
-    it('should include phoneNumber as number', () => {
-      const dto = { phoneNumber: '02-123-1234' };
+    it('should include phoneNumber as string', () => {
+      const dto = { phoneNumber: 12345678901 };
       expect(storesService.checkValidation(dto)).toBe(false);
     });
 
-    it('should not include phoneNumber length < 9', () => {
-      const dto = { phoneNumber: '01234567' };
+    it('should not include phoneNumber length < 11', () => {
+      const dto = { phoneNumber: '02-123-123' };
       expect(storesService.checkValidation(dto)).toBe(false);
     });
 
-    it('should not include phoneNumber length > 11', () => {
-      const dto = { phoneNumber: '012345678901' };
+    it('should not include phoneNumber length > 13', () => {
+      const dto = { phoneNumber: '031-1234-12345' };
+      expect(storesService.checkValidation(dto)).toBe(false);
+    });
+
+    it('should include postalNumber as string', () => {
+      const dto = { postalNumber: 12345 };
       expect(storesService.checkValidation(dto)).toBe(false);
     });
 
@@ -118,6 +137,10 @@ describe('StoresService', () => {
     it('should not include cookingTime over max time', () => {
       const dto = { cookingTime: MAX_COOKING_TIME + 1 };
       expect(storesService.checkValidation(dto)).toBe(false);
+    });
+
+    it('should pass validation', () => {
+      expect(storesService.checkValidation(sampleCreateStoreDto)).toBe(true);
     });
   });
 });
