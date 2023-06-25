@@ -3,9 +3,9 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserTypeGuard implements CanActivate {
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
-        return true;
-    }
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    return true;
+  }
 }
