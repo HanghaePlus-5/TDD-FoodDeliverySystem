@@ -9,30 +9,30 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @TypedRoute.Post('/signup')
-    async signup(
+  @TypedRoute.Post('/signup')
+  async signup(
     @TypedBody() form: UserCreateDto,
     @TypedQuery() query: UserCreateQueryDto,
-    ) {
-        if (!is<UserType>(query.type)) {
-            throw new BadRequestException();
-        }
-
-        const user = await this.usersService.findUserByEmail({ email: form.email });
-        if (is<User>(user)) {
-            throw new BadRequestException();
-        }
-
-        const createdUser = await this.usersService.createUser({
-            ...form,
-            type: query.type,
-        });
-        if (!is<User>(createdUser)) {
-            throw new InternalServerErrorException();
-        }
-
-        return createResponse<User>(createdUser);
+  ) {
+    if (!is<UserType>(query.type)) {
+      throw new BadRequestException();
     }
+
+    const user = await this.usersService.findUserByEmail({ email: form.email });
+    if (is<User>(user)) {
+      throw new BadRequestException();
+    }
+
+    const createdUser = await this.usersService.createUser({
+      ...form,
+      type: query.type,
+    });
+    if (!is<User>(createdUser)) {
+      throw new InternalServerErrorException();
+    }
+
+    return createResponse<User>(createdUser);
+  }
 }

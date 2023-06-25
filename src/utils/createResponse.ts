@@ -4,6 +4,6 @@ export interface ResponseForm<T> {
 }
 
 export const createResponse = <T>(data: T): ResponseForm<T> => ({
-    result: true,
-    data,
+  result: true,
+  data,
 });
