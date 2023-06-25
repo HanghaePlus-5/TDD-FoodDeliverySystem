@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { StoreCreateDto } from './dto';
 
 @Injectable()
 export class StoresService {
@@ -12,7 +13,7 @@ export class StoresService {
     }
   }
 
-  async checkValidation(dto: any): Promise<boolean> {
+  async checkValidation(dto: StoreCreateDto): Promise<boolean> {
     return false;
   }
 }
