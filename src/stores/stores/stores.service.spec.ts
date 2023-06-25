@@ -1,19 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { UsersService } from 'src/users/users.service';
-
 import { StoresService } from './stores.service';
 import { StoreCreateDto } from '../dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
-  let usersService: any;
 
   const MIN_COOKING_TIME: number = parseInt(
-    process.env.MIN_COOKING_TIME || '5',
+    process.env.MIN_COOKING_TIME || '5'
   );
   const MAX_COOKING_TIME: number = parseInt(
-    process.env.MIN_COOKING_TIME || '120',
+    process.env.MAX_COOKING_TIME || '120'
   );
 
   const sampleCreateStoreDto: StoreCreateDto = {
@@ -32,19 +29,10 @@ describe('StoresService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        StoresService,
-        {
-          provide: UsersService,
-          useValue: {
-            getUser: jest.fn(),
-          },
-        },
-      ],
+      providers: [StoresService],
     }).compile();
 
     storesService = module.get<StoresService>(StoresService);
-    usersService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -52,16 +40,6 @@ describe('StoresService', () => {
   });
 
   describe('createStore', () => {
-    it('should handle error when getUser fail', async () => {
-      const userId = 1;
-      const mockGetUser = jest.fn().mockRejectedValue(null);
-      usersService.getUser = mockGetUser;
-
-      await expect(
-        storesService.createStore(userId, sampleCreateStoreDto),
-      ).resolves.toThrow();
-    });
-
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(storesService, 'checkValidation');
       mockCheckValidation.mockResolvedValue(false);
@@ -143,7 +121,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(await storesService.checkValidation(sampleCreateStoreDto)).toBe(
-        true,
+        true
       );
     });
   });
