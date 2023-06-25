@@ -1,15 +1,20 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
+
+import { FavouritesModule } from './favourites/favourites.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { StoresModule } from './stores/stores.module';
 import { TypiaModule } from './typia/typia.module';
-import { PaymentGatewayModule } from './payment-gateway/payment-gateway.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [
+    imports: [
     UsersModule,
     TypiaModule,
-    PaymentGatewayModule
-  ],
-  controllers: [],
-  providers: [],
-})
+    StoresModule,
+    ReviewsModule,
+    FavouritesModule
+    ],
+    controllers: [],
+    providers: [],
+    })
 export class AppModule {}
