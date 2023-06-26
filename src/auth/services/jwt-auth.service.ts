@@ -30,7 +30,7 @@ export class JwtAuthService {
     };
   }
 
-  async verifyAccessToken(token) {
+  async verifyAccessToken(token: string) {
     try {
       const result = await this.jwt.verifyAsync(token);
       return is<UserPayload>(result) ? result : null;
