@@ -2,14 +2,29 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { JwtAuthService } from './jwt-auth.service';
 import { UserType } from 'src/types';
+import { JwtService } from '@nestjs/jwt';
+import { CustomConfigModule } from 'src/config';
 
 describe('AuthService', () => {
   let service: JwtAuthService;
 
+  const mockJwt = {
+    signAsync: jest.fn(),
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [JwtAuthService],
-    }).compile();
+      imports: [
+        CustomConfigModule,
+      ],
+      providers: [
+        JwtAuthService,
+        JwtService,
+      ],
+    })
+      .overrideProvider(JwtService)
+      .useValue(mockJwt)
+      .compile();
 
     service = module.get<JwtAuthService>(JwtAuthService);
   });
@@ -27,16 +42,25 @@ describe('AuthService', () => {
       type: UserType.CUSTOMER,
     }
 
-    it('should return null if invalid user payload.', () => {
+    it('should return null if invalid user payload.', async () => {
       const brokenUser = {
         ...signedUser,
         type: 'broken',
       }
-      expect(service.createAccessToken(brokenUser)).toBe(null);
+
+      const result = await service.createAccessToken(brokenUser);
+
+      expect(result).toBe(null);
     });
-    it('should return null if fail to create token.', () => {
-      expect(service.createAccessToken(signedUser)).toBe(null);
+
+    it('should return null if fail to create token.', async () => {
+      mockJwt.signAsync.mockImplementationOnce(() => Promise.reject());
+
+      const result = await service.createAccessToken(signedUser);
+
+      expect(result).toBe(null);
     });
+
     it.todo('should return jwt token if success.');
   });
 
