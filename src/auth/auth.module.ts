@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { EnvService } from 'src/config/env';
+import { CustomConfigModule } from 'src/config';
+
 import { UserTypeGuard } from './guards/user-type.guard';
 import { JwtAuthService } from './services';
-import { CustomConfigModule } from 'src/config';
-import { EnvService } from 'src/config/env';
 
 @Module({
   imports: [

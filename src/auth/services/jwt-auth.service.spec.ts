@@ -1,16 +1,18 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { JwtAuthService } from './jwt-auth.service';
-import { UserType } from 'src/types';
-import { JwtService } from '@nestjs/jwt';
 import { CustomConfigModule } from 'src/config';
+
+import { JwtAuthService } from './jwt-auth.service';
+
+import { UserType } from 'src/types';
 
 describe('AuthService', () => {
   let service: JwtAuthService;
 
   const mockJwt = {
     signAsync: jest.fn(),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,13 +42,13 @@ describe('AuthService', () => {
       name: 'Test Kim',
       password: 'HASHED_PASSWORD',
       type: UserType.CUSTOMER,
-    }
+    };
 
     it('should return null if invalid user payload.', async () => {
       const brokenUser = {
         ...signedUser,
         type: 'broken',
-      }
+      };
 
       const result = await service.createAccessToken(brokenUser as User);
 

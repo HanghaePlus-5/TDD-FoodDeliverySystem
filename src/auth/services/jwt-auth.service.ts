@@ -17,7 +17,6 @@ export class JwtAuthService {
     try {
       const token = await this.jwt.signAsync(payload);
       return token;
-      
     } catch (error) {
       return null;
     }
@@ -28,6 +27,6 @@ export class JwtAuthService {
       userId: user.userId,
       name: user.name,
       type: user.type,
-    }
+    };
   }
 }
