@@ -1,4 +1,4 @@
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CustomConfigModule } from 'src/config';
@@ -71,18 +71,39 @@ describe('AuthService', () => {
   });
 
   describe('Verify Access Token', () => {
-    // use actual jwt string in intergration test.
-    
+    const options: JwtSignOptions = {
+      expiresIn: '10m',
+    }
+
+    const payload: UserPayload = {
+      userId: 1,
+      name: 'John Doe',
+      type: UserType.CUSTOMER,
+    }
+
     it('should return null if expired token.', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcklkIjoxLCJuYW1lIjoiSm9obiBEb2UiLCJ0eXBlIjoiQ1VTVE9NRVIiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTUxNjIzOTAyMn0.-2DPqhCQETlTNEzziiH0WU1nUffgHHDYqN8XZ5YhFfA';
-      // jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
+      const optionsCopy: JwtSignOptions = {
+        ...options,
+        expiresIn: '0s',
+      }
+      const token = jwtService.sign(payload, optionsCopy);
 
       const result = await service.verifyAccessToken(token);
 
       expect(result).toBe(null);
     });
 
-    it.todo('should return null if mismatch secert key.');
+    it('should return null if mismatch secert key.', async () => {
+      const optionsCopy: JwtSignOptions = {
+        ...options,
+        secret: 'wrong secret key',
+      }
+      const token = jwtService.sign(payload, optionsCopy);
+
+      const result = await service.verifyAccessToken(token);
+
+      expect(result).toBe(null);
+    });
     it.todo('should return null if invalid user payload.');
     it.todo('should return UserPayload if success.');
   });
