@@ -5,7 +5,7 @@ import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
 import { FormDto, OptionsDto } from './dto';
-import { EnvService } from '../config/env.service';
+import { EnvService } from '../config/env';
 
 interface Response {
   age: number;
