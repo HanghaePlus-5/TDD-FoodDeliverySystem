@@ -10,7 +10,7 @@ import { UsersService } from './users.service';
 
 import { UserType } from 'src/types';
 
-describe.skip('UsersController', () => {
+describe('UsersController', () => {
   let controller: UsersController;
   let mockPrisma: DeepMockProxy<PrismaClient>;
 
