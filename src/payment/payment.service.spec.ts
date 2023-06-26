@@ -22,12 +22,14 @@ describe('PaymentService', () => {
       .useValue(mockDeep<PrismaClient>())
       .compile();
     service = module.get<PaymentService>(PaymentService);
+    mockPrisma = module.get(PrismaService);
+
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  const paymentDto : PaymentDto = {
+  const paymentDto  = {
     paymentId: 1,
     cardExpiryMonth: 6,
     cardExpiryYear: 2027,
@@ -64,17 +66,15 @@ describe('PaymentService', () => {
 
   describe('cancelRequest to PG', () => {
     describe('validate cancel request', () => {
-      it('should return false if order data is not exist', () => {
-        const orderId = '10';
-        expect(service.isExistingOrder()).toBe(false);
+      it('should return false if payment data does not exist', async () => {
+        mockPrisma.payment.findUnique.mockResolvedValueOnce(null);
+        const paymentId = 10;
+        expect(await service.findByPaymentId(paymentId)).toBe(null);
       });
-      it('should return false if order status is not `ORDER ACCEPTED`', () => {
-        const oderStatus = 'ORDER CONFIRMED';
-        expect(service.isOrderStatusAccepted()).toBe(false);
-      });
+
       it('should return false if payment status is not `payment completed`', () => {
         const paymentStatus = 'payment canceled';
-        expect(service.isPaymentStatusCompleted()).toBe(false);
+        expect(service.isCompletedPayment(paymentStatus)).toBe(false);
       });
     });
   });

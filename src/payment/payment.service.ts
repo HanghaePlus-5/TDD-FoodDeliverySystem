@@ -4,6 +4,7 @@ import {
 
 import { PrismaService } from 'src/prisma';
 import { PaymentDto } from 'src/payment/dto/payment.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PaymentService {
@@ -12,7 +13,7 @@ export class PaymentService {
   ) {}
 
   // payment request
-  makePayment(paymentInfo : PaymentDto, customerName:string) {
+  async makePayment(paymentInfo : PaymentDto, customerName:string) {
     if (!this.validatePaymentInfo(paymentInfo, customerName)) throw new BadRequestException();
 
     try {
@@ -49,14 +50,12 @@ export class PaymentService {
   validateCancelRequest() {
 
   }
-
-  isExistingOrder() {
-
+  async findByPaymentId(paymentId:number){
+    const where:Prisma.PaymentWhereUniqueInput = {paymentId : paymentId}
+    return this.prisma.payment.findUnique({where}) 
   }
-  isOrderStatusAccepted() {
 
-  }
-  isPaymentStatusCompleted() {
-
+  isCompletedPayment(paymentStatus : string) {
+    return paymentStatus == "payment completed"
   }
 }
