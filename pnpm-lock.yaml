@@ -50,6 +50,9 @@ dependencies:
   passport-jwt:
     specifier: ^4.0.1
     version: 4.0.1
+  module-alias:
+    specifier: ^2.2.3
+    version: 2.2.3
   reflect-metadata:
     specifier: ^0.1.13
     version: 0.1.13
@@ -85,6 +88,9 @@ devDependencies:
   '@types/jest':
     specifier: 29.5.0
     version: 29.5.0
+  '@types/module-alias':
+    specifier: ^2.0.1
+    version: 2.0.1
   '@types/node':
     specifier: 18.15.11
     version: 18.15.11
@@ -1387,6 +1393,10 @@ packages:
 
   /@types/mime@3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
+    dev: true
+
+  /@types/module-alias@2.0.1:
+    resolution: {integrity: sha512-DN/CCT1HQG6HquBNJdLkvV+4v5l/oEuwOHUPLxI+Eub0NED+lk0YUfba04WGH90EINiUrNgClkNnwGmbICeWMQ==}
     dev: true
 
   /@types/node@18.15.11:
@@ -4708,6 +4718,10 @@ packages:
     resolution: {integrity: sha512-FPUtkhtJ0efmEFGpU14x7jGbTB+s18LrzRL2KgoWz9YvcY3cPomz8tih01GbHwnGk/OmkOKfqd/RAQoc8Lm7DQ==}
     dependencies:
       obliterator: 2.0.4
+    dev: false
+
+  /module-alias@2.2.3:
+    resolution: {integrity: sha512-23g5BFj4zdQL/b6tor7Ji+QY4pEfNH784BMslY9Qb0UnJWRAt+lQGLYmRaM0KDBwIG23ffEBELhZDP2rhi9f/Q==}
     dev: false
 
   /ms@2.0.0:

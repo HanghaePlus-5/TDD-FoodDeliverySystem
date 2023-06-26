@@ -1,7 +1,7 @@
 import { ConsoleLogger, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import Env from './env';
+import { env } from './env';
 
 @Injectable()
 export class EnvService {
@@ -12,7 +12,7 @@ export class EnvService {
     this.checkUndefinedVariables();
   }
 
-  get<T>(key: keyof ReturnType<typeof Env>) {
+  get<T>(key: keyof ReturnType<typeof env>) {
     const value = this.config.get<T>(key);
     if (value === undefined) {
       throw new InternalServerErrorException(`Missing environment variable: ${key}`);
@@ -21,11 +21,12 @@ export class EnvService {
   }
 
   checkUndefinedVariables() {
-    const missingKeys = Object.entries(Env()).map(([key, value]) => {
+    const missingKeys = Object.entries(env()).map(([key, value]) => {
       if (value === undefined) {
         this.logger.error(`Env variable ${key} is undefined`);
         return key;
       }
+      return null;
     }).filter(Boolean);
 
     if (missingKeys.length > 0) {
