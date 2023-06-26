@@ -58,7 +58,11 @@ model Order {
 model Payment {
   paymentId Int     @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt 
+  cardExpiryMonth Int
+  cardExpiryYear Int
+  cardHolderName String
+  cardNumber String
 
   order     Order?
 }
