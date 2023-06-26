@@ -16,3 +16,5 @@ export interface StoreDto {
   description: string;
   registrationDate: Date;
 }
+
+export type StoreDuplicationDto = Partial<Pick<StoreDto, 'name' | 'businessNumber'>>;
