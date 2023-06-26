@@ -6,6 +6,8 @@ import { FavouritesModule } from './favourites/favourites.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { DeliveryModule } from './delivery/delivery.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { UsersModule } from './users/users.module';
     ExampleModule,
     StoresModule,
     ReviewsModule,
-    FavouritesModule
+    FavouritesModule,
+    PaymentModule,
+    DeliveryModule
   ],
   controllers: [],
   providers: [],
