@@ -18,11 +18,11 @@ export class JwtAuthService {
 
     try {
       const token = await this.jwt.signAsync(payload);
+      return token;
       
     } catch (error) {
       return null;
     }
-    return true;
   }
 
   private createUserPayload(user: User) {
