@@ -52,7 +52,15 @@ describe('StoresService', () => {
       expect(mockCheckValidation).toHaveBeenCalled();
     });
 
-    it('should check store business number', () => {});
+    it('should check store business number', async () => {
+      const mockCheckBusinessNumber = jest.spyOn(storesService, 'checkBusinessNumber' as any);
+      mockCheckBusinessNumber.mockResolvedValue(false);
+
+      const result = await storesService.createStore(1, sampleCreateStoreDto);
+      expect(result).toBe(false);
+
+      expect(mockCheckBusinessNumber).toHaveBeenCalled();
+    });
 
     it('should check store duplication', () => {});
 
