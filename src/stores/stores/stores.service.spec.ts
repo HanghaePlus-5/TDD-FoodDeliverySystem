@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { EnvService } from 'src/config/env.service';
+import { EnvService } from 'src/config/env';
 
 import { StoresService } from './stores.service';
 import { StoreCreateDto } from '../dto';

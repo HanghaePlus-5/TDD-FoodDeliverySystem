@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { EnvService } from 'src/config/env.service';
+import { EnvService } from 'src/config/env';
 
 import { StoreCreateDto, StoreDuplicationDto } from '../dto';
 
