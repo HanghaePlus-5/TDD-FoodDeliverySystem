@@ -18,7 +18,7 @@ export const env = () => ({
   /**
    * Stores Business Logic
    */
-  MIN_COOKING_TIME: process.env.MIN_COOKING_TIME,
-  MAX_COOKING_TIME: process.env.MAX_COOKING_TIME,
+  MIN_COOKING_TIME: Number(process.env.MIN_COOKING_TIME),
+  MAX_COOKING_TIME: Number(process.env.MAX_COOKING_TIME),
   BUSINESS_NUMBER_CHECK_API_KEY: process.env.BUSINESS_NUMBER_CHECK_API_KEY,
 });
