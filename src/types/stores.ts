@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  type StoreType = '한식' | '중식' | '일식' | '양식' | '카페';
-  type StoreStatus = '등록' | '오픈' | '휴무' | '해지' | '폐업';
-  type MenuStatus = '등록' | '판매' | '점검' | '삭제';
+  type StoreType = 'KOREAN' | 'CHINESE' | 'JAPANESE' | 'WESTERN' | 'CAFE';
+  type StoreStatus = 'REGISTERED' | 'OPEN' | 'CLOSED' | 'TERMINATED' | 'OUT_OF_BUSINESS';
+  type MenuStatus = 'REGISTERED' | 'OPEN' | 'CLOSED' | 'DELETED';
 }

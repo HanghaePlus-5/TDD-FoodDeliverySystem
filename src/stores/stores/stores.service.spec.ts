@@ -15,7 +15,7 @@ describe('StoresService', () => {
 
   const sampleCreateStoreDto: StoreCreateDto = {
     name: '커피커피',
-    type: '카페',
+    type: 'CAFE',
     businessNumber: '123-12-12345',
     phoneNumber: '02-1234-1234',
     postalNumber: '06210',
