@@ -34,7 +34,9 @@ describe('AuthService', () => {
       }
       expect(service.createAccessToken(brokenUser)).toBe(null);
     });
-    it.todo('should return null if fail to create token.');
+    it('should return null if fail to create token.', () => {
+      expect(service.createAccessToken(signedUser)).toBe(null);
+    });
     it.todo('should return jwt token if success.');
   });
 
