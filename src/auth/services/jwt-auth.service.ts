@@ -34,7 +34,6 @@ export class JwtAuthService {
     try {
       const result = await this.jwt.verifyAsync(token);
       return is<UserPayload>(result) ? result : null;
-      
     } catch (error) {
       return null;
     }

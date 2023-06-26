@@ -1,12 +1,13 @@
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { is } from 'typia';
 
 import { CustomConfigModule } from 'src/config';
 
 import { JwtAuthService } from './jwt-auth.service';
+import { AuthModule } from '../auth.module';
 
 import { UserType } from 'src/types';
-import { AuthModule } from '../auth.module';
 
 describe('AuthService', () => {
   let service: JwtAuthService;
@@ -73,19 +74,19 @@ describe('AuthService', () => {
   describe('Verify Access Token', () => {
     const options: JwtSignOptions = {
       expiresIn: '10m',
-    }
+    };
 
     const payload: UserPayload = {
       userId: 1,
       name: 'John Doe',
       type: UserType.CUSTOMER,
-    }
+    };
 
     it('should return null if expired token.', async () => {
       const optionsCopy: JwtSignOptions = {
         ...options,
         expiresIn: '0s',
-      }
+      };
       const token = jwtService.sign(payload, optionsCopy);
 
       const result = await service.verifyAccessToken(token);
@@ -97,7 +98,7 @@ describe('AuthService', () => {
       const optionsCopy: JwtSignOptions = {
         ...options,
         secret: 'wrong secret key',
-      }
+      };
       const token = jwtService.sign(payload, optionsCopy);
 
       const result = await service.verifyAccessToken(token);
@@ -109,13 +110,20 @@ describe('AuthService', () => {
       const brokenPayload = {
         ...payload,
         type: 'broken',
-      }
+      };
       const token = jwtService.sign(brokenPayload, options);
 
       const result = await service.verifyAccessToken(token);
 
       expect(result).toBe(null);
     });
-    it.todo('should return UserPayload if success.');
+
+    it('should return UserPayload if success.', async () => {
+      const token = jwtService.sign(payload, options);
+
+      const result = await service.verifyAccessToken(token);
+
+      expect(is<UserPayload>(result)).toBe(true);
+    });
   });
 });
