@@ -3,5 +3,5 @@ import * as path from 'path';
 
 const rootPath = path.resolve(__dirname, '..', '..', '..', 'dist');
 moduleAlias.addAliases({
-  'src': rootPath,
+  src: rootPath,
 });

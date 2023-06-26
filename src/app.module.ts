@@ -9,14 +9,14 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-  CustomConfigModule,
-  UsersModule,
-  ExampleModule,
-  StoresModule,
-  ReviewsModule,
-  FavouritesModule
+    CustomConfigModule,
+    UsersModule,
+    ExampleModule,
+    StoresModule,
+    ReviewsModule,
+    FavouritesModule
   ],
   controllers: [],
   providers: [],
-  })
+})
 export class AppModule {}
