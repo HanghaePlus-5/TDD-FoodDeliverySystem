@@ -16,7 +16,7 @@ describe('StoresService', () => {
   const sampleCreateStoreDto: StoreCreateDto = {
     name: '커피커피',
     type: 'CAFE',
-    businessNumber: '123-12-12345',
+    businessNumber: '783-86-01715',
     phoneNumber: '02-1234-1234',
     postalNumber: '06210',
     address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
@@ -43,7 +43,10 @@ describe('StoresService', () => {
 
   describe('createStore', () => {
     it('should checkValidation', async () => {
-      const mockCheckValidation = jest.spyOn(storesService, 'checkValidation' as any);
+      const mockCheckValidation = jest.spyOn(
+        storesService,
+        'checkValidation' as any
+      );
       mockCheckValidation.mockResolvedValue(false);
 
       const result = await storesService.createStore(1, sampleCreateStoreDto);
@@ -53,7 +56,10 @@ describe('StoresService', () => {
     });
 
     it('should check store business number', async () => {
-      const mockCheckBusinessNumber = jest.spyOn(storesService, 'checkBusinessNumber' as any);
+      const mockCheckBusinessNumber = jest.spyOn(
+        storesService,
+        'checkBusinessNumber' as any
+      );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
       const result = await storesService.createStore(1, sampleCreateStoreDto);
@@ -130,9 +136,21 @@ describe('StoresService', () => {
     });
 
     it('should pass validation', async () => {
-      expect(await storesService.checkValidationCaller(sampleCreateStoreDto)).toBe(
-        true,
-      );
+      expect(
+        await storesService.checkValidationCaller(sampleCreateStoreDto)
+      ).toBe(true);
+    });
+  });
+
+  describe('checkBusinessNumber', () => {
+    it('should return false if business number is not valid', async () => {
+      const dto = '123-12-1234';
+      expect(await storesService.checkBusinessNumberCaller(dto)).toBe(false);
+    });
+
+    it('should return true if business number is valid', async () => {
+      const dto = '783-86-01715';
+      expect(await storesService.checkBusinessNumberCaller(dto)).toBe(true);
     });
   });
 });
