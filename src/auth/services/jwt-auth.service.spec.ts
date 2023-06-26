@@ -9,11 +9,7 @@ import { UserType } from 'src/types';
 
 describe('AuthService', () => {
   let service: JwtAuthService;
-
-  const mockJwt = {
-    signAsync: jest.fn(),
-    verifyAsync: jest.fn(),
-  };
+  let jwtService: JwtService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,11 +21,10 @@ describe('AuthService', () => {
         JwtService,
       ],
     })
-      .overrideProvider(JwtService)
-      .useValue(mockJwt)
       .compile();
 
     service = module.get<JwtAuthService>(JwtAuthService);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
   it('should be defined', () => {
@@ -57,7 +52,7 @@ describe('AuthService', () => {
     });
 
     it('should return null if fail to create token.', async () => {
-      mockJwt.signAsync.mockImplementationOnce(() => Promise.reject());
+      jwtService.signAsync = jest.fn().mockRejectedValueOnce(new Error());
 
       const result = await service.createAccessToken(signedUser);
 
@@ -65,25 +60,28 @@ describe('AuthService', () => {
     });
 
     it('should return jwt token if success.', async () => {
-      mockJwt.signAsync.mockImplementationOnce(() => Promise.resolve('TOKEN'));
-
       const result = await service.createAccessToken(signedUser);
 
-      expect(result).toBe('TOKEN');
+      expect(result).toBeDefined();
+      expect(jwtService.verify(result!)).toBe(true);
     });
   });
 
   describe('Verify Access Token', () => {
+    // use actual jwt string in intergration test.
+    const token = 'TOKEN';
     
     it('should return null if expired token.', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcklkIjoxLCJuYW1lIjoiSm9obiBEb2UiLCJ0eXBlIjoiQ1VTVE9NRVIiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTUxNjIzOTAyMn0.-2DPqhCQETlTNEzziiH0WU1nUffgHHDYqN8XZ5YhFfA';
-      mockJwt.verifyAsync.mockImplementationOnce(() => Promise.reject());
+      jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
 
       const result = await service.verifyAccessToken(token);
 
       expect(result).toBe(null);
     });
-    it.todo('should return null if mismatch secert key.');
+
+    it.todo('should return null if mismatch secert key.', async () => {
+      jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
+    });
     it.todo('should return null if invalid user payload.');
     it.todo('should return UserPayload if success.');
   });
