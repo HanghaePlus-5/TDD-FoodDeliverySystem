@@ -104,7 +104,18 @@ describe('AuthService', () => {
 
       expect(result).toBe(null);
     });
-    it.todo('should return null if invalid user payload.');
+
+    it('should return null if invalid user payload.', async () => {
+      const brokenPayload = {
+        ...payload,
+        type: 'broken',
+      }
+      const token = jwtService.sign(brokenPayload, options);
+
+      const result = await service.verifyAccessToken(token);
+
+      expect(result).toBe(null);
+    });
     it.todo('should return UserPayload if success.');
   });
 });
