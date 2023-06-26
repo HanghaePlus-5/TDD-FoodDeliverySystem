@@ -61,7 +61,13 @@ describe('AuthService', () => {
       expect(result).toBe(null);
     });
 
-    it.todo('should return jwt token if success.');
+    it('should return jwt token if success.', async () => {
+      mockJwt.signAsync.mockImplementationOnce(() => Promise.resolve('TOKEN'));
+
+      const result = await service.createAccessToken(signedUser);
+
+      expect(result).toBe('TOKEN');
+    });
   });
 
   describe('Verify Access Token', () => {
