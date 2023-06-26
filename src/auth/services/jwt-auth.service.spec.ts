@@ -6,6 +6,7 @@ import { CustomConfigModule } from 'src/config';
 import { JwtAuthService } from './jwt-auth.service';
 
 import { UserType } from 'src/types';
+import { AuthModule } from '../auth.module';
 
 describe('AuthService', () => {
   let service: JwtAuthService;
@@ -15,6 +16,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CustomConfigModule,
+        AuthModule,
       ],
       providers: [
         JwtAuthService,
@@ -61,27 +63,26 @@ describe('AuthService', () => {
 
     it('should return jwt token if success.', async () => {
       const result = await service.createAccessToken(signedUser);
+      console.log('created token', result);
 
       expect(result).toBeDefined();
-      expect(jwtService.verify(result!)).toBe(true);
+      expect(jwtService.verify(result!)).toBeTruthy();
     });
   });
 
   describe('Verify Access Token', () => {
     // use actual jwt string in intergration test.
-    const token = 'TOKEN';
     
     it('should return null if expired token.', async () => {
-      jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcklkIjoxLCJuYW1lIjoiSm9obiBEb2UiLCJ0eXBlIjoiQ1VTVE9NRVIiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTUxNjIzOTAyMn0.-2DPqhCQETlTNEzziiH0WU1nUffgHHDYqN8XZ5YhFfA';
+      // jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
 
       const result = await service.verifyAccessToken(token);
 
       expect(result).toBe(null);
     });
 
-    it.todo('should return null if mismatch secert key.', async () => {
-      jwtService.verifyAsync = jest.fn().mockRejectedValueOnce(new Error());
-    });
+    it.todo('should return null if mismatch secert key.');
     it.todo('should return null if invalid user payload.');
     it.todo('should return UserPayload if success.');
   });
