@@ -75,15 +75,16 @@ describe('AuthService', () => {
 
   describe('Verify Access Token', () => {
     
-    it('should return false if expired token.', async () => {
+    it('should return null if expired token.', async () => {
       const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcklkIjoxLCJuYW1lIjoiSm9obiBEb2UiLCJ0eXBlIjoiQ1VTVE9NRVIiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTUxNjIzOTAyMn0.-2DPqhCQETlTNEzziiH0WU1nUffgHHDYqN8XZ5YhFfA';
+      mockJwt.verifyAsync.mockImplementationOnce(() => Promise.reject());
 
       const result = await service.verifyAccessToken(token);
 
-      expect(result).toBe(false);
+      expect(result).toBe(null);
     });
-    it.todo('should return false if mismatch secert key.');
-    it.todo('should return false if invalid user payload.');
+    it.todo('should return null if mismatch secert key.');
+    it.todo('should return null if invalid user payload.');
     it.todo('should return UserPayload if success.');
   });
 });
