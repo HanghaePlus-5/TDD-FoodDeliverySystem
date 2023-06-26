@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
+import { EnvService } from 'src/config/env.service';
+
 import { StoreCreateDto, StoreDuplicationDto } from '../dto';
 
 @Injectable()
 export class StoresService {
-  private readonly MIN_COOKING_TIME: number = parseInt(
-    process.env.MIN_COOKING_TIME || '5',
-  );
-  private readonly MAX_COOKING_TIME: number = parseInt(
-    process.env.MAX_COOKING_TIME || '120',
-  );
+  private readonly MIN_COOKING_TIME = this.env.get<number>('MIN_COOKING_TIME');
+  private readonly MAX_COOKING_TIME = this.env.get<number>('MAX_COOKING_TIME');
+
+  constructor(private readonly env: EnvService) {}
+
   async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
     const isValidation = await this.checkValidation(dto);
     if (!isValidation) {

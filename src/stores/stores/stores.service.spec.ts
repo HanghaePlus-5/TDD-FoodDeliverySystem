@@ -1,17 +1,17 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { EnvService } from 'src/config/env.service';
 
 import { StoresService } from './stores.service';
 import { StoreCreateDto } from '../dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
+  let envService: EnvService;
 
-  const MIN_COOKING_TIME: number = parseInt(
-    process.env.MIN_COOKING_TIME || '5',
-  );
-  const MAX_COOKING_TIME: number = parseInt(
-    process.env.MAX_COOKING_TIME || '120',
-  );
+  const MIN_COOKING_TIME = 5;
+  const MAX_COOKING_TIME = 120;
 
   const sampleCreateStoreDto: StoreCreateDto = {
     name: '커피커피',
@@ -29,10 +29,12 @@ describe('StoresService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StoresService],
+      imports: [ConfigModule.forRoot()],
+      providers: [StoresService, EnvService],
     }).compile();
 
     storesService = module.get<StoresService>(StoresService);
+    envService = module.get<EnvService>(EnvService);
   });
 
   it('should be defined', () => {

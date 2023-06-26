@@ -15,4 +15,9 @@ export default () => ({
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
 
+  /**
+   * Stores Business Logic
+   */
+  MIN_COOKING_TIME: process.env.MIN_COOKING_TIME,
+  MAX_COOKING_TIME: process.env.MAX_COOKING_TIME,
 });
