@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { EnvService } from 'src/config/env';
 import { is } from 'typia';
 
 @Injectable()
 export class JwtAuthService {
   constructor(
     private readonly jwt: JwtService,
-    private readonly env: EnvService,
   ) {}
 
-  async createAccessToken(user) {
+  async createAccessToken(user: User) {
     const payload = this.createUserPayload(user);
     if (!is<UserPayload>(payload)) {
       return null;

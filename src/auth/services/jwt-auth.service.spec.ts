@@ -48,7 +48,7 @@ describe('AuthService', () => {
         type: 'broken',
       }
 
-      const result = await service.createAccessToken(brokenUser);
+      const result = await service.createAccessToken(brokenUser as User);
 
       expect(result).toBe(null);
     });
