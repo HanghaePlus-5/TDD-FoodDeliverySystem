@@ -26,6 +26,7 @@ export class EnvService {
         this.logger.error(`Env variable ${key} is undefined`);
         return key;
       }
+      return null;
     }).filter(Boolean);
 
     if (missingKeys.length > 0) {
