@@ -1,7 +1,11 @@
-import { BadRequestException, Body, Controller, InternalServerErrorException, Post } from '@nestjs/common';
+import {
+  BadRequestException, Body, Controller, Get, InternalServerErrorException, Post,
+} from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { FormDto, OptionsDto } from './dto';
 import { is } from 'typia';
+
+import { FormDto, OptionsDto } from './dto';
+import { EnvService } from '../config/env';
 
 interface Response {
   age: number;
@@ -9,7 +13,10 @@ interface Response {
 }
 
 @Controller('typia')
-export class TypiaController {
+export class ExampleController {
+  constructor(
+    private readonly env: EnvService,
+  ) {}
 
   @TypedRoute.Post('/example/1')
   async useNestia(
@@ -34,12 +41,18 @@ export class TypiaController {
     const response = {
       age: form.age,
       options: form.options,
-    }
+    };
 
     if (!is<Response>(response)) {
       throw new InternalServerErrorException('Invalid response');
     }
 
     return response;
+  }
+
+  @Get('/example/3')
+  envExample() {
+    const database = this.env.get<string>('DATABASE_URL');
+    return database;
   }
 }
