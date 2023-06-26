@@ -29,4 +29,8 @@ export class JwtAuthService {
       type: user.type,
     };
   }
+
+  async verifyAccessToken(token) {
+    return true;
+  }
 }
