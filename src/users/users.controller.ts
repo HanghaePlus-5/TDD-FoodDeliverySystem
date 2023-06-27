@@ -6,6 +6,7 @@ import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { UserCreateDto } from './dto';
 import { UsersService } from './users.service';
+import { UserSignDto } from './dto/user-sign.dto';
 
 @Controller('users')
 export class UsersController {
@@ -27,7 +28,7 @@ export class UsersController {
     return createResponse<User>(createdUser);
   }
 
-  async signin(form) {
+  async signin(form: UserSignDto) {
     const user = this.usersService.findUserByEmailAndPassword(form);
     if (!is<User>(user)) {
       throw new BadRequestException();
