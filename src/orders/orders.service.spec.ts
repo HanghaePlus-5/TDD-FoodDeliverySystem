@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OrdersService } from './orders.service';
+
 import { CustomOrder } from './orders.entity';
+import { OrdersService } from './orders.service';
 
 describe('OrdersService', () => {
   let service: OrdersService;
-
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,15 +23,11 @@ describe('OrdersService', () => {
         const order1 = new CustomOrder('Junho');
 
         service.addOrder(order1);
-        
+
         const result = service.Orders;
         console.log(service.Orders);
         expect(result).toContain(order1);
       });
-
-    
-
     });
-
   });
 });

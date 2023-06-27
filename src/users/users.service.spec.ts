@@ -40,13 +40,7 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('User Signup', () => {
-    const signupForm = {
-      email: 'test2@delivery.com',
-      name: 'Test Kim',
-      password: 'qwe1234',
-    };
-
+  describe('User Shared Units', () => {
     describe('Check UserType', () => {
       it('should return false if UserType is undefined.', () => {
         const userType = undefined;
@@ -73,6 +67,14 @@ describe('UsersService', () => {
         expect(result).toBe(true);
       });
     });
+  });
+
+  describe('User Signup', () => {
+    const signupForm = {
+      email: 'test2@delivery.com',
+      name: 'Test Kim',
+      password: 'qwe1234',
+    };
 
     describe('Check user duplication', () => {
       it('should return a User if user exists.', async () => {
@@ -122,6 +124,44 @@ describe('UsersService', () => {
         expect(result.userId).toBe(2);
         expect(is<User>(result)).toBe(true);
       });
+    });
+  });
+
+  describe('User Signin', () => {
+    const signinForm = {
+      email: 'test@delivery.com',
+      password: 'qwe1234',
+    };
+
+    describe('Find user from database.', () => {
+      it('should return null if invalid form.', async () => {
+        const form = { email: signinForm.email };
+
+        const result = await service.findUserByEmailAndPassword(form);
+
+        expect(result).toBe(null);
+      });
+
+      it('should return null if no user match.', async () => {
+        mockPrisma.user.findFirst.mockResolvedValueOnce(null);
+
+        const result = await service.findUserByEmailAndPassword(signinForm);
+
+        expect(result).toBe(null);
+      });
+
+      it('should return the User if user match.', async () => {
+        mockPrisma.user.findFirst.mockResolvedValueOnce(testUser);
+
+        const result = await service.findUserByEmailAndPassword(signinForm);
+
+        expect(result).toEqual(testUser);
+      });
+    });
+    describe('Create JWT token.', () => {
+      it.todo('should return null if create fails.');
+      it.todo('should return null if invalid user payload.');
+      it.todo('should return jwt token if create succeeds.');
     });
   });
 });
