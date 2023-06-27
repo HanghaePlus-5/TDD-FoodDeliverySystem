@@ -22,16 +22,24 @@ describe('OrdersService', () => {
       it('should return id value of the created order.', () => {
         const order1 = new CustomOrder('Junho');
 
-        service.addOrder(order1);
-
-        const result = service.Orders;
+        const result = service.addOrder(order1);
         console.log(service.Orders);
-        expect(result).toContain(order1);
+        expect(result).toBe(order1.id);
+        
       });
 
       it('should create an Order that is status of "paymentProcessing"', () => {
-        const order1 = new CustomOrder('Test');
-        expect(order1).toBe(false);
+        let serviceMock = jest.spyOn(service,"processPayment");
+        const order1 = new CustomOrder('Test1');
+        service.addOrder(order1);
+        expect(order1.status).toBe("paymentProcessing");
+      });
+
+      it('should inform payment module by calling processPayment function', () => {
+        let serviceMock = jest.spyOn(service,"processPayment");
+        const order1 = new CustomOrder('Test2');
+        service.addOrder(order1);
+        expect(serviceMock).toHaveBeenCalledWith(order1);
       });
     });
     describe('Order General Validation Check', () => {

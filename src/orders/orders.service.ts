@@ -11,6 +11,11 @@ export class OrdersService {
     }
 
     addOrder(order:CustomOrder) {
+        this.processPayment(order);
         this.Orders.push(order);
+        return order.id
+    }
+    
+    processPayment(order:CustomOrder) {
     }
 }
