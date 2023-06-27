@@ -103,8 +103,10 @@ describe('UsersController', () => {
     };
 
     it('should throw Error if no user found.', async () => {
+      mockPrisma.user.findUnique.mockResolvedValueOnce(null);
       await expect(controller.signin(signinForm)).rejects.toThrowError();
     });
+
     it.todo('should throw Error if failed to create token.');
     it.todo('should return User with "Set-Cookie" header set if success.');
   });

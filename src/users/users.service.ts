@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
-import { bcryptHash } from 'src/lib/bcrypt';
+import { bcryptCompare, bcryptHash } from 'src/lib/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -19,13 +19,18 @@ export class UsersService {
   async findUserByEmailAndPassword(
     { email, password }: Prisma.UserWhereInput,
   ) {
-    if (!email || typeof password !== 'string') return null;
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return null;
+    }
 
-    const where = {
-      email,
-      password: await bcryptHash(password),
-    };
-    return this.prisma.user.findFirst({ where });
+    const where: Prisma.UserWhereUniqueInput = { email };
+    const user = await this.prisma.user.findUnique({ where });
+    if (user === null) {
+      return null;
+    }
+
+    const isPasswordEqual = await bcryptCompare(password, user.password);
+    return isPasswordEqual ? user : null;
   }
 
   async createUser(

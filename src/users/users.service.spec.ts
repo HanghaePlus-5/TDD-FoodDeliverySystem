@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma';
 import { UsersService } from './users.service';
 
 import { UserType } from 'src/types';
+import { bcryptHash } from 'src/lib/bcrypt';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -143,7 +144,7 @@ describe('UsersService', () => {
       });
 
       it('should return null if no user match.', async () => {
-        mockPrisma.user.findFirst.mockResolvedValueOnce(null);
+        mockPrisma.user.findUnique.mockResolvedValueOnce(null);
 
         const result = await service.findUserByEmailAndPassword(signinForm);
 
@@ -151,11 +152,15 @@ describe('UsersService', () => {
       });
 
       it('should return the User if user match.', async () => {
-        mockPrisma.user.findFirst.mockResolvedValueOnce(testUser);
+        const hashedUser = {
+          ...testUser,
+          password: await bcryptHash(testUser.password),
+        }
+        mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
 
         const result = await service.findUserByEmailAndPassword(signinForm);
 
-        expect(result).toEqual(testUser);
+        expect(result).toEqual(hashedUser);
       });
     });
   });
