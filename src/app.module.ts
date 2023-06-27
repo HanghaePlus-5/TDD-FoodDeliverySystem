@@ -6,6 +6,7 @@ import { FavouritesModule } from './favourites/favourites.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { OrdersModule } from './orders/orders.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { PaymentModule } from './payment/payment.module';
 
@@ -13,6 +14,7 @@ import { PaymentModule } from './payment/payment.module';
   imports: [
     CustomConfigModule,
     UsersModule,
+    OrdersModule
     ExampleModule,
     StoresModule,
     ReviewsModule,
