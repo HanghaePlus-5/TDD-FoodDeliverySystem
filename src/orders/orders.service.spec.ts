@@ -3,8 +3,27 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CustomOrder } from './orders.entity';
 import { OrdersService } from './orders.service';
 
+
+import { UserType } from 'src/types';
+
 describe('OrdersService', () => {
   let service: OrdersService;
+
+  const cusomerUser = {
+    userId: 1,
+    email: 'customer1@delivery.com',
+    name: 'Customer Kim',
+    password: 'qwe1234',
+    type: UserType.CUSTOMER,
+  };
+
+  const businessUser = {
+    userId: 2,
+    email: 'business1@delivery.com',
+    name: 'Business Kim',
+    password: 'qwe1234',
+    type: UserType.BUSINESS,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,8 +39,7 @@ describe('OrdersService', () => {
   describe('Order Creation', () => {
     describe('Order Creates normally', () => {
       it('should return id value of the created order.', () => {
-        const order1 = new CustomOrder(1);
-
+        const order1 = new CustomOrder(cusomerUser.userId);
         const result = service.addOrder(order1);
         console.log(service.Orders);
         expect(result).toBe(order1.id);
@@ -30,14 +48,14 @@ describe('OrdersService', () => {
 
       it('should create an Order that is status of "paymentProcessing"', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
-        const order1 = new CustomOrder(1);
+        const order1 = new CustomOrder(cusomerUser.userId);
         service.addOrder(order1);
         expect(order1.status).toBe("paymentProcessing");
       });
 
       it('should inform payment module by calling processPayment function', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
-        const order1 = new CustomOrder(1);
+        const order1 = new CustomOrder(cusomerUser.userId);
         service.addOrder(order1);
         expect(serviceMock).toHaveBeenCalledWith(order1);
       });

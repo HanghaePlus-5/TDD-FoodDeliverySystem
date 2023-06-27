@@ -18,4 +18,12 @@ export class OrdersService {
     
     processPayment(order:CustomOrder) {
     }
+
+    isUserTypeCustomer(user: User): boolean {
+        if (user.type === "BUSINESS"){
+            return false;
+        }
+        return true;
+    }
+    
 }
