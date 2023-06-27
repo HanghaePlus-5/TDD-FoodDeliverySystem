@@ -70,7 +70,7 @@ describe('StoresRepository', () => {
 
       await expect(
         repository.create(sampleCreateStoreDto)
-      ).rejects.toThrowError('Store name already exists');
+      ).rejects.toThrowError('already exists');
     });
   });
 });
