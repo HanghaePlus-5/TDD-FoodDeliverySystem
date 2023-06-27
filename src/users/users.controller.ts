@@ -40,6 +40,11 @@ export class UsersController {
   }
 
   async signin(form) {
+    const user = this.usersService.findUserByEmailAndPassword(form);
+    if (!is<User>(user)) {
+      throw new BadRequestException();
+    }
+    
     return true;
   }
 }
