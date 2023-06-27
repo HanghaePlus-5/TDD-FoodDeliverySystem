@@ -1,13 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CustomOrder } from './orders.entity';
 import { OrdersService } from './orders.service';
 
 
 import { UserType } from 'src/types';
+import { PrismaService } from 'src/prisma';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { PrismaClient } from '@prisma/client';
 
 describe('OrdersService', () => {
   let service: OrdersService;
+  let mockPrisma: DeepMockProxy<PrismaClient>;
 
   const cusomerUser = {
     userId: 1,
@@ -25,12 +28,21 @@ describe('OrdersService', () => {
     type: UserType.BUSINESS,
   };
 
+  
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OrdersService],
-    }).compile();
+      providers: [
+        OrdersService,
+        PrismaService,
+        ],
+    })
+      .overrideProvider(PrismaService)
+      .useValue(mockDeep<PrismaClient>())
+      .compile();
 
     service = module.get<OrdersService>(OrdersService);
+    mockPrisma = module.get(PrismaService);
   });
 
   it('should be defined', () => {
@@ -90,6 +102,7 @@ describe('OrdersService', () => {
         const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
+
       it('should return error if a user tries to make an order while incomplete order exists', () => {
         const order1 = new CustomOrder(cusomerUser.userId)
         console.log(order1);
@@ -98,6 +111,7 @@ describe('OrdersService', () => {
           service.addOrder(order1, cusomerUser);
         }).toThrowError('Only customers are allowed to add orders.');
       });
+
       it('should return false if a user tries to make an order with not enough stock', () => {
         const order1 = new CustomOrder(1);
         expect(order1).toBe(false);

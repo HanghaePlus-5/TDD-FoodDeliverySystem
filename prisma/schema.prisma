@@ -39,6 +39,7 @@ model Menu {
   menuId    Int     @id @default(autoincrement())
   storeId   Int
   store     Store   @relation(fields: [storeId], references: [storeId])
+  orderItem OrderItem[]
 }
 
 model Order {
@@ -51,8 +52,29 @@ model Order {
   payment   Payment @relation(fields: [paymentId], references: [paymentId])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  status    OrderStatus
   review    Review?
+  orderItem  OrderItem[]
+}
+
+enum OrderStatus {
+  PAYMENT_PROCESSING
+  PAYMENT_FAIL
+  ORDER_RECEIVED
+  ORDER_CONFIRMED
+  DELIVERY_STARTED
+  DELIVERED
+  CANCEL_REQUESTED
+  CANCELED
+}
+
+model OrderItem{
+  orderItemId   Int   @id @default(autoincrement())
+  orderId       Int
+  order         Order @relation(fields: [orderId], references: [orderId])
+  quantity      Int
+  menuId        Int     
+  menu          Menu  @relation(fields: [menuId], references: [menuId])
 }
 
 model Payment {
