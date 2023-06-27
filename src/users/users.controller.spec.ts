@@ -3,13 +3,13 @@ import { PrismaClient, UserType } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
 
-import { AuthModule } from 'src/auth/auth.module';
-import { bcryptHash } from 'src/lib/bcrypt';
 import { PrismaService } from 'src/prisma';
+import { AuthModule } from 'src/auth/auth.module';
+import { JwtAuthService } from 'src/auth/services';
+import { bcryptHash } from 'src/lib/bcrypt';
 
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { JwtAuthService } from 'src/auth/services';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -117,9 +117,9 @@ describe('UsersController', () => {
       const hashedUser = {
         ...testUser,
         password: await bcryptHash(testUser.password),
-      }
+      };
       mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
-      mockJwt.createAccessToken = jest.fn(() => Promise.reject());
+      mockJwt.createAccessToken = jest.fn(() => Promise.resolve(null));
 
       await expect(controller.signin(signinForm)).rejects.toThrowError();
     });

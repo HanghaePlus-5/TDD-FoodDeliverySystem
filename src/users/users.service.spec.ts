@@ -4,11 +4,11 @@ import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
 
 import { PrismaService } from 'src/prisma';
+import { bcryptHash } from 'src/lib/bcrypt';
 
 import { UsersService } from './users.service';
 
 import { UserType } from 'src/types';
-import { bcryptHash } from 'src/lib/bcrypt';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -155,7 +155,7 @@ describe('UsersService', () => {
         const hashedUser = {
           ...testUser,
           password: await bcryptHash(testUser.password),
-        }
+        };
         mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
 
         const result = await service.findUserByEmailAndPassword(signinForm);

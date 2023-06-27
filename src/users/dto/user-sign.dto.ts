@@ -1,3 +1,3 @@
 import { UserDto } from './user.dto';
 
-export interface UserSignDto extends Pick<UserDto, 'email'|'password'> {}
+export type UserSignDto = Pick<UserDto, 'email'|'password'>

@@ -1,4 +1,4 @@
-import { BadRequestException, Controller } from '@nestjs/common';
+import { BadRequestException, Controller, InternalServerErrorException } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
@@ -6,8 +6,8 @@ import { JwtAuthService } from 'src/auth/services';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { UserCreateDto } from './dto';
-import { UsersService } from './users.service';
 import { UserSignDto } from './dto/user-sign.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -36,7 +36,11 @@ export class UsersController {
       throw new BadRequestException();
     }
 
+    const accessToken = await this.jwt.createAccessToken(user);
+    if (accessToken === null) {
+      throw new InternalServerErrorException();
+    }
+
     return true;
   }
-
 }
