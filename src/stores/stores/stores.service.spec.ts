@@ -5,9 +5,14 @@ import { EnvService } from 'src/config/env';
 
 import { StoresService } from './stores.service';
 import { StoreCreateDto } from '../dto';
+import { StoresRepository } from './stores.repository';
+import { PrismaService } from 'src/prisma';
+import { mockDeep } from 'jest-mock-extended';
+import { PrismaClient } from '@prisma/client';
 
 describe('StoresService', () => {
   let storesService: StoresService;
+  let storesReposiroty: StoresRepository;
   let envService: EnvService;
 
   const MIN_COOKING_TIME = 5;
@@ -30,10 +35,14 @@ describe('StoresService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
-      providers: [StoresService, EnvService],
-    }).compile();
+      providers: [StoresService, StoresRepository, EnvService, PrismaService],
+    })
+    .overrideProvider(PrismaService)
+    .useValue(mockDeep<PrismaClient>())
+    .compile();
 
     storesService = module.get<StoresService>(StoresService);
+    storesReposiroty = module.get<StoresRepository>(StoresRepository);
     envService = module.get<EnvService>(EnvService);
   });
 
@@ -45,7 +54,7 @@ describe('StoresService', () => {
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(
         storesService,
-        'checkValidation' as any,
+        'checkValidation' as any
       );
       mockCheckValidation.mockResolvedValue(false);
 
@@ -58,7 +67,7 @@ describe('StoresService', () => {
     it('should check store business number', async () => {
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
-        'checkBusinessNumber' as any,
+        'checkBusinessNumber' as any
       );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
@@ -68,9 +77,15 @@ describe('StoresService', () => {
       expect(mockCheckBusinessNumber).toHaveBeenCalled();
     });
 
-    it('should check store duplication', () => {});
+    it('should delegate Store creation to repository', () => {
+      const mockcreate = jest.spyOn(storesReposiroty, 'create' as any);
+      mockcreate.mockResolvedValue(true);
 
-    it('should delegate Store creation to repository', () => {});
+      const result = storesService.createStore(1, sampleCreateStoreDto);
+      expect(result).resolves.toBe(true);
+
+      expect(mockcreate).toHaveBeenCalled();
+    });
   });
 
   describe('checkValidation', () => {
@@ -137,7 +152,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(
-        await storesService.checkValidationCaller(sampleCreateStoreDto),
+        await storesService.checkValidationCaller(sampleCreateStoreDto)
       ).toBe(true);
     });
   });
