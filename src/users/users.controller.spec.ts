@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, UserType } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
 
@@ -7,8 +7,6 @@ import { PrismaService } from 'src/prisma';
 
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-
-import { UserType } from 'src/types';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -47,13 +45,18 @@ describe('UsersController', () => {
       email: 'test1@delivery.com',
       name: 'Test Kim',
       password: 'qwe1234',
+      type: UserType.CUSTOMER,
     };
     const userTypes = Object.values(UserType);
 
     it('should throw Error if invalid user type.', async () => {
       // THIS WILL BE TESTED IN E2E LEVEL
-      // const result = controller.signup(signupForm, { type: 'invalid' });
-      // await expect(result).rejects.toThrowError();
+      // const formCopy = {
+      //   ...signupForm,
+      //   type: 'invalid' as UserType
+      // };
+      // console.log(validate<UserCreateDto>(formCopy));
+      // await expect(controller.signup(formCopy)).rejects.toThrowError();
     });
 
     it('should throw Error if undefined user type.', async () => {
@@ -66,7 +69,7 @@ describe('UsersController', () => {
       const type = userTypes[Math.floor(Math.random() * userTypes.length)];
       mockPrisma.user.findUnique.mockResolvedValueOnce(testUser);
 
-      const result = controller.signup(signupForm, { type });
+      const result = controller.signup(signupForm);
 
       await expect(result).rejects.toThrowError();
     });
@@ -76,7 +79,7 @@ describe('UsersController', () => {
       mockPrisma.user.findUnique.mockResolvedValueOnce(null);
       mockPrisma.user.create.mockRejectedValueOnce(new Error());
 
-      const result = controller.signup(signupForm, { type });
+      const result = controller.signup(signupForm);
 
       await expect(result).rejects.toThrowError();
     });
@@ -86,7 +89,7 @@ describe('UsersController', () => {
       mockPrisma.user.findUnique.mockResolvedValueOnce(null);
       mockPrisma.user.create.mockResolvedValueOnce(testUser);
 
-      const { result, data } = await controller.signup(signupForm, { type });
+      const { result, data } = await controller.signup(signupForm);
 
       expect(result).toBe(true);
       expect(is<User>(data)).toBe(true);
