@@ -1,5 +1,6 @@
 import { BadRequestException, Controller, InternalServerErrorException } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
+import { Response } from 'express';
 import { is } from 'typia';
 
 import { JwtAuthService } from 'src/auth/services';
@@ -30,7 +31,10 @@ export class UsersController {
     return createResponse<User>(createdUser);
   }
 
-  async signin(form: UserSignDto) {
+  async signin(
+    form: UserSignDto,
+    res: Response,
+  ) {
     const user = await this.usersService.findUserByEmailAndPassword(form);
     if (!is<User>(user)) {
       throw new BadRequestException();

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Response } from 'express';
 import { PrismaClient, UserType } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
@@ -108,9 +109,11 @@ describe('UsersController', () => {
       password: 'qwe1234',
     };
 
+    const mockRes = {} as Response;
+
     it('should throw Error if no user found.', async () => {
       mockPrisma.user.findUnique.mockResolvedValueOnce(null);
-      await expect(controller.signin(signinForm)).rejects.toThrowError();
+      await expect(controller.signin(signinForm, mockRes)).rejects.toThrowError();
     });
 
     it('should throw Error if failed to create token.', async () => {
@@ -121,8 +124,23 @@ describe('UsersController', () => {
       mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
       mockJwt.createAccessToken = jest.fn(() => Promise.resolve(null));
 
-      await expect(controller.signin(signinForm)).rejects.toThrowError();
+      await expect(controller.signin(signinForm, mockRes)).rejects.toThrowError();
     });
-    it.todo('should return User with "Set-Cookie" header set if success.');
+
+    it('should return User with "Set-Cookie" header set if success.', async () => {
+      const hashedUser = {
+        ...testUser,
+        password: await bcryptHash(testUser.password),
+      };
+      mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
+      mockJwt.createAccessToken = jest.fn(() => Promise.resolve('token'));
+      mockRes.cookie = jest.fn();
+
+      const result: any = await controller.signin(signinForm, mockRes);
+
+      expect(mockRes.cookie).toBeCalledWith('accessToken', 'token');
+      expect(mockRes.headersSent).toHaveProperty('Set-Cookie');
+      expect(is<User>(result.data)).toBe(true);
+    });
   });
 });
