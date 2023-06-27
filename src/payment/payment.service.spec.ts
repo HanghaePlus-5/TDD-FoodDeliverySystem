@@ -13,6 +13,7 @@ import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.s
 
 describe('PaymentService', () => {
   let service: PaymentService;
+  let pgService : PaymentGatewayService;
   let mockPrisma: DeepMockProxy<PrismaClient>;
 
   beforeEach(async () => {
@@ -22,6 +23,8 @@ describe('PaymentService', () => {
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
       .compile();
+
+    pgService = module.get<PaymentGatewayService>(PaymentGatewayService);
     service = module.get<PaymentService>(PaymentService);
     mockPrisma = module.get(PrismaService);
 
@@ -59,16 +62,18 @@ describe('PaymentService', () => {
         expect(service.validateCardNumber(cardNumber)).toBe(false);
       });
     });
-    // describe('paymentRequest to PG', () => {
-    //   it('should throw error if failed', () => {
-    //     const mock = { ...paymentCreateDto, cardNumber: '1111-1111-1111-1111' };
-    //     expect(() => service.sendPaymentRequestToPG(mock)).toThrow(BadRequestException);
-    //   });
-    //   it('should return ACCEPTED if successful', () => {
-    //     const mock = { ...paymentCreateDto, cardNumber: '1111-1111-1111-1112' };
-    //     expect(service.sendPaymentRequestToPG(mock)).toBe(HttpStatus.ACCEPTED);
-    //   });
-    // });
+    describe('paymentRequest to PG', () => {
+      it('should throw error if failed', async () => {
+        const mock = { ...paymentCreateDto, cardNumber: '1111-1111-1111-1111' };
+        const result = await pgService.sendPaymentRequestToPG(mock)
+        expect(result.status).toBe(HttpStatus.BAD_REQUEST);
+      });
+      it('should return ACCEPTED if successful', async () => {
+        const mock = { ...paymentCreateDto, cardNumber: '1111-1111-1111-1112' };
+        const result = await pgService.sendPaymentRequestToPG(mock)
+        expect(result.status).toBe(HttpStatus.ACCEPTED);
+      });
+    });
   });
 
   describe('cancelRequest to PG', () => {
