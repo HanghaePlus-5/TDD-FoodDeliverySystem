@@ -95,6 +95,7 @@ model Payment {
   cardExpiryYear Int
   cardHolderName String
   cardNumber String
+  paymentGatewayId String
 
   order     Order?
 }
