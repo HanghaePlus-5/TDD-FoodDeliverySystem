@@ -1,13 +1,13 @@
 export class CustomOrder {
     static lastOrderId = 0;
     id: number = CustomOrder.lastOrderId;
-    customerName: string;
+    userId: number;
     status: string;
 
-    constructor(customerName: string) {
+    constructor(userId: number) {
         CustomOrder.lastOrderId++;
         this.id = this.id;
-        this.customerName = customerName;
+        this.userId = userId;
         this.status = "paymentProcessing"
     }
 }

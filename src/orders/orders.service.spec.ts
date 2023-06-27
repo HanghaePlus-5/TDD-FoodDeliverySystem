@@ -20,7 +20,7 @@ describe('OrdersService', () => {
   describe('Order Creation', () => {
     describe('Order Creates normally', () => {
       it('should return id value of the created order.', () => {
-        const order1 = new CustomOrder('Junho');
+        const order1 = new CustomOrder(1);
 
         const result = service.addOrder(order1);
         console.log(service.Orders);
@@ -30,48 +30,48 @@ describe('OrdersService', () => {
 
       it('should create an Order that is status of "paymentProcessing"', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
-        const order1 = new CustomOrder('Test1');
+        const order1 = new CustomOrder(1);
         service.addOrder(order1);
         expect(order1.status).toBe("paymentProcessing");
       });
 
       it('should inform payment module by calling processPayment function', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
-        const order1 = new CustomOrder('Test2');
+        const order1 = new CustomOrder(1);
         service.addOrder(order1);
         expect(serviceMock).toHaveBeenCalledWith(order1);
       });
     });
     describe('Order General Validation Check', () => {
       it('should return false if business ueser tries to make an order', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
       it('should return false if a user tries to make an order from a non-existing store', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
       it('should return false if a user tries to make an order of a non-existing item', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
 
     });
     describe('Order Business Validation Check', () => {
       it('should return false if a user tries to make an order of more than 10 item', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
       it('should return false if a user tries to make an order of 0 item', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
       it('should return false if a user tries to make an order while incomplete order exists', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
       it('should return false if a user tries to make an order with not enough stock', () => {
-        const order1 = new CustomOrder('Test');
+        const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
     });
