@@ -32,7 +32,7 @@ describe('StoresRepository', () => {
     storeId: 1,
     name: '커피커피',
     type: 'CAFE',
-    status: 'OPEN',
+    status: 'REGISTERED',
     businessNumber: '783-86-01715',
     phoneNumber: '02-1234-1234',
     postalNumber: '06210',
@@ -53,11 +53,17 @@ describe('StoresRepository', () => {
       providers: [StoresService, StoresRepository, EnvService, PrismaService],
     })
       .overrideProvider(PrismaService)
-      .useValue(mockDeep<PrismaService>())
+      .useValue(mockDeep<PrismaClient>())
       .compile();
     repository = module.get<StoresRepository>(StoresRepository);
     mockPrisma = module.get(PrismaService);
+
+    await mockPrisma.$connect();
   });
+
+  afterEach(async () => {
+    await mockPrisma.$disconnect();
+  })
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
@@ -72,5 +78,12 @@ describe('StoresRepository', () => {
         repository.create(sampleCreateStoreDto)
       ).rejects.toThrowError('already exists');
     });
+
+    it('should create a store', async () => {
+      const createdStore = await repository.create(sampleCreateStoreDto);
+      const savedStore = await repository.findOne(sampleStoreDto);
+
+      expect(createdStore).toEqual(savedStore);
+    })
   });
 });

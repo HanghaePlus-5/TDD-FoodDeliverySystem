@@ -15,9 +15,12 @@ export class StoresRepository {
     if (isDuplication) {
       throw new Error('already exists');
     }
+
+    const storeDto = new Object() as StoreDto;
+    return storeDto;
   }
 
-  async findOne(dto: any): Promise<StoreDto> {
+  async findOne(dto: any): Promise<StoreDto | null> {
     const storeDto = new Object() as StoreDto;
     return storeDto;
   }
