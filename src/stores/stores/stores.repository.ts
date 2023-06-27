@@ -6,5 +6,7 @@ import { PrismaService } from 'src/prisma';
 export class StoresRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: any) {}
+  async create(dto: any) {
+
+  }
 }

@@ -1,14 +1,14 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaClient } from '@prisma/client';
+import { mockDeep } from 'jest-mock-extended';
 
+import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
 
+import { StoresRepository } from './stores.repository';
 import { StoresService } from './stores.service';
 import { StoreCreateDto } from '../dto';
-import { StoresRepository } from './stores.repository';
-import { PrismaService } from 'src/prisma';
-import { mockDeep } from 'jest-mock-extended';
-import { PrismaClient } from '@prisma/client';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -54,7 +54,7 @@ describe('StoresService', () => {
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(
         storesService,
-        'checkValidation' as any
+        'checkValidation' as any,
       );
       mockCheckValidation.mockResolvedValue(false);
 
@@ -67,7 +67,7 @@ describe('StoresService', () => {
     it('should check store business number', async () => {
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
-        'checkBusinessNumber' as any
+        'checkBusinessNumber' as any,
       );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
@@ -77,14 +77,14 @@ describe('StoresService', () => {
       expect(mockCheckBusinessNumber).toHaveBeenCalled();
     });
 
-    it('should delegate Store creation to repository', () => {
-      const mockcreate = jest.spyOn(storesReposiroty, 'create' as any);
-      mockcreate.mockResolvedValue(true);
+    it('should delegate Store creation to repository', async () => {
+      const mockcreate = jest.spyOn(storesReposiroty, 'create');
+      mockcreate.mockResolvedValue();
 
-      const result = storesService.createStore(1, sampleCreateStoreDto);
-      expect(result).resolves.toBe(true);
+      const result = await storesService.createStore(1, sampleCreateStoreDto);
+      expect(result).toBe(true);
 
-      expect(mockcreate).toHaveBeenCalled();
+      expect(mockcreate).toHaveBeenCalledWith(sampleCreateStoreDto);
     });
   });
 
@@ -152,7 +152,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(
-        await storesService.checkValidationCaller(sampleCreateStoreDto)
+        await storesService.checkValidationCaller(sampleCreateStoreDto),
       ).toBe(true);
     });
   });

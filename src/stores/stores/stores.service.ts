@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { EnvService } from 'src/config/env';
 
+import { StoresRepository } from './stores.repository';
 import { StoreCreateDto, StoreDuplicationDto } from '../dto';
 
 @Injectable()
@@ -10,7 +11,10 @@ export class StoresService {
   private readonly MIN_COOKING_TIME = this.env.get<number>('MIN_COOKING_TIME');
   private readonly MAX_COOKING_TIME = this.env.get<number>('MAX_COOKING_TIME');
 
-  constructor(private readonly env: EnvService) {}
+  constructor(
+    private readonly env: EnvService,
+    private readonly storesRepository: StoresRepository,
+  ) {}
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
     const isValidation = await this.checkValidation(dto);
@@ -22,6 +26,8 @@ export class StoresService {
     if (!isBusinessNumber) {
       return false;
     }
+
+    await this.storesRepository.create(dto);
 
     return true;
   }
