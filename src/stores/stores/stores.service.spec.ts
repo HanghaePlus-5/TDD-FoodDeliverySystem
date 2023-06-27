@@ -45,7 +45,7 @@ describe('StoresService', () => {
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(
         storesService,
-        'checkValidation' as any
+        'checkValidation' as any,
       );
       mockCheckValidation.mockResolvedValue(false);
 
@@ -58,7 +58,7 @@ describe('StoresService', () => {
     it('should check store business number', async () => {
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
-        'checkBusinessNumber' as any
+        'checkBusinessNumber' as any,
       );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
@@ -137,7 +137,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(
-        await storesService.checkValidationCaller(sampleCreateStoreDto)
+        await storesService.checkValidationCaller(sampleCreateStoreDto),
       ).toBe(true);
     });
   });
