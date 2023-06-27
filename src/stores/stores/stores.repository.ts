@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma';
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
+import { storeToDtoMap } from '../mapper/stores.mapper';
 
 @Injectable()
 export class StoresRepository {
@@ -26,6 +27,9 @@ export class StoresRepository {
         ...dto,
       },
     });
-    return storeDto;
+    if (!storeDto) {
+      return null;
+    }
+    return storeToDtoMap(storeDto);
   }
 }
