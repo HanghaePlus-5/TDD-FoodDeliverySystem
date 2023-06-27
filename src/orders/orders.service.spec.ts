@@ -40,7 +40,7 @@ describe('OrdersService', () => {
     describe('Order Creates normally', () => {
       it('should return id value of the created order.', () => {
         const order1 = new CustomOrder(cusomerUser.userId);
-        const result = service.addOrder(order1);
+        const result = service.addOrder(order1,cusomerUser);
         console.log(service.Orders);
         expect(result).toBe(order1.id);
         
@@ -49,21 +49,24 @@ describe('OrdersService', () => {
       it('should create an Order that is status of "paymentProcessing"', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
         const order1 = new CustomOrder(cusomerUser.userId);
-        service.addOrder(order1);
+        service.addOrder(order1,cusomerUser);
         expect(order1.status).toBe("paymentProcessing");
       });
 
       it('should inform payment module by calling processPayment function', () => {
         let serviceMock = jest.spyOn(service,"processPayment");
         const order1 = new CustomOrder(cusomerUser.userId);
-        service.addOrder(order1);
+        service.addOrder(order1,cusomerUser);
         expect(serviceMock).toHaveBeenCalledWith(order1);
       });
     });
     describe('Order General Validation Check', () => {
       it('should return false if business ueser tries to make an order', () => {
-        const order1 = new CustomOrder(1);
-        expect(order1).toBe(false);
+        const order1 = new CustomOrder(businessUser.userId);
+        expect(() => {
+          service.addOrder(order1, businessUser);
+        }).toThrowError('Only customers are allowed to add orders.');
+        
       });
       it('should return false if a user tries to make an order from a non-existing store', () => {
         const order1 = new CustomOrder(1);

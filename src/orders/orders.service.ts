@@ -10,9 +10,13 @@ export class OrdersService {
         this.Orders = [];
     }
 
-    addOrder(order:CustomOrder) {
+    addOrder(order:CustomOrder, user: User): number {
+        if (!this.isUserTypeCustomer(user)) {
+            throw new Error('Only customers are allowed to add orders.');
+          }
         this.processPayment(order);
         this.Orders.push(order);
+        
         return order.id
     }
     
