@@ -12,7 +12,7 @@ import { OrdersModule } from './orders/orders.module';
   imports: [
     CustomConfigModule,
     UsersModule,
-    OrdersModule
+    OrdersModule,
     ExampleModule,
     StoresModule,
     ReviewsModule,
