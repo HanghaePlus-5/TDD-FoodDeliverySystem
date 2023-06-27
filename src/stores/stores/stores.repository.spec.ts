@@ -63,7 +63,7 @@ describe('StoresRepository', () => {
 
   afterEach(async () => {
     await mockPrisma.$disconnect();
-  })
+  });
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
@@ -84,6 +84,21 @@ describe('StoresRepository', () => {
       const savedStore = await repository.findOne(sampleStoreDto);
 
       expect(createdStore).toEqual(savedStore);
-    })
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return null if there is no store', async () => {
+      const store = await repository.findOne({ name: 'NO_STORE!' });
+
+      expect(store).toEqual(null);
+    });
+
+    it('should return a store if there is a store', async () => {
+      const createdStore = await repository.create(sampleCreateStoreDto);
+      const store = await repository.findOne({ name: createdStore.name });
+
+      expect(store).toEqual(createdStore);
+    });
   });
 });
