@@ -1,4 +1,9 @@
-import { BadRequestException, Controller, InternalServerErrorException } from '@nestjs/common';
+import {
+  Controller,
+  Res,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { Response } from 'express';
 import { is } from 'typia';
@@ -31,10 +36,11 @@ export class UsersController {
     return createResponse<User>(createdUser);
   }
 
+  @TypedRoute.Post('/signin')
   async signin(
-    form: UserSignDto,
-    res: Response,
-  ) {
+    @TypedBody() form: UserSignDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ResponseForm<User>> {
     const user = await this.usersService.findUserByEmailAndPassword(form);
     if (!is<User>(user)) {
       throw new BadRequestException();
