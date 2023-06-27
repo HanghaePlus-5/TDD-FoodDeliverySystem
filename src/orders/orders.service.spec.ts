@@ -61,16 +61,19 @@ describe('OrdersService', () => {
       });
     });
     describe('Order General Validation Check', () => {
-      it('should return false if business ueser tries to make an order', () => {
+      it('should return error if business ueser tries to make an order', () => {
         const order1 = new CustomOrder(businessUser.userId);
         expect(() => {
           service.addOrder(order1, businessUser);
         }).toThrowError('Only customers are allowed to add orders.');
-        
+
       });
-      it('should return false if a user tries to make an order from a non-existing store', () => {
-        const order1 = new CustomOrder(1);
-        expect(order1).toBe(false);
+      it('should return error if a user tries to make an order from a non-existing store', () => {
+        const order1 = new CustomOrder(businessUser.userId)
+        expect(() => {
+          service.addOrder(order1, businessUser);
+        }).toThrowError('Only customers are allowed to add orders.');
+
       });
       it('should return false if a user tries to make an order of a non-existing item', () => {
         const order1 = new CustomOrder(1);
@@ -87,9 +90,13 @@ describe('OrdersService', () => {
         const order1 = new CustomOrder(1);
         expect(order1).toBe(false);
       });
-      it('should return false if a user tries to make an order while incomplete order exists', () => {
-        const order1 = new CustomOrder(1);
-        expect(order1).toBe(false);
+      it('should return error if a user tries to make an order while incomplete order exists', () => {
+        const order1 = new CustomOrder(cusomerUser.userId)
+        console.log(order1);
+        console.log(service.Orders);
+        expect(() => {
+          service.addOrder(order1, cusomerUser);
+        }).toThrowError('Only customers are allowed to add orders.');
       });
       it('should return false if a user tries to make an order with not enough stock', () => {
         const order1 = new CustomOrder(1);

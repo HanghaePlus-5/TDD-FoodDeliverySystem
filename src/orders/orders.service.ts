@@ -14,6 +14,9 @@ export class OrdersService {
         if (!this.isUserTypeCustomer(user)) {
             throw new Error('Only customers are allowed to add orders.');
           }
+        if(this.userHasOngoingOrder(user)){
+            throw new Error('User already has an ongoing order.');
+        }
         this.processPayment(order);
         this.Orders.push(order);
         
@@ -28,6 +31,9 @@ export class OrdersService {
             return false;
         }
         return true;
+    }
+    userHasOngoingOrder(user: User): boolean {
+        return this.Orders.some(order => order.userId === user.userId);
     }
     
 }
