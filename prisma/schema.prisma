@@ -45,14 +45,14 @@ model Menu {
 model Order {
   orderId   Int     @id @default(autoincrement())
   userId    Int
-  user      User    @relation(fields: [userId], references: [userId])
+  user      User?    @relation(fields: [userId], references: [userId])
   storeId   Int
-  store     Store   @relation(fields: [storeId], references: [storeId])
+  store     Store?   @relation(fields: [storeId], references: [storeId])
   paymentId Int     @unique
-  payment   Payment @relation(fields: [paymentId], references: [paymentId])
+  payment   Payment? @relation(fields: [paymentId], references: [paymentId])
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  status    OrderStatus
+  updatedAt DateTime? @updatedAt
+  status    OrderStatus @default(PAYMENT_PROCESSING)
   review    Review?
   orderItem  OrderItem[]
 }

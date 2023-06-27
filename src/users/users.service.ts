@@ -17,7 +17,7 @@ export class UsersService {
 
   async createUser(
     form: Prisma.UserCreateInput,
-  ) {
+  ): Promise<User> {
     const data = {
       ...form,
       password: await bcryptHash(form.password),
