@@ -9,18 +9,20 @@ import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { PaymentModule } from './payment/payment.module';
+import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.module';
 
 @Module({
   imports: [
     CustomConfigModule,
     UsersModule,
-    OrdersModule
+    OrdersModule,
     ExampleModule,
     StoresModule,
     ReviewsModule,
     FavouritesModule,
     PaymentModule,
-    DeliveryModule
+    DeliveryModule,
+    PaymentGatewayModule
   ],
   controllers: [],
   providers: [],

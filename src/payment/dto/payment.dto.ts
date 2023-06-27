@@ -1,4 +1,3 @@
-import { type } from 'os';
 
 export interface PaymentDto {
     /**
@@ -36,4 +35,9 @@ export interface PaymentDto {
      * CardIssuer
      */
     cardIssuer: string;
+
+    /**
+     * PaymentGatewayId
+     */
+    paymentGatewayId: string;
 }
