@@ -92,4 +92,10 @@ describe('UsersController', () => {
       expect(is<User>(data)).toBe(true);
     });
   });
+
+  describe('signin', () => {
+    it.todo('should throw Error if no user found.');
+    it.todo('should throw Error if failed to create token.');
+    it.todo('should return User with "Set-Cookie" header set if success.');
+  });
 });
