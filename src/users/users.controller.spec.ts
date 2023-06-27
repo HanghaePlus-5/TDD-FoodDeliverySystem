@@ -127,7 +127,7 @@ describe('UsersController', () => {
       await expect(controller.signin(signinForm, mockRes)).rejects.toThrowError();
     });
 
-    it('should return User with "Set-Cookie" header set if success.', async () => {
+    it('should return User with res.cookie called if success.', async () => {
       const hashedUser = {
         ...testUser,
         password: await bcryptHash(testUser.password),
@@ -138,8 +138,7 @@ describe('UsersController', () => {
 
       const result: any = await controller.signin(signinForm, mockRes);
 
-      expect(mockRes.cookie).toBeCalledWith('accessToken', 'token');
-      expect(mockRes.headersSent).toHaveProperty('Set-Cookie');
+      expect(mockRes.cookie).toBeCalledWith('accessToken', 'token', { maxAge: 1000 * 60 * 60 });
       expect(is<User>(result.data)).toBe(true);
     });
   });

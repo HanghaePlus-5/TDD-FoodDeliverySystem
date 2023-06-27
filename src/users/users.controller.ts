@@ -45,6 +45,8 @@ export class UsersController {
       throw new InternalServerErrorException();
     }
 
-    return true;
+    res.cookie('accessToken', accessToken, { maxAge: 1000 * 60 * 60 });
+
+    return createResponse<User>(user);
   }
 }
