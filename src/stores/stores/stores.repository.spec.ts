@@ -12,7 +12,7 @@ import { StoreCreateDto, StoreDto } from '../dto';
 
 describe('StoresRepository', () => {
   let repository: StoresRepository;
-  let mockPrisma: DeepMockProxy<PrismaClient>;
+  let Prisma: PrismaClient;
 
   const sampleCreateStoreDto: StoreCreateDto = {
     name: '커피커피',
@@ -51,18 +51,15 @@ describe('StoresRepository', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
       providers: [StoresService, StoresRepository, EnvService, PrismaService],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(mockDeep<PrismaClient>())
-      .compile();
+    }).compile();
     repository = module.get<StoresRepository>(StoresRepository);
-    mockPrisma = module.get(PrismaService);
+    Prisma = module.get(PrismaService);
 
-    await mockPrisma.$connect();
+    await Prisma.$connect();
   });
 
   afterEach(async () => {
-    await mockPrisma.$disconnect();
+    await Prisma.$disconnect();
   });
 
   it('should be defined', () => {
@@ -81,7 +78,7 @@ describe('StoresRepository', () => {
 
     it('should create a store', async () => {
       const createdStore = await repository.create(sampleCreateStoreDto);
-      const savedStore = await repository.findOne(sampleStoreDto);
+      const savedStore = await repository.findOne({ name: createdStore.name });
 
       expect(createdStore).toEqual(savedStore);
     });
