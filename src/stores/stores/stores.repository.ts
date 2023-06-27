@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma';
-import { StoreCreateDto, StoreDto } from '../dto';
+import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 
 @Injectable()
 export class StoresRepository {
@@ -20,8 +20,12 @@ export class StoresRepository {
     return storeDto;
   }
 
-  async findOne(dto: any): Promise<StoreDto | null> {
-    const storeDto = new Object() as StoreDto;
+  async findOne(dto: StoreOptionalDto): Promise<StoreDto | null> {
+    const storeDto = await this.prisma.store.findFirst({
+      where: {
+        ...dto,
+      },
+    });
     return storeDto;
   }
 }
