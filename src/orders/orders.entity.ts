@@ -5,7 +5,7 @@ export class CustomOrder {
 
     constructor(customerName: string) {
         CustomOrder.lastOrderId++;
-        this.id = this.id
+        this.id = this.id;
         this.customerName = customerName;
     }
 }
