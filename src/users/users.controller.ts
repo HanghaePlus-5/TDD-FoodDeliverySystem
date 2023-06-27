@@ -9,15 +9,17 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+  ) {}
 
   @TypedRoute.Post('/signup')
   async signup(
     @TypedBody() form: UserCreateDto,
     @TypedQuery() query: UserCreateQueryDto,
   ) {
-    // TODO: convert usertype to UPPER_CASE
-    if (!is<UserType>(query.type)) {
+    const userType = query.type.toUpperCase();
+    if (!is<UserType>(userType)) {
       throw new BadRequestException();
     }
 
@@ -28,7 +30,7 @@ export class UsersController {
 
     const createdUser = await this.usersService.createUser({
       ...form,
-      type: query.type,
+      type: userType,
     });
     if (!is<User>(createdUser)) {
       throw new InternalServerErrorException();
