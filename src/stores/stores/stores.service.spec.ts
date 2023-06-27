@@ -8,7 +8,7 @@ import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
 import { StoresService } from './stores.service';
-import { StoreCreateDto } from '../dto';
+import { StoreCreateDto, StoreDto } from '../dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -30,6 +30,25 @@ describe('StoresService', () => {
     cookingTime: 10,
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
+  };
+
+  const sampleStoreDto: StoreDto = {
+    storeId: 1,
+    name: '커피커피',
+    type: 'CAFE',
+    status: 'REGISTERED',
+    businessNumber: '783-86-01715',
+    phoneNumber: '02-1234-1234',
+    postalNumber: '06210',
+    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
+    openingTime: 9,
+    closingTime: 22,
+    cookingTime: 10,
+    reviewNumber: 0,
+    averageScore: 0,
+    origin: '커피원두(국내산), 우유(국내산)',
+    description: '코딩이 맛있어요!',
+    registrationDate: new Date(),
   };
 
   beforeEach(async () => {
@@ -79,7 +98,7 @@ describe('StoresService', () => {
 
     it('should delegate Store creation to repository', async () => {
       const mockcreate = jest.spyOn(storesReposiroty, 'create');
-      mockcreate.mockResolvedValue();
+      mockcreate.mockResolvedValue(sampleStoreDto);
 
       const result = await storesService.createStore(1, sampleCreateStoreDto);
       expect(result).toBe(true);
