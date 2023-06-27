@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { StoreStatus } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
+
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
-import { StoreStatus } from '@prisma/client';
 
 @Injectable()
 export class StoresRepository {
@@ -21,7 +22,7 @@ export class StoresRepository {
     const storeDto = await this.prisma.store.create({
       data: {
         ...dto,
-        status: StoreStatus['REGISTERED'],
+        status: StoreStatus.REGISTERED,
       },
     });
     return storeToDtoMap(storeDto);

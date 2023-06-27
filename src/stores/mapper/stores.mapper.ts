@@ -1,4 +1,5 @@
 import { Store } from '@prisma/client';
+
 import { StoreDto } from '../dto';
 
 export function storeToDtoMap(store: Store): StoreDto {

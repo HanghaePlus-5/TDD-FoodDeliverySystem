@@ -72,7 +72,7 @@ describe('StoresRepository', () => {
       mockfindOne.mockResolvedValue(sampleStoreDto);
 
       await expect(
-        repository.create(sampleCreateStoreDto)
+        repository.create(sampleCreateStoreDto),
       ).rejects.toThrowError('already exists');
     });
 
