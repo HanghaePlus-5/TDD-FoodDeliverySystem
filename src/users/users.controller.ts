@@ -2,6 +2,7 @@ import { BadRequestException, Controller } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
+import { JwtAuthService } from 'src/auth/services';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { UserCreateDto } from './dto';
@@ -12,6 +13,7 @@ import { UserSignDto } from './dto/user-sign.dto';
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
+    private readonly jwt: JwtAuthService,
   ) {}
 
   @TypedRoute.Post('/signup')
@@ -29,7 +31,7 @@ export class UsersController {
   }
 
   async signin(form: UserSignDto) {
-    const user = this.usersService.findUserByEmailAndPassword(form);
+    const user = await this.usersService.findUserByEmailAndPassword(form);
     if (!is<User>(user)) {
       throw new BadRequestException();
     }

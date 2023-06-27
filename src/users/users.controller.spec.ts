@@ -3,14 +3,18 @@ import { PrismaClient, UserType } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
 
+import { AuthModule } from 'src/auth/auth.module';
+import { bcryptHash } from 'src/lib/bcrypt';
 import { PrismaService } from 'src/prisma';
 
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { JwtAuthService } from 'src/auth/services';
 
 describe('UsersController', () => {
   let controller: UsersController;
   let mockPrisma: DeepMockProxy<PrismaClient>;
+  let mockJwt: JwtAuthService;
 
   const testUser = {
     userId: 1,
@@ -22,6 +26,7 @@ describe('UsersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [AuthModule],
       controllers: [UsersController],
       providers: [
         UsersService,
@@ -34,6 +39,7 @@ describe('UsersController', () => {
 
     controller = module.get<UsersController>(UsersController);
     mockPrisma = module.get(PrismaService);
+    mockJwt = module.get(JwtAuthService);
   });
 
   it('should be defined', () => {
@@ -107,7 +113,16 @@ describe('UsersController', () => {
       await expect(controller.signin(signinForm)).rejects.toThrowError();
     });
 
-    it.todo('should throw Error if failed to create token.');
+    it('should throw Error if failed to create token.', async () => {
+      const hashedUser = {
+        ...testUser,
+        password: await bcryptHash(testUser.password),
+      }
+      mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
+      mockJwt.createAccessToken = jest.fn(() => Promise.reject());
+
+      await expect(controller.signin(signinForm)).rejects.toThrowError();
+    });
     it.todo('should return User with "Set-Cookie" header set if success.');
   });
 });

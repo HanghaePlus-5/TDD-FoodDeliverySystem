@@ -23,6 +23,9 @@ import { JwtAuthService } from './services';
     })
   ],
   providers: [UserTypeGuard, JwtAuthService],
-  exports: [UserTypeGuard],
+  exports: [
+    UserTypeGuard,
+    JwtAuthService,
+  ],
   })
 export class AuthModule {}
