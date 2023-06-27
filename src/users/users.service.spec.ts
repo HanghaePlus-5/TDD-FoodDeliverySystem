@@ -158,10 +158,5 @@ describe('UsersService', () => {
         expect(result).toEqual(testUser);
       });
     });
-    describe('Create JWT token.', () => {
-      it.todo('should return null if create fails.');
-      it.todo('should return null if invalid user payload.');
-      it.todo('should return jwt token if create succeeds.');
-    });
   });
 });
