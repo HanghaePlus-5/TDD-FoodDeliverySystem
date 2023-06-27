@@ -16,6 +16,7 @@ export class UsersController {
     @TypedBody() form: UserCreateDto,
     @TypedQuery() query: UserCreateQueryDto,
   ) {
+    // TODO: convert usertype to UPPER_CASE
     if (!is<UserType>(query.type)) {
       throw new BadRequestException();
     }
@@ -34,5 +35,9 @@ export class UsersController {
     }
 
     return createResponse<User>(createdUser);
+  }
+
+  async signin(form) {
+    return true;
   }
 }

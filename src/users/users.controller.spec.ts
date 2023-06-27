@@ -94,7 +94,14 @@ describe('UsersController', () => {
   });
 
   describe('signin', () => {
-    it.todo('should throw Error if no user found.');
+    const signinForm = {
+      email: 'test@delivery.com',
+      password: 'qwe1234',
+    };
+
+    it('should throw Error if no user found.', async () => {
+      await expect(controller.signin(signinForm)).rejects.toThrowError();
+    });
     it.todo('should throw Error if failed to create token.');
     it.todo('should return User with "Set-Cookie" header set if success.');
   });
