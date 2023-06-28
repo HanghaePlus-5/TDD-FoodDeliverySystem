@@ -37,29 +37,27 @@ export class StoresService {
     return await this.storesRepository.create(storeOptionalDto);
   }
 
-  async updateStore(userId: number, dto: StoreUpdateDto): Promise<boolean> {
+  async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {
     const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
     const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {
-      return false;
+      throw new Error('Store not owned.');
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
       ['REGISTERED', 'OPEN', 'CLOSED']
     );
     if (!isStoreStatusGroup) {
-      return false;
+      throw new Error('Store status is not allowed.');
     }
 
     const storeOptionalDto: StoreOptionalDto = { ...isStore, ...dto };
     const isValidation = await this.checkValidation(storeOptionalDto);
     if (!isValidation) {
-      return false;
+      throw new Error('Validation failed.');
     }
 
-    await this.storesRepository.update(storeOptionalDto);
-
-    return true;
+    return await this.storesRepository.update(storeOptionalDto);
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {

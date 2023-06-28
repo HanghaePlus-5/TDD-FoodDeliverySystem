@@ -220,8 +220,9 @@ describe('StoresService', () => {
       );
       mockCheckStoreOwned.mockResolvedValue(null);
 
-      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
-      expect(result).toBe(false);
+      await expect(
+        storesService.updateStore(1, sampleUpdateStoreDto)
+      ).rejects.toThrowError('Store not owned.');
 
       expect(mockCheckStoreOwned).toHaveBeenCalledWith({
         storeId: 1,
@@ -242,8 +243,9 @@ describe('StoresService', () => {
       );
       mockCheckStoreStatusGroup.mockResolvedValue(false);
 
-      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
-      expect(result).toBe(false);
+      await expect(
+        storesService.updateStore(1, sampleUpdateStoreDto)
+      ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', [
         'REGISTERED',
@@ -271,8 +273,9 @@ describe('StoresService', () => {
       );
       mockCheckValidation.mockResolvedValue(false);
 
-      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
-      expect(result).toBe(false);
+      await expect(
+        storesService.updateStore(1, sampleUpdateStoreDto)
+      ).rejects.toThrowError('Validation failed.');
 
       expect(mockCheckValidation).toHaveBeenCalled();
     });
@@ -300,7 +303,7 @@ describe('StoresService', () => {
       mockUpdate.mockResolvedValue(sampleStoreDto);
 
       const result = await storesService.updateStore(1, sampleUpdateStoreDto);
-      expect(result).toBe(true);
+      expect(result).toBe(sampleStoreDto);
 
       expect(mockUpdate).toHaveBeenCalled();
     });
