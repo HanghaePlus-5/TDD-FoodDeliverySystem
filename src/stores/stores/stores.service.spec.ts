@@ -9,6 +9,7 @@ import { EnvService } from 'src/config/env';
 import { StoresRepository } from './stores.repository';
 import { StoresService } from './stores.service';
 import { StoreCreateDto, StoreDto } from '../dto';
+import { StoreUpdateDto } from '../dto/store-update.dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -31,6 +32,21 @@ describe('StoresService', () => {
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
     userId: 1,
+  };
+
+  const sampleUpdateStoreDto: StoreUpdateDto = {
+    storeId: 1,
+    userId: 1,
+    name: '커피커피',
+    type: 'CAFE',
+    phoneNumber: '02-1234-1234',
+    postalNumber: '06210',
+    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
+    openingTime: 9,
+    closingTime: 22,
+    cookingTime: 10,
+    origin: '커피원두(국내산), 우유(국내산)',
+    description: '코딩이 맛있어요!',
   };
 
   const sampleStoreDto: StoreDto = {
@@ -58,9 +74,9 @@ describe('StoresService', () => {
       imports: [ConfigModule.forRoot()],
       providers: [StoresService, StoresRepository, EnvService, PrismaService],
     })
-    .overrideProvider(PrismaService)
-    .useValue(mockDeep<PrismaClient>())
-    .compile();
+      .overrideProvider(PrismaService)
+      .useValue(mockDeep<PrismaClient>())
+      .compile();
 
     storesService = module.get<StoresService>(StoresService);
     storesReposiroty = module.get<StoresRepository>(StoresRepository);
@@ -75,7 +91,7 @@ describe('StoresService', () => {
     it('should checkValidation', async () => {
       const mockCheckValidation = jest.spyOn(
         storesService,
-        'checkValidation' as any,
+        'checkValidation' as any
       );
       mockCheckValidation.mockResolvedValue(false);
 
@@ -88,7 +104,7 @@ describe('StoresService', () => {
     it('should check store business number', async () => {
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
-        'checkBusinessNumber' as any,
+        'checkBusinessNumber' as any
       );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
@@ -173,7 +189,7 @@ describe('StoresService', () => {
 
     it('should pass validation', async () => {
       expect(
-        await storesService.checkValidationCaller(sampleCreateStoreDto),
+        await storesService.checkValidationCaller(sampleCreateStoreDto)
       ).toBe(true);
     });
   });
@@ -187,6 +203,18 @@ describe('StoresService', () => {
     it('should return true if business number is valid', async () => {
       const dto = '783-86-01715';
       expect(await storesService.checkBusinessNumberCaller(dto)).toBe(true);
+    });
+  });
+
+  describe('updateStore', () => {
+    it('should find store by userId & storeId', async () => {
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(sampleStoreDto);
+
+      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
+      expect(result).toBe(true);
+
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
     });
   });
 });
