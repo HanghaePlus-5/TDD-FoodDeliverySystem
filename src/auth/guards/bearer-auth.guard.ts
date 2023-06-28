@@ -25,11 +25,10 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
       throw new UnauthorizedException();
     }
 
-    const userType = this.reflector.get<UserType[]>('userType', context.getHandler());
-    if (userType === undefined) return true;
-    if (userPayload.type !== userType[0]) {
+    const isValidUser = this.checkUserType(context, userPayload);
+    if (!isValidUser) {
       throw new UnauthorizedException();
-    }    
+    }
 
     super.canActivate(context);
     return true;
@@ -40,6 +39,14 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
+  }
+
+  private checkUserType(context: ExecutionContext, userPayload: UserPayload) {
+    const userType = this.reflector.get<UserType[]>('userType', context.getHandler());
+    return !!((
+      userType === undefined
+      || userPayload.type === userType[0]
+    ));
   }
 
   private async verifyToken(context: ExecutionContext) {
