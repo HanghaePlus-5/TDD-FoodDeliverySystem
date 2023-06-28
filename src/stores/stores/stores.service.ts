@@ -59,6 +59,8 @@ export class StoresService {
       return false;
     }
 
+    await this.storesRepository.update(storeOptionalDto);
+
     return true;
   }
 

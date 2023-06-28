@@ -29,6 +29,18 @@ export class StoresRepository {
     return storeToDtoMap(store);
   }
 
+  async update(dto: StoreOptionalDto): Promise<StoreDto> {
+    const store = await this.prisma.store.update({
+      where: {
+        storeId: dto.storeId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+    return storeToDtoMap(store);
+  }
+
   async findOne(dto: StoreOptionalDto): Promise<StoreDto | null> {
     const store = await this.prisma.store.findFirst({
       where: {

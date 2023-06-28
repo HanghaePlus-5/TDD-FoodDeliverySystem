@@ -274,6 +274,34 @@ describe('StoresService', () => {
 
       expect(mockCheckValidation).toHaveBeenCalled();
     });
+
+    it('should delegate Store update to repository', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockCheckValidation = jest.spyOn(
+        storesService,
+        'checkValidation' as any
+      );
+      mockCheckValidation.mockResolvedValue(true);
+
+      const mockUpdate = jest.spyOn(storesReposiroty, 'update');
+      mockUpdate.mockResolvedValue(sampleStoreDto);
+
+      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
+      expect(result).toBe(true);
+
+      expect(mockUpdate).toHaveBeenCalled();
+    });
   });
 
   describe('checkStoreOwned', () => {
