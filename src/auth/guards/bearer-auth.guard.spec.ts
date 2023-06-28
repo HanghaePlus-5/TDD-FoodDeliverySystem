@@ -18,6 +18,8 @@ describe('AuthGuard', () => {
   };
 
   const createContext = (authorization: string) => ({
+    getHandler: jest.fn(),
+    getClass: jest.fn(),
     switchToHttp: jest.fn(() => ({
       getRequest: jest.fn(() => ({
         headers: { authorization },
@@ -42,6 +44,8 @@ describe('AuthGuard', () => {
     expect(guard).toBeDefined();
     expect(jwt).toBeDefined();
   });
+
+  it.todo('should return true if @IgnoreAuth is used.');
 
   describe('verify access token.', () => {
     it('should return false if no authorization.', async () => {
