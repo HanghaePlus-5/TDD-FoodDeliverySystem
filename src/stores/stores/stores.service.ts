@@ -44,6 +44,14 @@ export class StoresService {
     return true;
   }
 
+  async checkStoreOwned(dto: StoreOwnedDto): Promise<boolean> {
+    const isStore = await this.storesRepository.findOne(dto)
+    if (!isStore) {
+      return false;
+    }
+    return true;
+  }
+
   public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
     return await this.checkValidation(dto);
   }
