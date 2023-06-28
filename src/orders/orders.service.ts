@@ -11,7 +11,7 @@ export class OrdersService {
         private readonly prisma: PrismaService,
     ) {}
     
-    async createOrder( order: Prisma.OrderCreateInput
+    async createOrder( order: Prisma.OrderUncheckedCreateInput
     ){
         const data = order
         console.log("createOrder", order)
