@@ -1,10 +1,12 @@
 import { ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserTypeGuard } from './user-type.guard';
 import { UserType } from 'src/types';
 
 describe('AuthGuard', () => {
   let guard: UserTypeGuard;
+  let reflector: Reflector;
 
   const testUserPayload: UserPayload = {
     userId: 1,
@@ -25,15 +27,18 @@ describe('AuthGuard', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       providers: [
-        UserTypeGuard
+        UserTypeGuard,
+        Reflector,
       ],
     }).compile();
 
     guard = module.get<UserTypeGuard>(UserTypeGuard);
+    reflector = module.get<Reflector>(Reflector);
   });
 
   it('should be defined', () => {
     expect(guard).toBeDefined();
+    expect(reflector).toBeDefined();
   });
 
   describe('check UserPayload.', () => {
