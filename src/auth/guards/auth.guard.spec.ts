@@ -42,7 +42,7 @@ describe('AuthGuard', () => {
   });
 
   describe('verify access token.', () => {
-    it('should return false if no authorization.', () => {
+    it('should return false if no authorization.', async () => {
       const context: ExecutionContext = {
         switchToHttp: jest.fn(() => ({
           getRequest: jest.fn(() => ({
@@ -51,24 +51,24 @@ describe('AuthGuard', () => {
         })),
       } as any;
 
-      const result = guard.canActivate(context);
+      const result = await guard.canActivate(context);
 
       expect(result).toBe(false);
     });
 
-    it('should return false if not bearer auth.', () => {
+    it('should return false if not bearer auth.', async () => {
       const context = createContext('not-bearer');
 
-      const result = guard.canActivate(context);
+      const result = await guard.canActivate(context);
 
       expect(result).toBe(false);
     });
 
-    it('should return false if expired access token.', () => {
-      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce((user: User) => null);
+    it('should return false if expired access token.', async () => {
+      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(null);
       const context = createContext('Bearer expired-token');
 
-      const result = guard.canActivate(context);
+      const result = await guard.canActivate(context);
 
       expect(result).toBe(false);
     });
