@@ -10,8 +10,8 @@ import {
   StoreOptionalDto,
   StoreOwnedDto,
 } from '../dto';
-import { StoreUpdateDto } from '../dto/store-update.dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
+import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
 export class StoresService {
@@ -20,7 +20,7 @@ export class StoresService {
 
   constructor(
     private readonly env: EnvService,
-    private readonly storesRepository: StoresRepository
+    private readonly storesRepository: StoresRepository,
   ) {}
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
@@ -46,7 +46,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED']
+      ['REGISTERED', 'OPEN', 'CLOSED'],
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -69,14 +69,13 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED']
+      ['REGISTERED', 'OPEN', 'CLOSED'],
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
     }
 
-    const isStoreStatusChangeCondition =
-      await this.checkStoreStatusChangeCondition(isStore.status, dto.status);
+    const isStoreStatusChangeCondition = await this.checkStoreStatusChangeCondition(isStore.status, dto.status);
     if (!isStoreStatusChangeCondition) {
       throw new Error('Store status change condition not met.');
     }
@@ -90,7 +89,7 @@ export class StoresService {
 
   async checkStoreStatusGroup(
     status: StoreStatus,
-    type: StoreStatus[]
+    type: StoreStatus[],
   ): Promise<boolean> {
     return type.includes(status);
   }
@@ -101,15 +100,15 @@ export class StoresService {
 
   private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
     if (
-      !dto.name ||
-      !dto.businessNumber ||
-      !dto.phoneNumber ||
-      !dto.postalNumber ||
-      !dto.address ||
-      !dto.openingTime ||
-      !dto.closingTime ||
-      !dto.cookingTime ||
-      !dto.userId
+      !dto.name
+      || !dto.businessNumber
+      || !dto.phoneNumber
+      || !dto.postalNumber
+      || !dto.address
+      || !dto.openingTime
+      || !dto.closingTime
+      || !dto.cookingTime
+      || !dto.userId
     ) {
       return false;
     }
@@ -119,19 +118,19 @@ export class StoresService {
     }
 
     if (
-      dto.name.length === 0 ||
-      dto.businessNumber.length !== 12 ||
-      dto.phoneNumber.length < 11 ||
-      dto.phoneNumber.length > 13 ||
-      dto.postalNumber.length !== 5 ||
-      dto.address.length === 0 ||
-      dto.openingTime > 23 ||
-      dto.openingTime < 0 ||
-      dto.closingTime > 23 ||
-      dto.closingTime < 0 ||
-      dto.cookingTime < this.MIN_COOKING_TIME ||
-      dto.cookingTime > this.MAX_COOKING_TIME ||
-      dto.userId < 1
+      dto.name.length === 0
+      || dto.businessNumber.length !== 12
+      || dto.phoneNumber.length < 11
+      || dto.phoneNumber.length > 13
+      || dto.postalNumber.length !== 5
+      || dto.address.length === 0
+      || dto.openingTime > 23
+      || dto.openingTime < 0
+      || dto.closingTime > 23
+      || dto.closingTime < 0
+      || dto.cookingTime < this.MIN_COOKING_TIME
+      || dto.cookingTime > this.MAX_COOKING_TIME
+      || dto.userId < 1
     ) {
       return false;
     }
@@ -140,7 +139,7 @@ export class StoresService {
   }
 
   public async checkBusinessNumberCaller(
-    BusinessNumber: string
+    BusinessNumber: string,
   ): Promise<boolean> {
     return await this.checkBusinessNumber(BusinessNumber);
   }
@@ -153,7 +152,7 @@ export class StoresService {
 
     try {
       const BUSINESS_NUMBER_CHECK_API_KEY = this.env.get<string>(
-        'BUSINESS_NUMBER_CHECK_API_KEY'
+        'BUSINESS_NUMBER_CHECK_API_KEY',
       );
       const response = await axios.post(
         `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${BUSINESS_NUMBER_CHECK_API_KEY}`,
@@ -163,7 +162,7 @@ export class StoresService {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-        }
+        },
       );
       if (response.data.data[0].b_stt_cd !== '01') {
         return false;
@@ -177,14 +176,14 @@ export class StoresService {
 
   public async checkStoreStatusChangeConditionCaller(
     fromStatus: StoreStatus,
-    toStatus: StoreStatus
+    toStatus: StoreStatus,
   ): Promise<boolean> {
     return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
   }
 
   private async checkStoreStatusChangeCondition(
     fromStatus: StoreStatus,
-    toStatus: StoreStatus
+    toStatus: StoreStatus,
   ): Promise<boolean> {
     if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
       return true;
@@ -193,8 +192,8 @@ export class StoresService {
       return true;
     }
     if (
-      fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED') &&
-      toStatus === ('TERMINATED' || 'OUT_OF_BUSINESS')
+      fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED')
+      && toStatus === ('TERMINATED' || 'OUT_OF_BUSINESS')
     ) {
       return true;
     }
