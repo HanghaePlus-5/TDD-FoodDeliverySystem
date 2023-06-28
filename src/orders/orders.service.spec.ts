@@ -28,6 +28,26 @@ describe('OrdersService', () => {
     type: UserType.BUSINESS,
   };
 
+  const sampleCreaetOrderDTO1 = {
+    user: {
+      userId: 12345,
+      email: "john@example.com",
+      name: "John Doe",
+      password: "password123",
+      type: "CUSTOMER",
+    },
+    storeId: 67890,
+    orderItem: [
+      {
+        quantity: 2,
+        menuId: 101,
+      },
+      {
+        quantity: 1,
+        menuId: 102,
+      },
+    ],
+  };
   const order1 = {
     userId: 1,
     storeId: 1,
@@ -57,7 +77,7 @@ describe('OrdersService', () => {
     describe('Order Creates normally', () => {
       it('should create an order', () => {
         expect(() => {
-          service.createOrder(order1);
+          service.createOrder(sampleCreaetOrderDTO1);
         }).toThrowError('Method not implemented.');
         // let serviceMock =jest.spyOn(service,"saveOrder")
         // service.createOrder(order1);
