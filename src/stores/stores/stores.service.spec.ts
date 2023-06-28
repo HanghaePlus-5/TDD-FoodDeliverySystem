@@ -35,7 +35,6 @@ describe('StoresService', () => {
 
   const sampleUpdateStoreDto: StoreUpdateDto = {
     storeId: 1,
-    userId: 1,
     name: '커피커피',
     type: 'CAFE',
     phoneNumber: '02-1234-1234',

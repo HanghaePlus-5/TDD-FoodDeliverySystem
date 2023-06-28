@@ -1,6 +1,6 @@
 import { StoreDto } from './store.dto';
 
-export type StoreUpdateDto = Pick<StoreDto, 'storeId' | 'userId'> &
+export type StoreUpdateDto = Pick<StoreDto, 'storeId' > &
   Partial<
     Pick<
       StoreDto,
