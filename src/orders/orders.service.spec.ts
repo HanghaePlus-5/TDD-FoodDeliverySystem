@@ -31,12 +31,8 @@ describe('OrdersService', () => {
   const order1 = {
     userId: 1,
     storeId: 1,
-    paymentId: 1,
+    paymentId: 1
   };
-
-
-
-  
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,83 +53,127 @@ describe('OrdersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('Order Creates normally', () => {
-    it('should return id value of the created order.', async () => {
-      const result = await service.createOrder(order1)
-      console.log(result)
-      expect(result).toBe(order1);
-      
+  describe('Order Creation', () => {
+    describe('Order Creates normally', () => {
+      it('should create an order', () => {
+        let serviceMock =jest.spyOn(service,"saveOrder")
+        service.createOrder(order1);
+        expect(serviceMock).toBeCalledWith(order1);
+      });
+
+      it('should inform payment module by calling processPayment function', () => {
+        let serviceMock = jest.spyOn(service,"processPayment");
+        service.createOrder(order1);
+        expect(serviceMock).toBeCalledWith({order1,orderId:1});
+      });
     });
+    describe('Order General Validation Check', () => {
+      it('should return error if business ueser tries to make an order', () => {
+        const result = service.isUserTypeCustomer(1)
+        expect(result).toBe(false)
+        // expect(() => {
+        //   service.addOrder(order1, businessUser);
+        // }).toThrowError('Only customers are allowed to add orders.');
 
-  // describe('Order Creation', () => {
-  //   describe('Order Creates normally', () => {
-  //     it('should return id value of the created order.', () => {
-  //       const order1 = new CustomOrder(cusomerUser.userId);
-  //       const result = service.addOrder(order1,cusomerUser);
-  //       console.log(service.Orders);
-  //       expect(result).toBe(order1.id);
-        
-  //     });
+      });
+      it('should return error if a user tries to make an order from a non-existing store', () => {
+        const result = service.isValidStore(1)
+        expect(result).toBe(false)
+        // expect(() => {
+        //   service.addOrder(order1, businessUser);
+        // }).toThrowError('Only customers are allowed to add orders.');
 
-  //     it('should create an Order that is status of "paymentProcessing"', () => {
-  //       let serviceMock = jest.spyOn(service,"processPayment");
-  //       const order1 = new CustomOrder(cusomerUser.userId);
-  //       service.addOrder(order1,cusomerUser);
-  //       expect(order1.status).toBe("paymentProcessing");
-  //     });
+      });
+      it('should return false if a user tries to make an order of a non-existing item', () => {
+        const result = service.isValidMenu(1)
+        expect(result).toBe(false)
+      });
 
-  //     it('should inform payment module by calling processPayment function', () => {
-  //       let serviceMock = jest.spyOn(service,"processPayment");
-  //       const order1 = new CustomOrder(cusomerUser.userId);
-  //       service.addOrder(order1,cusomerUser);
-  //       expect(serviceMock).toHaveBeenCalledWith(order1);
-  //     });
-  //   });
-    // describe('Order General Validation Check', () => {
-    //   it('should return error if business ueser tries to make an order', () => {
-    //     const order1 = new CustomOrder(businessUser.userId);
-    //     expect(() => {
-    //       service.addOrder(order1, businessUser);
-    //     }).toThrowError('Only customers are allowed to add orders.');
+    });
+    describe('Order Business Validation Check', () => {
+      it('should return false if a user tries to make an order of more than 10 item', () => {
+        const orderItemList = [
+          {
+            orderId: 1,
+            quantity: 1,
+            menuId: 1,
+          },
+          {
+            orderId: 1,
+            quantity: 2,
+            menuId: 2,
+          },
+          {
+            orderId: 1,
+            quantity: 3,
+            menuId: 3,
+          },
+          {
+            orderId: 1,
+            quantity: 4,
+            menuId: 4,
+          },
+          {
+            orderId: 1,
+            quantity: 5,
+            menuId: 5,
+          },
+          {
+            orderId: 1,
+            quantity: 6,
+            menuId: 6,
+          },
+          {
+            orderId: 1,
+            quantity: 7,
+            menuId: 7,
+          },
+          {
+            orderId: 1,
+            quantity: 8,
+            menuId: 8,
+          },
+          {
+            orderId: 1,
+            quantity: 9,
+            menuId: 9,
+          },
+          {
+            orderId: 1,
+            quantity: 10,
+            menuId: 10,
+          },
+          {
+            orderId: 1,
+            quantity: 11,
+            menuId: 11,
+          },
+        ];
+        const orderItem1 = { 
+          orderId: 1,
+          quantity: 1,
+          menuId: 1,
+        }
+        const result = service.isOrderItemCountInRange(orderItemList)
+        expect(result).toBe(false)
+      });
 
-    //   });
-    //   it('should return error if a user tries to make an order from a non-existing store', () => {
-    //     const order1 = new CustomOrder(businessUser.userId)
-    //     expect(() => {
-    //       service.addOrder(order1, businessUser);
-    //     }).toThrowError('Only customers are allowed to add orders.');
+      it('should return false if a user tries to make an order of 0 item', () => {
+        const orderItem1 = {}
+        const result = service.isOrderItemCountInRange(orderItem1)
+        expect(result).toBe(false)
+      });
 
-    //   });
-    //   it('should return false if a user tries to make an order of a non-existing item', () => {
-    //     const order1 = new CustomOrder(1);
-    //     expect(order1).toBe(false);
-    //   });
+      it('should return error if a user tries to make an order while incomplete order exists', () => {
+        const result = service.hasOngoingOrder(1)
+        expect(result).toBe(false)
+      });
 
-    // });
-    // describe('Order Business Validation Check', () => {
-    //   it('should return false if a user tries to make an order of more than 10 item', () => {
-    //     const order1 = new CustomOrder(1);
-    //     expect(order1).toBe(false);
-    //   });
-    //   it('should return false if a user tries to make an order of 0 item', () => {
-    //     const order1 = new CustomOrder(1);
-    //     expect(order1).toBe(false);
-    //   });
-
-    //   it('should return error if a user tries to make an order while incomplete order exists', () => {
-    //     const order1 = new CustomOrder(cusomerUser.userId)
-    //     console.log(order1);
-    //     console.log(service.Orders);
-    //     expect(() => {
-    //       service.addOrder(order1, cusomerUser);
-    //     }).toThrowError('Only customers are allowed to add orders.');
-    //   });
-
-    //   it('should return false if a user tries to make an order with not enough stock', () => {
-    //     const order1 = new CustomOrder(1);
-    //     expect(order1).toBe(false);
-    //   });
-    // });
+      it('should return false if a user tries to make an order with not enough stock', () => {
+        const result = service.hasOngoingOrder(1)
+        expect(result).toBe(false)
+      });
+    });
 
   });
 });
