@@ -244,12 +244,20 @@ describe('StoresService', () => {
   });
 
   describe('checkStoreStatusGroup', () => {
-    it('should return false if store status is TERMINATED', async () => {
+    it('should return false if store status is not included', async () => {
       const result = await storesService.checkStoreStatusGroup(
         'TERMINATED' as StoreStatus,
         ['OPEN', 'CLOSED'] as StoreStatus[]
       );
       expect(result).toBe(false);
+    });
+
+    it('should return true if store status is included', async () => {
+      const result = await storesService.checkStoreStatusGroup(
+        'OPEN' as StoreStatus,
+        ['OPEN', 'CLOSED'] as StoreStatus[]
+      );
+      expect(result).toBe(true);
     });
   });
 });
