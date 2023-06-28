@@ -211,14 +211,20 @@ describe('StoresService', () => {
   });
 
   describe('updateStore', () => {
-    it('should find store by userId & storeId', async () => {
-      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
-      mockFindOne.mockResolvedValue(sampleStoreDto);
+    it('should exec checkStoreOwned', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
 
       const result = await storesService.updateStore(1, sampleUpdateStoreDto);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
 
-      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
+      expect(mockCheckStoreOwned).toHaveBeenCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
     });
   });
 
@@ -231,7 +237,7 @@ describe('StoresService', () => {
         storeId: 1,
         userId: 1,
       });
-      expect(result).toBe(true);
+      expect(result).toBe(sampleStoreDto);
 
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
     });

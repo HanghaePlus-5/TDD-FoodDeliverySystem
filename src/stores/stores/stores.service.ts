@@ -4,7 +4,7 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreOptionalDto, StoreOwnedDto } from '../dto';
+import { StoreCreateDto, StoreDto, StoreOptionalDto, StoreOwnedDto } from '../dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class StoresService {
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<boolean> {
     const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
-    const isStore = await this.storesRepository.findOne(storeOwnedDto)
+    const isStore = await this.checkStoreOwned(storeOwnedDto)
     if (!isStore) {
       return false;
     }
@@ -44,12 +44,8 @@ export class StoresService {
     return true;
   }
 
-  async checkStoreOwned(dto: StoreOwnedDto): Promise<boolean> {
-    const isStore = await this.storesRepository.findOne(dto)
-    if (!isStore) {
-      return false;
-    }
-    return true;
+  async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
+    return await this.storesRepository.findOne(dto)
   }
 
   public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
