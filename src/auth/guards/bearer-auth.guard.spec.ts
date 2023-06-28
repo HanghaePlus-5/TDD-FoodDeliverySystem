@@ -62,7 +62,8 @@ describe('AuthGuard', () => {
     jwtAuth = module.get<JwtAuthService>(JwtAuthService);
     reflector = module.get<Reflector>(Reflector);
 
-    reflector.getAllAndOverride = jest.fn().mockReturnValue(false);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
+    jest.spyOn(reflector, 'get').mockReturnValue(undefined);
   });
 
   it('should be defined', () => {
@@ -129,12 +130,12 @@ describe('AuthGuard', () => {
     });
   });
 
-  it('should throw Error if invalid UserType.', () => {
+  it('should throw Error if invalid UserType.', async () => {
     jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
     jest.spyOn(reflector, 'get').mockReturnValue([UserType.BUSINESS]);
 
     const context = createContext('Bearer valid-token');
 
-    expect(() => guard.canActivate(context)).toThrowError();
+    await expect(guard.canActivate(context)).rejects.toThrowError();
   });
 });

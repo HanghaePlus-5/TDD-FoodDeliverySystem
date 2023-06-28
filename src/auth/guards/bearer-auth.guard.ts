@@ -20,13 +20,20 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
     const isIgnoreAuth = this.ignoreAuthCheck(context);
     if (isIgnoreAuth) return true;
 
-    const result = await this.verifyToken(context);
-    if (result) {
-      super.canActivate(context);
-      return true;
+    const userPayload = await this.verifyToken(context);
+    if (userPayload === null) {
+      throw new UnauthorizedException();
     }
 
-    throw new UnauthorizedException();
+    const userType = this.reflector.get<UserType[]>('userType', context.getHandler());
+    console.log('userType: ', userType);
+    if (userType === undefined) return true;
+    if (userPayload.type !== userType[0]) {
+      throw new UnauthorizedException();
+    }    
+
+    super.canActivate(context);
+    return true;
   }
 
   private ignoreAuthCheck(context: ExecutionContext) {
@@ -39,15 +46,15 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
   private async verifyToken(context: ExecutionContext) {
     const req: Request = context.switchToHttp().getRequest();
     const { authorization } = req.headers;
-    if (authorization === undefined) return false;
+    if (authorization === undefined) return null;
 
     const [bearer, token] = authorization.split(' ');
-    if (bearer !== 'Bearer') return false;
+    if (bearer !== 'Bearer') return null;
 
     const user = await this.jwt.verifyAccessToken(token);
-    if (!is<UserPayload>(user)) return false;
+    if (!is<UserPayload>(user)) return null;
 
-    return true;
+    return user;
   }
 
   public handleRequest(err: any, user: any, info: undefined|Error) {
