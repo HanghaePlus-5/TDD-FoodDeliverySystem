@@ -128,4 +128,13 @@ describe('AuthGuard', () => {
       expect(result).toBe(true);
     });
   });
+
+  it('should throw Error if invalid UserType.', () => {
+    jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
+    jest.spyOn(reflector, 'get').mockReturnValue([UserType.BUSINESS]);
+
+    const context = createContext('Bearer valid-token');
+
+    expect(() => guard.canActivate(context)).toThrowError();
+  });
 });
