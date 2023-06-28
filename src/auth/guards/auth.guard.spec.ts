@@ -64,7 +64,7 @@ describe('AuthGuard', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false if expired access token.', async () => {
+    it('should return false if invalid access token.', async () => {
       jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(null);
       const context = createContext('Bearer expired-token');
 
@@ -72,8 +72,6 @@ describe('AuthGuard', () => {
 
       expect(result).toBe(false);
     });
-
-    it.todo('should return false if wrong signed access token.');
 
     it.todo('should return false if invalid user payload.');
 
