@@ -18,5 +18,4 @@ export interface StoreDto {
   userId: number;
 }
 
-export type StoreDuplicationDto = Partial<Pick<StoreDto, 'name' | 'businessNumber'>>;
 export type StoreOptionalDto = Partial<StoreDto>;

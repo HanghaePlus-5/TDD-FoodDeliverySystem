@@ -4,7 +4,7 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreDuplicationDto, StoreOptionalDto } from '../dto';
+import { StoreCreateDto, StoreOptionalDto } from '../dto';
 
 @Injectable()
 export class StoresService {
