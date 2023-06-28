@@ -5,6 +5,7 @@ import {
   Body,
   BadRequestException,
   InternalServerErrorException,
+  Req,
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
@@ -73,7 +74,10 @@ export class ExampleController {
 
   @UserTypes(UserType.BUSINESS)
   @Get('/usertype')
-  userTypeExample() {
-    return true;
+  userTypeExample(
+    @Req() req: Express.Request,
+  ) {
+    const user = req.user;
+    return user;
   }
 }
