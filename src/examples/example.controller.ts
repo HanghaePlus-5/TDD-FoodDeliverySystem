@@ -1,9 +1,15 @@
 import {
-  BadRequestException, Body, Controller, Get, InternalServerErrorException, Post,
+  Controller,
+  Get,
+  Post,
+  Body,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
+import { IgnoreAuth } from 'src/auth/decorators';
 import { FormDto, OptionsDto } from './dto';
 import { EnvService } from '../config/env';
 
@@ -12,13 +18,13 @@ interface Response {
   options: OptionsDto;
 }
 
-@Controller('typia')
+@Controller('example')
 export class ExampleController {
   constructor(
     private readonly env: EnvService,
   ) {}
 
-  @TypedRoute.Post('/example/1')
+  @TypedRoute.Post('/nestia')
   async useNestia(
     @TypedBody() form: FormDto,
   ): Promise<Response> {
@@ -30,7 +36,7 @@ export class ExampleController {
     };
   }
 
-  @Post('/example/2')
+  @Post('/typia')
   nouseNestia(
     @Body() form: FormDto,
   ) {
@@ -50,9 +56,15 @@ export class ExampleController {
     return response;
   }
 
-  @Get('/example/3')
+  @Get('/env')
   envExample() {
     const database = this.env.get<string>('DATABASE_URL');
     return database;
+  }
+
+  @IgnoreAuth()
+  @Get('/auth')
+  ignoreAuthExample() {
+    return true;
   }
 }
