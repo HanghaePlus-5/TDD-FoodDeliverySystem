@@ -46,6 +46,7 @@ export class StoresService {
       || !dto.openingTime
       || !dto.closingTime
       || !dto.cookingTime
+      || !dto.userId
     ) {
       return false;
     }
@@ -67,6 +68,7 @@ export class StoresService {
       || dto.closingTime < 0
       || dto.cookingTime < this.MIN_COOKING_TIME
       || dto.cookingTime > this.MAX_COOKING_TIME
+      || dto.userId < 1
     ) {
       return false;
     }

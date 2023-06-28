@@ -30,6 +30,7 @@ describe('StoresService', () => {
     cookingTime: 10,
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
+    userId: 1,
   };
 
   const sampleStoreDto: StoreDto = {
@@ -49,6 +50,7 @@ describe('StoresService', () => {
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
     registrationDate: new Date(),
+    userId: 1,
   };
 
   beforeEach(async () => {

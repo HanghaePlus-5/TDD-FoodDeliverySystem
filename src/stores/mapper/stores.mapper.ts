@@ -20,5 +20,6 @@ export function storeToDtoMap(store: Store): StoreDto {
     origin: store.origin !== null ? store.origin : '',
     description: store.description !== null ? store.description : '',
     registrationDate: store.registrationDate,
+    userId: store.userId !== null ? store.userId : 0,
   };
 }
