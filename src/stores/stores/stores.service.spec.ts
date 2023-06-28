@@ -233,7 +233,7 @@ describe('StoresService', () => {
         'checkStoreOwned' as any
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
-      
+
       const mockCheckStoreStatusGroup = jest.spyOn(
         storesService,
         'checkStoreStatusGroup' as any
@@ -248,6 +248,31 @@ describe('StoresService', () => {
         'OPEN',
         'CLOSED',
       ]);
+    });
+
+    it('should exec checkValidation', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockCheckValidation = jest.spyOn(
+        storesService,
+        'checkValidation' as any
+      );
+      mockCheckValidation.mockResolvedValue(false);
+
+      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
+      expect(result).toBe(false);
+
+      expect(mockCheckValidation).toHaveBeenCalled();
     });
   });
 
