@@ -420,7 +420,36 @@ describe('StoresService', () => {
       );
     });
 
-    it('should change store status and return StoreStatusDto', async () => {});
+    it('should change store status and return StoreStatusDto', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const checkStoreStatusChangeCondition = jest.spyOn(
+        storesService,
+        'checkStoreStatusChangeCondition' as any
+      );
+      checkStoreStatusChangeCondition.mockResolvedValue(true);
+
+      const mockSave = jest.spyOn(storesReposiroty, 'update');
+      mockSave.mockResolvedValue(sampleStoreDto);
+
+      const result = await storesService.changeStoreStatus(1, {
+        storeId: 1,
+        status: 'CLOSED' as StoreStatus,
+      });
+      expect(result).toBe(sampleStoreDto);
+
+      expect(mockSave).toHaveBeenCalled();
+    });
   });
 
   describe('checkStoreStatusChangeCondition', () => {

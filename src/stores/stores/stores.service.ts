@@ -80,6 +80,8 @@ export class StoresService {
     if (!isStoreStatusChangeCondition) {
       throw new Error('Store status change condition not met.');
     }
+
+    return await this.storesRepository.update(dto);
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
