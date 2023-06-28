@@ -11,6 +11,7 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
+import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
 
 @Injectable()
 export class StoresService {
@@ -58,6 +59,14 @@ export class StoresService {
     }
 
     return await this.storesRepository.update(storeOptionalDto);
+  }
+
+  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto) {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+    const isStore = await this.checkStoreOwned(storeOwnedDto);
+    if (!isStore) {
+      throw new Error('Store not owned.');
+    }
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {

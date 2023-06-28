@@ -1,3 +1,4 @@
+import { StoreChangeStatusDto } from './../dto/store-change-status.dto';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
@@ -339,6 +340,28 @@ describe('StoresService', () => {
         ['OPEN', 'CLOSED'] as StoreStatus[]
       );
       expect(result).toBe(true);
+    });
+  });
+
+  describe('changeStoreStatus', () => {
+    it('should throw error if store is not owned', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
+
+      await expect(
+        storesService.changeStoreStatus(1, {
+          storeId: 1,
+          status: 'OPEN' as StoreStatus,
+        })
+      ).rejects.toThrowError('Store not owned.');
+
+      expect(mockCheckStoreOwned).toHaveBeenCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
     });
   });
 });
