@@ -226,6 +226,29 @@ describe('StoresService', () => {
         userId: 1,
       });
     });
+
+    it('should exec checkStoreStatusGroup', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+      
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(false);
+
+      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
+      expect(result).toBe(false);
+
+      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', [
+        'REGISTERED',
+        'OPEN',
+        'CLOSED',
+      ]);
+    });
   });
 
   describe('checkStoreOwned', () => {

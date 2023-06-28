@@ -45,6 +45,13 @@ export class StoresService {
     if (!isStore) {
       return false;
     }
+    const isStoreStatusGroup = await this.checkStoreStatusGroup(
+      isStore.status,
+      ['REGISTERED', 'OPEN', 'CLOSED']
+    );
+    if (!isStoreStatusGroup) {
+      return false;
+    }
 
     return true;
   }
