@@ -1,4 +1,4 @@
-import { PaymentStatus } from "src/types";
+import { PaymentStatus } from 'src/types';
 
 export function validateCardHolder(cardHolderName: string, customerName: string) {
     return cardHolderName === customerName;
@@ -8,5 +8,5 @@ export function validateCardNumber(cardNumber: string) {
     return cardNumber.length === 16;
 }
 export function isCompletedPayment(paymentStatus: PaymentStatus) {
-    return paymentStatus == PaymentStatus.completed
+    return paymentStatus === PaymentStatus.completed;
 }

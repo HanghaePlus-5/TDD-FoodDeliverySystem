@@ -1,4 +1,3 @@
-
 export interface PaymentDto {
     /**
      * Payment PK
