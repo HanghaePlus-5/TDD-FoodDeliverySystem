@@ -4,7 +4,7 @@ export interface OrderDto {
     
     user: User;
     storeId: number;
-    oderItem: OrderItemCreateDto[];
+    orderItem: OrderItemCreateDto[];
     
     orderId: number;
     createdAt: Date;

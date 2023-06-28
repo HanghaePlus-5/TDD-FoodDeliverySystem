@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma';
 import { Prisma, Order} from '@prisma/client';
+import { OrderCreateDto } from './dto/order-create.dto';
+import { OrderItemCreateDto } from './dto/orderItem-create.dto';
 
 
 @Injectable()
@@ -9,29 +11,30 @@ export class OrdersService {
         private readonly prisma: PrismaService,
     ) {}
     
-    async createOrder( order: Prisma.OrderUncheckedCreateInput
+    async createOrder( orderCreateDto: OrderCreateDto
     ){
-        this.isUserTypeCustomer(order.userId);
-        this.isOrderItemCountInRange(order.orderItem);
+        this.isUserTypeCustomer(orderCreateDto.user.userId);
+        this.isOrderItemCountInRange(orderCreateDto.orderItem);
 
-        if (order.orderItem) {
-            if (Array.isArray(order.orderItem)) {
-              for (const orderItem of order.orderItem) {
+        if (orderCreateDto.orderItem) {
+            if (Array.isArray(orderCreateDto.orderItem)) {
+              for (const orderItem of orderCreateDto.orderItem) {
                 this.isValidMenu(orderItem);
+                this.hasEnoughStock(orderItem);
               }
             } else {
-              this.isValidMenu(order.orderItem);
+              this.isValidMenu(orderCreateDto.orderItem);
+              this.hasEnoughStock(orderItem);
             }
           } else {
             new Error()
           }
 
-        this.isValidStore(order.storeId);
-        this.hasEnoughStock(order.orderItem);
-        this.hasOngoingOrder(order.userId);
-        const savedOrder = await this.saveOrder(order);
+        this.isValidStore(orderCreateDto.storeId);
+        this.hasOngoingOrder(orderCreateDto.user.userId);
+        const savedOrder = await this.saveOrder(orderCreateDto);
         const orderId = savedOrder.orderId;
-        const savedOrderItem = await this.saveOrderItem(order.orderItem);
+        const savedOrderItem = await this.saveOrderItem(orderCreateDto.orderItem);
         const processedOrder = { ...savedOrder, orderId } as Order;
         this.processPayment(processedOrder);
         this.alarmStoreInitially(processedOrder);
@@ -54,7 +57,7 @@ export class OrdersService {
     hasOngoingOrder(userId: number) {
         throw new Error('Method not implemented.');
     }
-    hasEnoughStock(orderItem: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput | undefined) {
+    hasEnoughStock(orderItem: OrderItemCreateDto) {
         throw new Error('Method not implemented.');
     }
     isOrderItemCountInRange(orderItem: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput[] | Prisma.OrderItemCreateManyInput[] | Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput | undefined | Prisma.OrderItemCreateManyInput[]) {
