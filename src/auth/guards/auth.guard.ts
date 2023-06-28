@@ -1,8 +1,9 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard as PassportGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { JwtAuthService } from '../services';
 import { is } from 'typia';
+
+import { JwtAuthService } from '../services';
 
 @Injectable()
 export class AuthGuard extends PassportGuard('jwt') {
@@ -14,7 +15,7 @@ export class AuthGuard extends PassportGuard('jwt') {
 
   async canActivate(context: ExecutionContext) {
     const req: Request = context.switchToHttp().getRequest();
-    const authorization = req.headers.authorization;
+    const { authorization } = req.headers;
     if (authorization === undefined) return false;
 
     const [bearer, token] = authorization.split(' ');

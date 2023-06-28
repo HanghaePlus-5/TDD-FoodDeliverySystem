@@ -1,8 +1,10 @@
 import { ExecutionContext } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { AuthGuard } from './auth.guard';
 import { JwtAuthService } from '../services';
+
 import { UserType } from 'src/types';
 
 describe('AuthGuard', () => {
@@ -13,12 +15,12 @@ describe('AuthGuard', () => {
     userId: 1,
     name: 'Test Kim',
     type: UserType.CUSTOMER,
-  }
+  };
 
   const createContext = (authorization: string) => ({
     switchToHttp: jest.fn(() => ({
       getRequest: jest.fn(() => ({
-        headers: { authorization }
+        headers: { authorization },
       })),
     })),
   } as any) as ExecutionContext;
@@ -46,7 +48,7 @@ describe('AuthGuard', () => {
       const context: ExecutionContext = {
         switchToHttp: jest.fn(() => ({
           getRequest: jest.fn(() => ({
-            headers: {}
+            headers: {},
           })),
         })),
       } as any;
