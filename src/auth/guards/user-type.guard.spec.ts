@@ -12,11 +12,11 @@ describe('AuthGuard', () => {
     type: UserType.CUSTOMER,
   };
 
-  const createContext = (users: UserPayload) => ({
+  const createContext = (user: UserPayload) => ({
     getHandler: jest.fn(),
     getClass: jest.fn(),
     switchToHttp: jest.fn(() => ({
-      getRequest: jest.fn(() => ({ users })),
+      getRequest: jest.fn(() => ({ user })),
       getResponse: jest.fn(),
     })),
   } as any) as ExecutionContext;
@@ -38,11 +38,26 @@ describe('AuthGuard', () => {
 
   describe('check UserPayload.', () => {
     it('should throw Error if Request.user is empty.', () => {
-      const context = createContext({} as UserPayload);
+      const context: ExecutionContext = {
+        getHandler: jest.fn(),
+        getClass: jest.fn(),
+        switchToHttp: jest.fn(() => ({
+          getRequest: jest.fn(),
+          getResponse: jest.fn(),
+        })),
+      } as any
       expect(() => guard.canActivate(context)).toThrowError();
     });
 
-    it.todo('should throw Error if invalid UserPayload.');
+    it('should throw Error if invalid UserPayload.', () => {
+      const invalidUserPayload = {
+        userId: '1' as unknown,
+        name: 'Test Kim',
+        type: UserType.BUSINESS,
+      }
+      const context = createContext(invalidUserPayload as UserPayload);
+      expect(() => guard.canActivate(context)).toThrowError();
+    });
 
     it.todo('should return true if valid UserPayload.');
   });
