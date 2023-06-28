@@ -6,7 +6,7 @@ import { is } from 'typia';
 import { JwtAuthService } from '../services';
 
 @Injectable()
-export class AuthGuard extends PassportGuard('jwt') {
+export class BearerAuthGuard extends PassportGuard('jwt') {
   constructor(
     private readonly jwt: JwtAuthService,
   ) {

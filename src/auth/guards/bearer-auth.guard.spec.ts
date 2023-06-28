@@ -2,13 +2,13 @@ import { ExecutionContext } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthGuard } from './auth.guard';
+import { BearerAuthGuard } from './bearer-auth.guard';
 import { JwtAuthService } from '../services';
 
 import { UserType } from 'src/types';
 
 describe('AuthGuard', () => {
-  let guard: AuthGuard;
+  let guard: BearerAuthGuard;
   let jwt: JwtAuthService;
 
   const testUserPayload: UserPayload = {
@@ -28,13 +28,13 @@ describe('AuthGuard', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuthGuard,
+        BearerAuthGuard,
         JwtService,
         JwtAuthService,
       ],
     }).compile();
 
-    guard = module.get<AuthGuard>(AuthGuard);
+    guard = module.get<BearerAuthGuard>(BearerAuthGuard);
     jwt = module.get<JwtAuthService>(JwtAuthService);
   });
 
