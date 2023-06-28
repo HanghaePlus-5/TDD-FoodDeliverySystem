@@ -53,6 +53,12 @@ export class StoresService {
       return false;
     }
 
+    const storeOptionalDto: StoreOptionalDto = { ...isStore, ...dto };
+    const isValidation = await this.checkValidation(storeOptionalDto);
+    if (!isValidation) {
+      return false;
+    }
+
     return true;
   }
 
