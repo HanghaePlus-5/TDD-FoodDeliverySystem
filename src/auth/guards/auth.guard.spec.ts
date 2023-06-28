@@ -86,6 +86,13 @@ describe('AuthGuard', () => {
       expect(result).toBe(false);
     });
 
-    it.todo('should return true if valid access token.');
+    it('should return true if valid access token.', async () => {
+      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(testUserPayload);
+      const context = createContext('Bearer valid-token');
+
+      const result = await guard.canActivate(context);
+
+      expect(result).toBe(true);
+    });
   });
 });
