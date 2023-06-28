@@ -39,7 +39,21 @@ describe('AuthGuard', () => {
       expect(result).toBe(false);
     });
 
-    it.todo('should return false if not bearer auth.');
+    it('should return false if not bearer auth.', () => {
+      const context: ExecutionContext = {
+        switchToHttp: jest.fn(() => ({
+          getRequest: jest.fn(() => ({
+            headers: {
+              authorization: 'not-bearer',
+            }
+          })),
+        })),
+      } as any;
+
+      const result = guard.canActivate(context);
+
+      expect(result).toBe(false);
+    });
 
     it.todo('should return false if expired access token.');
 
