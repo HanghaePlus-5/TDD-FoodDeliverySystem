@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { PrismaClient } from '@prisma/client';
 
+
 describe('OrdersService', () => {
   let service: OrdersService;
   let mockPrisma: DeepMockProxy<PrismaClient>;
@@ -27,6 +28,7 @@ describe('OrdersService', () => {
     password: 'qwe1234',
     type: UserType.BUSINESS,
   };
+
 
   const sampleCreaetOrderDTO1 = {
     user: {
@@ -53,6 +55,7 @@ describe('OrdersService', () => {
     storeId: 1,
     paymentId: 1
   };
+
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -97,6 +100,7 @@ describe('OrdersService', () => {
         // expect(() => {
         //   service.addOrder(order1, businessUser);
         // }).toThrowError('Only customers are allowed to add orders.');
+
 
       });
       it('should return error if a user tries to make an order from a non-existing store', () => {
@@ -196,7 +200,7 @@ describe('OrdersService', () => {
         const result = service.hasOngoingOrder(1)
         expect(result).toBe(false)
       });
-    });
 
+    });
   });
 });

@@ -29,10 +29,42 @@ enum UserType {
 
 model Store {
   storeId   Int     @id @default(autoincrement())
-
+  name      String  @unique
+  type    StoreType
+  status  StoreStatus
+  businessNumber String @unique
+  phoneNumber String
+  postalNumber String
+  address   String
+  openingTime Int
+  closingTime Int
+  cookingTime Int
+  reviewNumber Int @default(0)
+  averageScore Float @default(0)
+  origin  String?
+  description String?
+  registrationDate DateTime @default(now())
   menu      Menu[]
   orders    Order[]
   favourite Favourite[]
+
+  @@index([name, type])
+}
+
+enum StoreType {
+  KOREAN  // 한식
+  CHINESE  // 중식
+  JAPANESE  // 일식
+  WESTERN  // 양식
+  CAFE  // 카페
+}
+
+enum StoreStatus {
+  REGISTERED  // 등록
+  OPEN  // 영업중
+  CLOSED  // 휴무
+  TERMINATED  // 해지
+  OUT_OF_BUSINESS  // 폐업
 }
 
 model Menu {
