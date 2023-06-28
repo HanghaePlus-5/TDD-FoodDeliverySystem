@@ -387,5 +387,37 @@ describe('StoresService', () => {
         'CLOSED',
       ]);
     });
+
+    it('should throw error if not meet status change condition', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockCheckStoreStatusChangeCondition = jest.spyOn(
+        storesService,
+        'checkStoreStatusChangeCondition' as any
+      );
+      mockCheckStoreStatusChangeCondition.mockResolvedValue(false);
+
+      await expect(
+        storesService.changeStoreStatus(1, {
+          storeId: 1,
+          status: 'CLOSED' as StoreStatus,
+        })
+      ).rejects.toThrowError('Not meet status change condition.');
+
+      expect(mockCheckStoreStatusChangeCondition).toHaveBeenCalledWith(
+        'REGISTERED',
+        'CLOSED'
+      );
+    })
   });
 });

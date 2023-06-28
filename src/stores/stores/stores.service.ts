@@ -74,6 +74,12 @@ export class StoresService {
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
     }
+
+    const isStoreStatusChangeCondition =
+      await this.checkStoreStatusChangeCondition(isStore.status, dto.status);
+    if (!isStoreStatusChangeCondition) {
+      throw new Error('Not meet status change condition.');
+    }
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
@@ -165,5 +171,31 @@ export class StoresService {
       return false;
     }
     return true;
+  }
+
+  public async checkStoreStatusChangeConditionCaller(
+    fromStatus: StoreStatus,
+    toStatus: StoreStatus
+  ): Promise<boolean> {
+    return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
+  }
+
+  private async checkStoreStatusChangeCondition(
+    fromStatus: StoreStatus,
+    toStatus: StoreStatus
+  ): Promise<boolean> {
+    if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
+      return true;
+    }
+    if (fromStatus === 'OPEN' && toStatus === 'CLOSED') {
+      return true;
+    }
+    if (
+      fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED') &&
+      toStatus === ('TERMINATED' || 'OUT_OF_BUSINESS')
+    ) {
+      return true;
+    }
+    return false;
   }
 }
