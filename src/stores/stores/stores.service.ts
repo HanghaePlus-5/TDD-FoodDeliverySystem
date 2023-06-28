@@ -67,6 +67,13 @@ export class StoresService {
     if (!isStore) {
       throw new Error('Store not owned.');
     }
+    const isStoreStatusGroup = await this.checkStoreStatusGroup(
+      isStore.status,
+      ['REGISTERED', 'OPEN', 'CLOSED']
+    );
+    if (!isStoreStatusGroup) {
+      throw new Error('Store status is not allowed.');
+    }
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {

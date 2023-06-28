@@ -363,5 +363,29 @@ describe('StoresService', () => {
         userId: 1,
       });
     });
+
+    it('should throw error if store status is not allowed', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned' as any
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup' as any
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(false);
+
+      await expect(
+        storesService.updateStore(1, sampleUpdateStoreDto)
+      ).rejects.toThrowError('Store status is not allowed.');
+
+      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', [
+        'REGISTERED',
+        'OPEN',
+        'CLOSED',
+      ]);
+    });
   });
 });
