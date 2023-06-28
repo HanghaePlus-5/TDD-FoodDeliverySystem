@@ -15,6 +15,11 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
 
   async canActivate(context: ExecutionContext) {
     const req: Request = context.switchToHttp().getRequest();
+    
+    return this.verifyToken(req);
+  }
+
+  private async verifyToken(req: Request) {
     const { authorization } = req.headers;
     if (authorization === undefined) return false;
 
