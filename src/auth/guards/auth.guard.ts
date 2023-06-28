@@ -2,6 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard as PassportGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { JwtAuthService } from '../services';
+import { is } from 'typia';
 
 @Injectable()
 export class AuthGuard extends PassportGuard('jwt') {
@@ -20,7 +21,7 @@ export class AuthGuard extends PassportGuard('jwt') {
     if (bearer !== 'Bearer') return false;
 
     const user = await this.jwt.verifyAccessToken(token);
-    if (user === null) return false;
+    if (!is<UserPayload>(user)) return false;
 
     return true;
   }
