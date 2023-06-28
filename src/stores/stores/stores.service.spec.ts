@@ -242,4 +242,14 @@ describe('StoresService', () => {
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
     });
   });
+
+  describe('checkStoreStatusGroup', () => {
+    it('should return false if store status is TERMINATED', async () => {
+      const result = await storesService.checkStoreStatusGroup(
+        'TERMINATED' as StoreStatus,
+        ['OPEN', 'CLOSED'] as StoreStatus[]
+      );
+      expect(result).toBe(false);
+    });
+  });
 });
