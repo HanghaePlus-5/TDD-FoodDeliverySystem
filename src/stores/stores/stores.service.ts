@@ -4,7 +4,8 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreOptionalDto } from '../dto';
+import { StoreCreateDto, StoreOptionalDto, StoreOwnedDto } from '../dto';
+import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
 export class StoresService {
@@ -30,6 +31,16 @@ export class StoresService {
 
     await this.storesRepository.create(storeOptionalDto);
 
+    return true;
+  }
+
+  async updateStore(userId: number, dto: StoreUpdateDto): Promise<boolean> {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+    const isStore = await this.storesRepository.findOne(storeOwnedDto)
+    if (!isStore) {
+      return false;
+    }
+    
     return true;
   }
 

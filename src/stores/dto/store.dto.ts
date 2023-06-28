@@ -19,3 +19,4 @@ export interface StoreDto {
 }
 
 export type StoreOptionalDto = Partial<StoreDto>;
+export type StoreOwnedDto = Pick<StoreDto, 'storeId' | 'userId'>;
