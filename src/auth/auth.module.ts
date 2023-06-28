@@ -7,7 +7,6 @@ import { EnvService } from 'src/config/env';
 import { CustomConfigModule } from 'src/config';
 
 import { BearerAuthGuard } from './guards';
-import { UserTypeGuard } from './guards/user-type.guard';
 import { JwtStrategy } from './passport';
 import { JwtAuthService } from './services';
 
@@ -30,12 +29,10 @@ import { JwtAuthService } from './services';
       provide: APP_GUARD,
       useClass: BearerAuthGuard,
     },
-    UserTypeGuard,
     JwtAuthService,
     JwtStrategy,
   ],
   exports: [
-    UserTypeGuard,
     JwtAuthService,
   ],
 })

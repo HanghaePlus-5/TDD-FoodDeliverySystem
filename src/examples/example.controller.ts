@@ -9,9 +9,12 @@ import {
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
-import { IgnoreAuth } from 'src/auth/decorators';
+import { IgnoreAuth, UserTypes } from 'src/auth/decorators';
+
 import { FormDto, OptionsDto } from './dto';
 import { EnvService } from '../config/env';
+
+import { UserType } from 'src/types';
 
 interface Response {
   age: number;
@@ -65,6 +68,12 @@ export class ExampleController {
   @IgnoreAuth()
   @Get('/auth')
   ignoreAuthExample() {
+    return true;
+  }
+
+  @UserTypes(UserType.BUSINESS)
+  @Get('/usertype')
+  userTypeExample() {
     return true;
   }
 }
