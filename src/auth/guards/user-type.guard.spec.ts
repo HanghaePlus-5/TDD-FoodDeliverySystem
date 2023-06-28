@@ -59,7 +59,10 @@ describe('AuthGuard', () => {
       expect(() => guard.canActivate(context)).toThrowError();
     });
 
-    it.todo('should return true if valid UserPayload.');
+    it('should return true if valid UserPayload.', () => {
+      const context = createContext(testUserPayload);
+      expect(guard.canActivate(context)).toBe(true);
+    });
   });
 
   describe('check UserType.', () => {
