@@ -96,8 +96,13 @@ model Payment {
   cardHolderName String
   cardNumber String
   paymentGatewayId String
+  paymentStatus PaymentStatus
 
   order     Order?
+}
+enum PaymentStatus {
+  completed
+  canceled
 }
 
 model Review {

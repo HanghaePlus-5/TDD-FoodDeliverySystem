@@ -10,6 +10,7 @@ import { PaymentDto } from 'src/payment/dto/payment.dto';
 
 import { PaymentService } from './payment.service';
 import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
+import { PaymentStatus } from 'src/types/payment-status';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -39,7 +40,8 @@ describe('PaymentService', () => {
     cardHolderName: 'michael',
     cardIssuer: 'abc',
     cardNumber: '1111-1111-1111-1121',
-    paymentGatewayId: "1"
+    paymentGatewayId: "1",
+    paymentStatus : PaymentStatus.completed
   };
   const paymentDto = {
     ...paymentCreateDto,
@@ -47,7 +49,7 @@ describe('PaymentService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
   }
-  const orderInfo = {
+  const orderDto = {
     customerName: 'michael',
   };
   describe('send payment request to payment-gateway', () => {
@@ -81,7 +83,7 @@ describe('PaymentService', () => {
       it('should return false if payment data does not exist', async () => {
         mockPrisma.payment.findUnique.mockResolvedValueOnce(null);
         const paymentId = 10;
-        expect(await service.findByPaymentId(paymentId)).toBe(null);
+        await expect(service.cancelPayment(paymentId)).rejects.toThrow();
       });
       it('should return false if payment status is not `payment completed`', () => {
         const paymentStatus = 'payment canceled';

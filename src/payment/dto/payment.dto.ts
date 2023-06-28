@@ -40,4 +40,10 @@ export interface PaymentDto {
      * PaymentGatewayId
      */
     paymentGatewayId: string;
+
+    /**
+     * PaymentStatus
+     * @type 'PAYMENT_COMPLETED' | 'PAYMENT_CANCELED'
+     */
+    paymentStatus: PaymentStatus;
 }

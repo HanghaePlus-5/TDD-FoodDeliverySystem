@@ -53,7 +53,16 @@ export class PaymentService {
 
 
   // cancel request
-  cancelPayment() {
+  async cancelPayment(paymentId : number) {
+
+    const payment = await this.findByPaymentId(paymentId);
+    if(!payment) throw new BadRequestException('payment not exist');
+    
+    
+    
+    //find by payment id
+    //check payment status
+    //update payment 
 
   }
   updatePaymentStatus() {
