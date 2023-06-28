@@ -1,9 +1,16 @@
+import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from './auth.guard';
-import { ExecutionContext } from '@nestjs/common';
+import { UserType } from 'src/types';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
+
+  const testUserPayload: UserPayload = {
+    userId: 1,
+    name: 'Test Kim',
+    type: UserType.CUSTOMER,
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,13 +25,21 @@ describe('AuthGuard', () => {
   });
 
   describe('verify access token.', () => {
-    const context: ExecutionContext = {
-      switchToHttp: jest.fn(() => ({
-        getRequest: jest.fn(),
-      })),
-    } as any;
+    it('should return false if no access token.', () => {
+      const context: ExecutionContext = {
+        switchToHttp: jest.fn(() => ({
+          getRequest: jest.fn(() => ({
+            headers: {
+              authorization: '',
+            }
+          })),
+        })),
+      } as any;
 
-    it.todo('should return false if no access token.');
+      const result = guard.canActivate(context);
+
+      expect(result).toBe(false);
+    });
 
     it.todo('should return false if expired access token.');
 
