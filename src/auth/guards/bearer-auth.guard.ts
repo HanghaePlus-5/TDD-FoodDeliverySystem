@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { is } from 'typia';
 
 import { JwtAuthService } from '../services';
+import { IGNORE_AUTH_KEY } from '../decorators';
 
 @Injectable()
 export class BearerAuthGuard extends PassportGuard('jwt') {
@@ -17,6 +18,12 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
 
   async canActivate(context: ExecutionContext) {
     const req: Request = context.switchToHttp().getRequest();
+
+    const isIgnoreAuth = this.reflector.getAllAndOverride<boolean>(IGNORE_AUTH_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isIgnoreAuth) return true;
     
     return this.verifyToken(req);
   }

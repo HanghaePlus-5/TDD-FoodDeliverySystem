@@ -42,6 +42,7 @@ describe('AuthGuard', () => {
     guard = module.get<BearerAuthGuard>(BearerAuthGuard);
     jwt = module.get<JwtAuthService>(JwtAuthService);
     reflector = module.get<Reflector>(Reflector);
+    reflector.getAllAndOverride = jest.fn().mockReturnValue(false);
   });
 
   it('should be defined', () => {
@@ -60,8 +61,11 @@ describe('AuthGuard', () => {
   });
 
   describe('verify access token.', () => {
+    
     it('should return false if no authorization.', async () => {
       const context: ExecutionContext = {
+        getHandler: jest.fn(),
+        getClass: jest.fn(),
         switchToHttp: jest.fn(() => ({
           getRequest: jest.fn(() => ({
             headers: {},
