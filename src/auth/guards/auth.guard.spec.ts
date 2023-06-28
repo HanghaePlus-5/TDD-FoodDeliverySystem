@@ -66,14 +66,25 @@ describe('AuthGuard', () => {
 
     it('should return false if invalid access token.', async () => {
       jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(null);
-      const context = createContext('Bearer expired-token');
+      const context = createContext('Bearer invalid-token');
 
       const result = await guard.canActivate(context);
 
       expect(result).toBe(false);
     });
 
-    it.todo('should return false if invalid user payload.');
+    it('should return false if invalid user payload.', async () => {
+      const brokenUserPayload = {
+        ...testUserPayload,
+        type: 'broken',
+      };
+      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(brokenUserPayload);
+      const context = createContext('Bearer token-with-invalid-payload');
+
+      const result = await guard.canActivate(context);
+
+      expect(result).toBe(false);
+    });
 
     it.todo('should return true if valid access token.');
   });
