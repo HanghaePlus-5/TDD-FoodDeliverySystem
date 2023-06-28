@@ -4,8 +4,7 @@ export interface PaymentGatewayResponseDto {
     status : HttpStatus
     data : PaymentGatewayData
 }
-
 export interface PaymentGatewayData {
     paymentGatewayId : string
-    message : string
+    status : string
 }
