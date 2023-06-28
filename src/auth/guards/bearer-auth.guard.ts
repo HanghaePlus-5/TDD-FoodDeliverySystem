@@ -1,11 +1,11 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard as PassportGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { is } from 'typia';
 
-import { JwtAuthService } from '../services';
 import { IGNORE_AUTH_KEY } from '../decorators';
+import { JwtAuthService } from '../services';
 
 @Injectable()
 export class BearerAuthGuard extends PassportGuard('jwt') {
@@ -17,15 +17,21 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext) {
-    const req: Request = context.switchToHttp().getRequest();
-
     const isIgnoreAuth = this.reflector.getAllAndOverride<boolean>(IGNORE_AUTH_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
     if (isIgnoreAuth) return true;
-    
-    return this.verifyToken(req);
+
+    const req: Request = context.switchToHttp().getRequest();
+    const result = await this.verifyToken(req);
+
+    if (result) {
+      super.canActivate(context);
+      return true;
+    }
+
+    throw new UnauthorizedException();
   }
 
   private async verifyToken(req: Request) {
@@ -39,5 +45,12 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
     if (!is<UserPayload>(user)) return false;
 
     return true;
+  }
+
+  public handleRequest(err: any, user: any, info: undefined|Error) {
+    // console.log('jwt auth guard handle request', err, user, info);
+    if (err) return null;
+    if (user && info === undefined) return user;
+    return null;
   }
 }

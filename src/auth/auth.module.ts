@@ -6,9 +6,10 @@ import { PassportModule } from '@nestjs/passport';
 import { EnvService } from 'src/config/env';
 import { CustomConfigModule } from 'src/config';
 
-import { UserTypeGuard } from './guards/user-type.guard';
-import { JwtAuthService } from './services';
 import { BearerAuthGuard } from './guards';
+import { UserTypeGuard } from './guards/user-type.guard';
+import { JwtStrategy } from './passport';
+import { JwtAuthService } from './services';
 
 @Module({
   imports: [
@@ -30,11 +31,12 @@ import { BearerAuthGuard } from './guards';
       useClass: BearerAuthGuard,
     },
     UserTypeGuard,
-    JwtAuthService
+    JwtAuthService,
+    JwtStrategy,
   ],
   exports: [
     UserTypeGuard,
     JwtAuthService,
   ],
-  })
+})
 export class AuthModule {}

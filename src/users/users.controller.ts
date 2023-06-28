@@ -8,6 +8,7 @@ import { TypedBody, TypedRoute } from '@nestia/core';
 import { Response } from 'express';
 import { is } from 'typia';
 
+import { IgnoreAuth } from 'src/auth/decorators';
 import { JwtAuthService } from 'src/auth/services';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
@@ -22,6 +23,7 @@ export class UsersController {
     private readonly jwt: JwtAuthService,
   ) {}
 
+  @IgnoreAuth()
   @TypedRoute.Post('/signup')
   async signup(
     @TypedBody() form: UserCreateDto,
@@ -36,6 +38,7 @@ export class UsersController {
     return createResponse<User>(createdUser);
   }
 
+  @IgnoreAuth()
   @TypedRoute.Post('/signin')
   async signin(
     @TypedBody() form: UserSignDto,

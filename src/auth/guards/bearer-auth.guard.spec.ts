@@ -1,16 +1,21 @@
 import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { EnvService } from 'src/config/env';
+import { CustomConfigModule } from 'src/config';
+
 import { BearerAuthGuard } from './bearer-auth.guard';
+import { JwtStrategy } from '../passport';
 import { JwtAuthService } from '../services';
 
 import { UserType } from 'src/types';
 
 describe('AuthGuard', () => {
   let guard: BearerAuthGuard;
-  let jwt: JwtAuthService;
+  let jwtAuth: JwtAuthService;
   let reflector: Reflector;
 
   const testUserPayload: UserPayload = {
@@ -26,28 +31,44 @@ describe('AuthGuard', () => {
       getRequest: jest.fn(() => ({
         headers: { authorization },
       })),
+      getResponse: jest.fn(),
     })),
   } as any) as ExecutionContext;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule.registerAsync({
+          imports: [CustomConfigModule],
+          useFactory: async (env: EnvService) => ({
+            secret: env.get<string>('JWT_SECRET'),
+            signOptions: {
+              expiresIn: env.get<string>('JWT_EXPIRES_IN'),
+            },
+          }),
+          inject: [EnvService],
+        }),
+      ],
       providers: [
         BearerAuthGuard,
-        JwtService,
         JwtAuthService,
+        JwtStrategy,
         Reflector,
       ],
-    }).compile();
+    })
+      .compile();
 
     guard = module.get<BearerAuthGuard>(BearerAuthGuard);
-    jwt = module.get<JwtAuthService>(JwtAuthService);
+    jwtAuth = module.get<JwtAuthService>(JwtAuthService);
     reflector = module.get<Reflector>(Reflector);
+
     reflector.getAllAndOverride = jest.fn().mockReturnValue(false);
   });
 
   it('should be defined', () => {
     expect(guard).toBeDefined();
-    expect(jwt).toBeDefined();
+    expect(jwtAuth).toBeDefined();
     expect(reflector).toBeDefined();
   });
 
@@ -61,8 +82,7 @@ describe('AuthGuard', () => {
   });
 
   describe('verify access token.', () => {
-    
-    it('should return false if no authorization.', async () => {
+    it('should throw Error if no authorization.', async () => {
       const context: ExecutionContext = {
         getHandler: jest.fn(),
         getClass: jest.fn(),
@@ -73,43 +93,35 @@ describe('AuthGuard', () => {
         })),
       } as any;
 
-      const result = await guard.canActivate(context);
-
-      expect(result).toBe(false);
+      await expect(guard.canActivate(context)).rejects.toThrowError();
     });
 
-    it('should return false if not bearer auth.', async () => {
+    it('should throw Error if not bearer auth.', async () => {
       const context = createContext('not-bearer');
 
-      const result = await guard.canActivate(context);
-
-      expect(result).toBe(false);
+      await expect(guard.canActivate(context)).rejects.toThrowError();
     });
 
-    it('should return false if invalid access token.', async () => {
-      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(null);
+    it('should throw Error if invalid access token.', async () => {
+      jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(null);
       const context = createContext('Bearer invalid-token');
 
-      const result = await guard.canActivate(context);
-
-      expect(result).toBe(false);
+      await expect(guard.canActivate(context)).rejects.toThrowError();
     });
 
-    it('should return false if invalid user payload.', async () => {
+    it('should throw Error if invalid user payload.', async () => {
       const brokenUserPayload = {
         ...testUserPayload,
-        type: 'broken',
+        type: 'broken' as UserType,
       };
-      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(brokenUserPayload);
+      jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(brokenUserPayload);
       const context = createContext('Bearer token-with-invalid-payload');
 
-      const result = await guard.canActivate(context);
-
-      expect(result).toBe(false);
+      await expect(guard.canActivate(context)).rejects.toThrowError();
     });
 
     it('should return true if valid access token.', async () => {
-      jwt.verifyAccessToken = jest.fn().mockResolvedValueOnce(testUserPayload);
+      jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
       const context = createContext('Bearer valid-token');
 
       const result = await guard.canActivate(context);
