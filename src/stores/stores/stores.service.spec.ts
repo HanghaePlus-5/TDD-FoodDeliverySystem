@@ -419,5 +419,9 @@ describe('StoresService', () => {
         'CLOSED'
       );
     })
+
+    it('should change store status and return StoreStatusDto', async () => {
+      
+    })
   });
 });
