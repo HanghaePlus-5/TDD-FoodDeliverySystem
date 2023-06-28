@@ -16,9 +16,7 @@ describe('AuthGuard', () => {
     getHandler: jest.fn(),
     getClass: jest.fn(),
     switchToHttp: jest.fn(() => ({
-      getRequest: jest.fn(() => ({
-        users: {},
-      })),
+      getRequest: jest.fn(() => ({ users })),
       getResponse: jest.fn(),
     })),
   } as any) as ExecutionContext;
@@ -39,7 +37,10 @@ describe('AuthGuard', () => {
   });
 
   describe('check UserPayload.', () => {
-    it.todo('should throw Error if Request.user is empty.');
+    it('should throw Error if Request.user is empty.', () => {
+      const context = createContext({} as UserPayload);
+      expect(() => guard.canActivate(context)).toThrowError();
+    });
 
     it.todo('should throw Error if invalid UserPayload.');
 
