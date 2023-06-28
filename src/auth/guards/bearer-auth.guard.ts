@@ -1,4 +1,5 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { AuthGuard as PassportGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { is } from 'typia';
@@ -9,6 +10,7 @@ import { JwtAuthService } from '../services';
 export class BearerAuthGuard extends PassportGuard('jwt') {
   constructor(
     private readonly jwt: JwtAuthService,
+    private readonly reflector: Reflector,
   ) {
     super();
   }

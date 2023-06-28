@@ -1,4 +1,5 @@
 import { ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -10,6 +11,7 @@ import { UserType } from 'src/types';
 describe('AuthGuard', () => {
   let guard: BearerAuthGuard;
   let jwt: JwtAuthService;
+  let reflector: Reflector;
 
   const testUserPayload: UserPayload = {
     userId: 1,
@@ -33,19 +35,29 @@ describe('AuthGuard', () => {
         BearerAuthGuard,
         JwtService,
         JwtAuthService,
+        Reflector,
       ],
     }).compile();
 
     guard = module.get<BearerAuthGuard>(BearerAuthGuard);
     jwt = module.get<JwtAuthService>(JwtAuthService);
+    reflector = module.get<Reflector>(Reflector);
   });
 
   it('should be defined', () => {
     expect(guard).toBeDefined();
     expect(jwt).toBeDefined();
+    expect(reflector).toBeDefined();
   });
 
-  it.todo('should return true if @IgnoreAuth is used.');
+  it('should return true if @IgnoreAuth is used.', async () => {
+    const context = createContext('');
+    reflector.getAllAndOverride = jest.fn().mockReturnValueOnce(true);
+
+    const result = await guard.canActivate(context);
+
+    expect(result).toBe(true);
+  });
 
   describe('verify access token.', () => {
     it('should return false if no authorization.', async () => {
