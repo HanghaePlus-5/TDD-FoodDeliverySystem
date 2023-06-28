@@ -34,6 +34,8 @@ describe('AuthGuard', () => {
 
     guard = module.get<UserTypeGuard>(UserTypeGuard);
     reflector = module.get<Reflector>(Reflector);
+
+    reflector.get = jest.fn();
   });
 
   it('should be defined', () => {
@@ -65,6 +67,7 @@ describe('AuthGuard', () => {
     });
 
     it('should return true if valid UserPayload.', () => {
+      jest.spyOn(reflector, 'get').mockReturnValue([UserType.CUSTOMER]);
       const context = createContext(testUserPayload);
       expect(guard.canActivate(context)).toBe(true);
     });
@@ -72,7 +75,7 @@ describe('AuthGuard', () => {
 
   describe('check UserType.', () => {
     it('should throw Error if invalid UserType.', () => {
-      jest.spyOn(reflector, 'get').mockReturnValueOnce([UserType.BUSINESS]);
+      jest.spyOn(reflector, 'get').mockReturnValue([UserType.BUSINESS]);
       const context = createContext(testUserPayload);
       expect(() => guard.canActivate(context)).toThrowError();
     });

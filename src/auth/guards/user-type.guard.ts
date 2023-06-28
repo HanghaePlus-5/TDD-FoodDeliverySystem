@@ -22,6 +22,12 @@ export class UserTypeGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
+    const userType = this.reflector.get<UserType[]>('userType', context.getHandler());
+    console.log(userType);
+    if (user.type !== userType[0]) {
+      throw new UnauthorizedException();
+    }
+
     return true;
   }
 }

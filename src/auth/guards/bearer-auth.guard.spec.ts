@@ -56,8 +56,7 @@ describe('AuthGuard', () => {
         JwtStrategy,
         Reflector,
       ],
-    })
-      .compile();
+    }).compile();
 
     guard = module.get<BearerAuthGuard>(BearerAuthGuard);
     jwtAuth = module.get<JwtAuthService>(JwtAuthService);
