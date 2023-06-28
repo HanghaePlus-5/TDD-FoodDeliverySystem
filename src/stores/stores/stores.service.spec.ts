@@ -93,8 +93,9 @@ describe('StoresService', () => {
       );
       mockCheckValidation.mockResolvedValue(false);
 
-      const result = await storesService.createStore(1, sampleCreateStoreDto);
-      expect(result).toBe(false);
+      await expect(
+        storesService.createStore(1, sampleCreateStoreDto)
+      ).rejects.toThrowError('Validation failed.');
 
       expect(mockCheckValidation).toHaveBeenCalled();
     });
@@ -106,8 +107,9 @@ describe('StoresService', () => {
       );
       mockCheckBusinessNumber.mockResolvedValue(false);
 
-      const result = await storesService.createStore(1, sampleCreateStoreDto);
-      expect(result).toBe(false);
+      await expect(
+        storesService.createStore(1, sampleCreateStoreDto)
+      ).rejects.toThrowError('Invalid business number.');
 
       expect(mockCheckBusinessNumber).toHaveBeenCalled();
     });
@@ -117,7 +119,7 @@ describe('StoresService', () => {
       mockcreate.mockResolvedValue(sampleStoreDto);
 
       const result = await storesService.createStore(1, sampleCreateStoreDto);
-      expect(result).toBe(true);
+      expect(result).toBe(sampleStoreDto);
 
       expect(mockcreate).toHaveBeenCalledWith({
         ...sampleCreateStoreDto,

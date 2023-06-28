@@ -22,21 +22,19 @@ export class StoresService {
     private readonly storesRepository: StoresRepository
   ) {}
 
-  async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
+  async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
     const storeOptionalDto = { ...dto, userId };
     const isValidation = await this.checkValidation(storeOptionalDto);
     if (!isValidation) {
-      return false;
+      throw new Error('Validation failed.');
     }
 
     const isBusinessNumber = await this.checkBusinessNumber(dto.businessNumber);
     if (!isBusinessNumber) {
-      return false;
+      throw new Error('Invalid business number.');
     }
 
-    await this.storesRepository.create(storeOptionalDto);
-
-    return true;
+    return await this.storesRepository.create(storeOptionalDto);
   }
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<boolean> {
