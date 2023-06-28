@@ -4,7 +4,12 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreDto, StoreOptionalDto, StoreOwnedDto } from '../dto';
+import {
+  StoreCreateDto,
+  StoreDto,
+  StoreOptionalDto,
+  StoreOwnedDto,
+} from '../dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
@@ -14,7 +19,7 @@ export class StoresService {
 
   constructor(
     private readonly env: EnvService,
-    private readonly storesRepository: StoresRepository,
+    private readonly storesRepository: StoresRepository
   ) {}
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
@@ -36,16 +41,23 @@ export class StoresService {
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<boolean> {
     const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
-    const isStore = await this.checkStoreOwned(storeOwnedDto)
+    const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {
       return false;
     }
-    
+
     return true;
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
-    return await this.storesRepository.findOne(dto)
+    return await this.storesRepository.findOne(dto);
+  }
+
+  async checkStoreStatusGroup(
+    status: StoreStatus,
+    type: StoreStatus[]
+  ): Promise<boolean> {
+    return type.includes(status);
   }
 
   public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
@@ -54,15 +66,15 @@ export class StoresService {
 
   private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
     if (
-      !dto.name
-      || !dto.businessNumber
-      || !dto.phoneNumber
-      || !dto.postalNumber
-      || !dto.address
-      || !dto.openingTime
-      || !dto.closingTime
-      || !dto.cookingTime
-      || !dto.userId
+      !dto.name ||
+      !dto.businessNumber ||
+      !dto.phoneNumber ||
+      !dto.postalNumber ||
+      !dto.address ||
+      !dto.openingTime ||
+      !dto.closingTime ||
+      !dto.cookingTime ||
+      !dto.userId
     ) {
       return false;
     }
@@ -72,19 +84,19 @@ export class StoresService {
     }
 
     if (
-      dto.name.length === 0
-      || dto.businessNumber.length !== 12
-      || dto.phoneNumber.length < 11
-      || dto.phoneNumber.length > 13
-      || dto.postalNumber.length !== 5
-      || dto.address.length === 0
-      || dto.openingTime > 23
-      || dto.openingTime < 0
-      || dto.closingTime > 23
-      || dto.closingTime < 0
-      || dto.cookingTime < this.MIN_COOKING_TIME
-      || dto.cookingTime > this.MAX_COOKING_TIME
-      || dto.userId < 1
+      dto.name.length === 0 ||
+      dto.businessNumber.length !== 12 ||
+      dto.phoneNumber.length < 11 ||
+      dto.phoneNumber.length > 13 ||
+      dto.postalNumber.length !== 5 ||
+      dto.address.length === 0 ||
+      dto.openingTime > 23 ||
+      dto.openingTime < 0 ||
+      dto.closingTime > 23 ||
+      dto.closingTime < 0 ||
+      dto.cookingTime < this.MIN_COOKING_TIME ||
+      dto.cookingTime > this.MAX_COOKING_TIME ||
+      dto.userId < 1
     ) {
       return false;
     }
@@ -93,7 +105,7 @@ export class StoresService {
   }
 
   public async checkBusinessNumberCaller(
-    BusinessNumber: string,
+    BusinessNumber: string
   ): Promise<boolean> {
     return await this.checkBusinessNumber(BusinessNumber);
   }
@@ -106,7 +118,7 @@ export class StoresService {
 
     try {
       const BUSINESS_NUMBER_CHECK_API_KEY = this.env.get<string>(
-        'BUSINESS_NUMBER_CHECK_API_KEY',
+        'BUSINESS_NUMBER_CHECK_API_KEY'
       );
       const response = await axios.post(
         `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${BUSINESS_NUMBER_CHECK_API_KEY}`,
@@ -116,7 +128,7 @@ export class StoresService {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-        },
+        }
       );
       if (response.data.data[0].b_stt_cd !== '01') {
         return false;
