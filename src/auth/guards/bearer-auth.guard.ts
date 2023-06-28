@@ -17,15 +17,10 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext) {
-    const isIgnoreAuth = this.reflector.getAllAndOverride<boolean>(IGNORE_AUTH_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const isIgnoreAuth = this.ignoreAuthCheck(context);
     if (isIgnoreAuth) return true;
 
-    const req: Request = context.switchToHttp().getRequest();
-    const result = await this.verifyToken(req);
-
+    const result = await this.verifyToken(context);
     if (result) {
       super.canActivate(context);
       return true;
@@ -34,7 +29,15 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
     throw new UnauthorizedException();
   }
 
-  private async verifyToken(req: Request) {
+  private ignoreAuthCheck(context: ExecutionContext) {
+    return this.reflector.getAllAndOverride<boolean>(IGNORE_AUTH_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+  }
+
+  private async verifyToken(context: ExecutionContext) {
+    const req: Request = context.switchToHttp().getRequest();
     const { authorization } = req.headers;
     if (authorization === undefined) return false;
 
