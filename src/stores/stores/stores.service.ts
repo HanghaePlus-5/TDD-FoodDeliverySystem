@@ -4,7 +4,7 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreDuplicationDto } from '../dto';
+import { StoreCreateDto, StoreDuplicationDto, StoreOptionalDto } from '../dto';
 
 @Injectable()
 export class StoresService {
@@ -17,7 +17,8 @@ export class StoresService {
   ) {}
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
-    const isValidation = await this.checkValidation(dto);
+    const storeOptionalDto = { ...dto, userId };
+    const isValidation = await this.checkValidation(storeOptionalDto);
     if (!isValidation) {
       return false;
     }
@@ -27,16 +28,16 @@ export class StoresService {
       return false;
     }
 
-    await this.storesRepository.create(dto);
+    await this.storesRepository.create(storeOptionalDto);
 
     return true;
   }
 
-  public async checkValidationCaller(dto: StoreCreateDto): Promise<boolean> {
+  public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
     return await this.checkValidation(dto);
   }
 
-  private async checkValidation(dto: StoreCreateDto): Promise<boolean> {
+  private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
     if (
       !dto.name
       || !dto.businessNumber
