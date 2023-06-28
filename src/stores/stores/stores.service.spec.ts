@@ -86,7 +86,7 @@ describe('StoresService', () => {
   });
 
   describe('createStore', () => {
-    it('should checkValidation', async () => {
+    it('should throw error if validation fails', async () => {
       const mockCheckValidation = jest.spyOn(
         storesService,
         'checkValidation' as any
@@ -100,7 +100,7 @@ describe('StoresService', () => {
       expect(mockCheckValidation).toHaveBeenCalled();
     });
 
-    it('should check store business number', async () => {
+    it('should throw error if store business number check fails', async () => {
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
         'checkBusinessNumber' as any
@@ -114,7 +114,7 @@ describe('StoresService', () => {
       expect(mockCheckBusinessNumber).toHaveBeenCalled();
     });
 
-    it('should delegate Store creation to repository', async () => {
+    it('should create store and return storeDto', async () => {
       const mockcreate = jest.spyOn(storesReposiroty, 'create');
       mockcreate.mockResolvedValue(sampleStoreDto);
 
@@ -213,7 +213,7 @@ describe('StoresService', () => {
   });
 
   describe('updateStore', () => {
-    it('should exec checkStoreOwned', async () => {
+    it('should throw error if store is not owned', async () => {
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any
@@ -230,7 +230,7 @@ describe('StoresService', () => {
       });
     });
 
-    it('should exec checkStoreStatusGroup', async () => {
+    it('should throw error if store status is not allowed', async () => {
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any
@@ -254,7 +254,7 @@ describe('StoresService', () => {
       ]);
     });
 
-    it('should exec checkValidation', async () => {
+    it('should throw error if validation fails', async () => {
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any
@@ -280,7 +280,7 @@ describe('StoresService', () => {
       expect(mockCheckValidation).toHaveBeenCalled();
     });
 
-    it('should delegate Store update to repository', async () => {
+    it('should update store and return storeDto', async () => {
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any
