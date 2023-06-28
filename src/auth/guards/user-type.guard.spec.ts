@@ -71,7 +71,11 @@ describe('AuthGuard', () => {
   });
 
   describe('check UserType.', () => {
-    it.todo('should throw Error if invalid UserType.');
+    it('should throw Error if invalid UserType.', () => {
+      jest.spyOn(reflector, 'get').mockReturnValueOnce([UserType.BUSINESS]);
+      const context = createContext(testUserPayload);
+      expect(() => guard.canActivate(context)).toThrowError();
+    });
 
     it.todo('should return true if valid UserType.');
   });
