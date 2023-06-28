@@ -130,12 +130,25 @@ describe('AuthGuard', () => {
     });
   });
 
-  it('should throw Error if invalid UserType.', async () => {
-    jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
-    jest.spyOn(reflector, 'get').mockReturnValue([UserType.BUSINESS]);
+  describe('verify user type when @UserTypes is used.', () => {
+    it('should throw Error if invalid UserType.', async () => {
+      jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
+      jest.spyOn(reflector, 'get').mockReturnValue([UserType.BUSINESS]);
+  
+      const context = createContext('Bearer valid-token');
+  
+      await expect(guard.canActivate(context)).rejects.toThrowError();
+    });
 
-    const context = createContext('Bearer valid-token');
-
-    await expect(guard.canActivate(context)).rejects.toThrowError();
+    it('should return true if valid UserType.', async () => {
+      jest.spyOn(jwtAuth, 'verifyAccessToken').mockResolvedValueOnce(testUserPayload);
+      jest.spyOn(reflector, 'get').mockReturnValue([UserType.CUSTOMER]);
+  
+      const context = createContext('Bearer valid-token');
+  
+      const result = await guard.canActivate(context);
+  
+      expect(result).toBe(true);
+    });
   });
 });

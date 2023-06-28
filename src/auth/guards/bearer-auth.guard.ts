@@ -26,7 +26,6 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
     }
 
     const userType = this.reflector.get<UserType[]>('userType', context.getHandler());
-    console.log('userType: ', userType);
     if (userType === undefined) return true;
     if (userPayload.type !== userType[0]) {
       throw new UnauthorizedException();
