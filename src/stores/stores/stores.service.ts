@@ -78,7 +78,7 @@ export class StoresService {
     const isStoreStatusChangeCondition =
       await this.checkStoreStatusChangeCondition(isStore.status, dto.status);
     if (!isStoreStatusChangeCondition) {
-      throw new Error('Not meet status change condition.');
+      throw new Error('Store status change condition not met.');
     }
   }
 
