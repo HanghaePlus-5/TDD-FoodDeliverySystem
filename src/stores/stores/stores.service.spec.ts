@@ -221,4 +221,19 @@ describe('StoresService', () => {
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
     });
   });
+
+  describe('checkStoreOwned', () => {
+    it('should find store by userId & storeId', async () => {
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(sampleStoreDto);
+
+      const result = await storesService.checkStoreOwned({
+        storeId: 1,
+        userId: 1,
+      });
+      expect(result).toBe(true);
+
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
+    });
+  });
 });
