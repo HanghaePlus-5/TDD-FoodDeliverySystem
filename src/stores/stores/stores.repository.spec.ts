@@ -70,8 +70,7 @@ describe('StoresRepository', () => {
 
   describe('create', () => {
     it('should throw an error if store name already exists', async () => {
-      const mockfindOne = jest.spyOn(repository, 'findOne');
-      mockfindOne.mockResolvedValue(sampleStoreDto);
+      await repository.create(sampleCreateStoreDto);
 
       await expect(
         repository.create(sampleCreateStoreDto),
