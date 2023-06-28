@@ -388,40 +388,24 @@ describe('StoresService', () => {
       ]);
     });
 
-    it('should throw error if not meet status change condition', async () => {
-      const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned' as any
+    it('should change store status and return StoreStatusDto', async () => {});
+  });
+
+  describe('checkStoreStatusChangeCondition', () => {
+    it('shoud return false if status is not allowed', async () => {
+      const result = await storesService.checkStoreStatusChangeConditionCaller(
+        'REGISTERED' as StoreStatus,
+        'CLOSED' as StoreStatus
       );
-      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+      expect(result).toBe(false);
+    });
 
-      const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
-        'checkStoreStatusGroup' as any
+    it('shoud return true if status is allowed', async () => {
+      const result = await storesService.checkStoreStatusChangeConditionCaller(
+        'OPEN' as StoreStatus,
+        'CLOSED' as StoreStatus
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
-
-      const mockCheckStoreStatusChangeCondition = jest.spyOn(
-        storesService,
-        'checkStoreStatusChangeCondition' as any
-      );
-      mockCheckStoreStatusChangeCondition.mockResolvedValue(false);
-
-      await expect(
-        storesService.changeStoreStatus(1, {
-          storeId: 1,
-          status: 'CLOSED' as StoreStatus,
-        })
-      ).rejects.toThrowError('Not meet status change condition.');
-
-      expect(mockCheckStoreStatusChangeCondition).toHaveBeenCalledWith(
-        'REGISTERED',
-        'CLOSED'
-      );
-    })
-
-    it('should change store status and return StoreStatusDto', async () => {
-      
-    })
+      expect(result).toBe(true);
+    });
   });
 });
