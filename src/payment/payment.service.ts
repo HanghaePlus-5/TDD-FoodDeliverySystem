@@ -19,14 +19,10 @@ export class PaymentService {
   async makePayment(data: PaymentCreateDto, orderDto: any) {
     validateCardHolder(data.cardHolderName, orderDto.customerName)
     validateCardNumber(data.cardNumber)
-    try {
-      const response = await this.pgService.sendPaymentRequestToPG(data);
-      if (response.status === HttpStatus.ACCEPTED) {
-        const payment = await this.prisma.payment.create({ data });
-        return payment;
-      }
-    } catch (error) {
-      throw new Error(error);
+    const response = await this.pgService.sendPaymentRequestToPG(data);
+    if (response.status === HttpStatus.ACCEPTED) {
+      const payment = await this.prisma.payment.create({ data });
+      return payment;
     }
   }
 
@@ -35,14 +31,11 @@ export class PaymentService {
     const payment = await this.prisma.payment.findUnique({ where: { paymentId } });
     if (!payment) throw new BadRequestException('payment not exist');
     validatePaymentStatus(payment.paymentStatus)
-    try {
-      const response = await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
-      if (response.status === HttpStatus.ACCEPTED) {
-        // payment status update
-        return payment;
-      }
-    } catch (error) {
-      throw new Error(error);
+    const response = await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
+    if (response.status === HttpStatus.ACCEPTED) {
+      // payment status update
+      return payment;
     }
+
   }
 }
