@@ -32,6 +32,7 @@ describe('OrdersService', () => {
   let menu12: Menu;
   let sampleCreaetOrderDTO1: OrderCreateDto;
   let sampleCreaetOrderDTO2: OrderCreateDto;
+  let sampleCreaetOrderDTO3: OrderCreateDto;
 
 
   beforeAll(async () => {
@@ -224,6 +225,13 @@ describe('OrdersService', () => {
       ],
     };
 
+    sampleCreaetOrderDTO3 = {
+      user: user2,
+      storeId: store.storeId,
+      orderItem: [
+      ],
+    };
+
   })
 
   afterAll(async () => {
@@ -317,11 +325,10 @@ describe('OrdersService', () => {
         expect(result).toBe(false)
       });
 
-      // it('should return false if a user tries to make an order of 0 item', () => {
-      //   const orderItem1 = []
-      //   const result = service.isOrderItemCountInRange(orderItem1)
-      //   expect(result).toBe(false)
-      // });
+      it('should return false if a user tries to make an order of 0 item', () => {
+        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO3.orderItem)
+        expect(result).toBe(false)
+      });
 
       // it('should return error if a user tries to make an order while incomplete order exists', () => {
       //   const result = service.hasOngoingOrder(1)

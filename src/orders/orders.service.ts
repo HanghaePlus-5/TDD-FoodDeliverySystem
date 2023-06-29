@@ -83,7 +83,7 @@ export class OrdersService {
         return 0;;
     }
     isOrderItemCountInRange(orderItem: OrderItemCreateDto[]) {
-        return orderItem.length <= 10;
+        return 0< orderItem.length && orderItem.length <= 10;
     }
     saveOrder( data: Prisma.OrderUncheckedCreateInput): Prisma.Prisma__OrderClient<Order, never>
         {
