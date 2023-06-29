@@ -83,6 +83,10 @@ export class StoresService {
     return await this.storesRepository.update(dto);
   }
 
+  async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
+    return await this.storesRepository.findAllByUserId({ userId });
+  }
+
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
     return await this.storesRepository.findOne(dto);
   }

@@ -468,4 +468,19 @@ describe('StoresService', () => {
       expect(result).toBe(true);
     });
   });
+
+  describe('getStoresByBusinessUser', () => {
+    it('should exec findAllByUserId', async () => {
+      const mockFindAllByUserId = jest.spyOn(
+        storesReposiroty,
+        'findAllByUserId' as any,
+      );
+      mockFindAllByUserId.mockResolvedValue([sampleStoreDto]);
+
+      const result = await storesService.getStoresByBusinessUser(1);
+      expect(result).toEqual([sampleStoreDto]);
+
+      expect(mockFindAllByUserId).toHaveBeenCalledWith({ userId: 1 });
+    });
+  });
 });

@@ -52,4 +52,16 @@ export class StoresRepository {
     }
     return storeToDtoMap(store);
   }
+
+  async findAllByUserId({ userId }: { userId: number }): Promise<StoreDto[]> {
+    const stores = await this.prisma.store.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        storeId: 'asc',
+      },
+    });
+    return stores.map(storeToDtoMap);
+  }
 }
