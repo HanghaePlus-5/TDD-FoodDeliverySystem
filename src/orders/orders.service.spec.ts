@@ -194,19 +194,19 @@ describe('OrdersService', () => {
         const result = service.isUserTypeCustomer(user2.userId)
         expect(serviceMock).toBeCalledWith(user2.userId);
       });
-      // it('should return error if a user tries to make an order from a non-existing store', () => {
-      //   const result = service.isValidStore(1)
-      //   expect(result).toBe(false)
-      //   // expect(() => {
-      //   //   service.addOrder(order1, businessUser);
-      //   // }).toThrowError('Only customers are allowed to add orders.');
 
-      // });
-      // it('should return false if a user tries to make an order of a non-existing item', () => {
-      //   const result = service.isValidMenu(1)
-      //   expect(result).toBe(false)
-      // });
+      it('should return true if a user tries to make an order from a existing store', async () => {
+        const storeId = store.storeId;
+        const result = await service.isValidStore(storeId)
+        expect(result).toBe(true)
+        // expect(() => {
+        //   service.addOrder(order1, businessUser);
+        // }).toThrowError('Only customers are allowed to add orders.');
+      });
 
+      it('should return false if a user tries to make an order of a non-existing item', async () => {
+        const storeId = store.storeId - 1;
+        await expect(service.isValidMenu(storeId)).rejects.toThrowError();
       });
 
     });
@@ -295,4 +295,4 @@ describe('OrdersService', () => {
     //   it('should return false if a user tries to make an order with not enough stock', () => {
     //     const result = service.hasOngoingOrder(1)
     //     expect(result).toBe(false)
-    //   });
+      });

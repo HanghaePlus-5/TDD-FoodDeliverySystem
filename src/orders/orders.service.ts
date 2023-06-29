@@ -64,8 +64,13 @@ export class OrdersService {
     isValidMenu(orderItem: any) {
         return 0;
     }
-    isValidStore(storeId: number) {
-        return 0;;
+    async isValidStore(storeId: number) {
+            const store = await this.prisma.store.findUniqueOrThrow({
+                where: {
+                    storeId: storeId,
+                    },
+            })
+        return true;
     }
 
     alarmStoreInitially(processedOrder: Order) {
