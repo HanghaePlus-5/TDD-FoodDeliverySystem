@@ -6,60 +6,26 @@ import { OrdersService } from './orders.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 // import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { PrismaClient, StoreStatus, StoreType } from '@prisma/client';
+import { Menu, PrismaClient, Store, StoreStatus, StoreType } from '@prisma/client';
 import { OrderStatus } from 'src/types/orders';
+import { OrderCreateDto } from './dto/order-create.dto';
 
 
 
 describe('OrdersService', () => {
   let service: OrdersService;
   let testPrisma: PrismaService;
-
-  const cusomerUser = {
-    userId: 1,
-    email: 'customer1@delivery.com',
-    name: 'Customer Kim',
-    password: 'qwe1234',
-    type: UserType.CUSTOMER,
-  };
-
-  const businessUser = {
-    userId: 2,
-    email: 'business1@delivery.com',
-    name: 'Business Kim',
-    password: 'qwe1234',
-    type: UserType.BUSINESS,
-  };
+  let user1: User;
+  let user2: User;
+  let store: Store;
+  let menu1: Menu;
+  let menu2: Menu;
+  let menu3: Menu;
+  let sampleCreaetOrderDTO1: OrderCreateDto;
+  let sampleCreaetOrderDTO2: OrderCreateDto;
 
 
-  const sampleCreaetOrderDTO1 = {
-    user: {
-      userId: 12345,
-      email: "john@example.com",
-      name: "John Doe",
-      password: "password123",
-      type: UserType.CUSTOMER,
-    },
-    storeId: 67890,
-    orderItem: [
-      {
-        quantity: 2,
-        menuId: 101,
-      },
-      {
-        quantity: 1,
-        menuId: 102,
-      },
-    ],
-  };
-  const order1 = {
-    userId: 1,
-    storeId: 1,
-    paymentId: 1
-  };
-
-
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OrdersService,
@@ -72,24 +38,30 @@ describe('OrdersService', () => {
     service = module.get<OrdersService>(OrdersService);
     testPrisma = module.get(PrismaService);
     //create sample user
-    await testPrisma.user.createMany({
-      data: [
+    user1 = await testPrisma.user.create({
+      data: 
         {
           email: "customerUser@gmail.com",
           name: "Customer Kim",
           password: "qwer123123",
           type: UserType.CUSTOMER,
         },
+    })
+
+    user2 = await testPrisma.user.create({
+      data: 
         {
           email: "businessUser@gmail.com",
           name: "Business Kim",
           password: "qwer123123",
           type: UserType.CUSTOMER,
         }
-      ]
+      
     })
 
-    const store = await testPrisma.store.create({
+    
+
+    store = await testPrisma.store.create({
       data:
       {
         name:"Sample Store",
@@ -105,19 +77,54 @@ describe('OrdersService', () => {
       }
     })
 
-    await testPrisma.menu.createMany({
-      data: [
+    menu1 = await testPrisma.menu.create({
+      data: 
         {
           storeId:store.storeId,
         },
+    })
+    menu2 = await testPrisma.menu.create({
+      data: 
         {
           storeId:store.storeId,
         },
+    })
+    menu3 = await testPrisma.menu.create({
+      data: 
         {
           storeId:store.storeId,
         }
-      ]
     })
+
+    sampleCreaetOrderDTO1 = {
+      user: user1,
+      storeId: store.storeId,
+      orderItem: [
+        {
+          quantity: 2,
+          menuId: menu1.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu2.menuId,
+        },
+      ],
+    };
+
+    sampleCreaetOrderDTO2 = {
+      user: user2,
+      storeId: store.storeId,
+      orderItem: [
+        {
+          quantity: 1,
+          menuId: menu3.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu2.menuId,
+        },
+      ],
+    };
 
   })
 
@@ -175,51 +182,37 @@ describe('OrdersService', () => {
         expect(serviceMock).toBeCalledWith(testOrder);
       });
     });
-    // describe('Order General Validation Check', () => {
-    //   it('should return error if business ueser tries to make an order', () => {
-    //     const sampleCreaetOrderDTO1 = {
-    //       user: {
-    //         userId: 12345,
-    //         email: "john@example.com",
-    //         name: "John Doe",
-    //         password: "password123",
-    //         type: UserType.CUSTOMER,
-    //       },
-    //       storeId: 67890,
-    //       orderItem: [
-    //         {
-    //           quantity: 2,
-    //           menuId: 101,
-    //         },
-    //         {
-    //           quantity: 1,
-    //           menuId: 102,
-    //         },
-    //       ],
-    //     };
-        
-    //     const result = service.isUserTypeCustomer(1)
-    //     expect(result).toBe(false)
-        // expect(() => {
-        //   service.addOrder(order1, businessUser);
-        // }).toThrowError('Only customers are allowed to add orders.');
+    describe('Order General Validation Check', () => {
+      it('should return true if customer ueser tries to make an order', () => {
+        let serviceMock =jest.spyOn(service,"verifyType")
+        const result = service.isUserTypeCustomer(user1.userId)
+        expect(serviceMock).toBeCalledWith(user1.userId);
+      });
 
+      it('should return false if business ueser tries to make an order', () => {
+        let serviceMock =jest.spyOn(service,"verifyType")
+        const result = service.isUserTypeCustomer(user2.userId)
+        expect(serviceMock).toBeCalledWith(user2.userId);
+      });
+      // it('should return error if a user tries to make an order from a non-existing store', () => {
+      //   const result = service.isValidStore(1)
+      //   expect(result).toBe(false)
+      //   // expect(() => {
+      //   //   service.addOrder(order1, businessUser);
+      //   // }).toThrowError('Only customers are allowed to add orders.');
+
+      // });
+      // it('should return false if a user tries to make an order of a non-existing item', () => {
+      //   const result = service.isValidMenu(1)
+      //   expect(result).toBe(false)
+      // });
 
       });
-    //   it('should return error if a user tries to make an order from a non-existing store', () => {
-    //     const result = service.isValidStore(1)
-    //     expect(result).toBe(false)
-    //     // expect(() => {
-    //     //   service.addOrder(order1, businessUser);
-    //     // }).toThrowError('Only customers are allowed to add orders.');
-
-    //   });
-    //   it('should return false if a user tries to make an order of a non-existing item', () => {
-    //     const result = service.isValidMenu(1)
-    //     expect(result).toBe(false)
-    //   });
 
     });
+  
+
+});
     // describe('Order Business Validation Check', () => {
     //   it('should return false if a user tries to make an order of more than 10 item', () => {
     //     const orderItemList = [
@@ -303,6 +296,3 @@ describe('OrdersService', () => {
     //     const result = service.hasOngoingOrder(1)
     //     expect(result).toBe(false)
     //   });
-
-    // });
-
