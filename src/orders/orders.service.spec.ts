@@ -6,14 +6,14 @@ import { OrdersService } from './orders.service';
 import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 // import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, StoreStatus, StoreType } from '@prisma/client';
 import { OrderStatus } from 'src/types/orders';
 
 
 
 describe('OrdersService', () => {
   let service: OrdersService;
-  // let mockPrisma: DeepMockProxy<PrismaClient>;
+  let testPrisma: PrismaService;
 
   const cusomerUser = {
     userId: 1,
@@ -70,8 +70,80 @@ describe('OrdersService', () => {
       // .useValue(mockDeep<PrismaClient>())
 
     service = module.get<OrdersService>(OrdersService);
-    // mockPrisma = module.get(PrismaService);
-  });
+    testPrisma = module.get(PrismaService);
+    //create sample user
+    await testPrisma.user.createMany({
+      data: [
+        {
+          email: "customerUser@gmail.com",
+          name: "Customer Kim",
+          password: "qwer123123",
+          type: UserType.CUSTOMER,
+        },
+        {
+          email: "businessUser@gmail.com",
+          name: "Business Kim",
+          password: "qwer123123",
+          type: UserType.CUSTOMER,
+        }
+      ]
+    })
+
+    const store = await testPrisma.store.create({
+      data:
+      {
+        name:"Sample Store",
+        type: StoreType.KOREAN,
+        status: StoreStatus.OPEN,
+        businessNumber: "1234567890",
+        phoneNumber: "010-1234-5678",
+        postalNumber: "12345",
+        address: "Seoul, Korea",
+        openingTime: 1,
+        closingTime: 1,
+        cookingTime: 1,
+      }
+    })
+
+    await testPrisma.menu.createMany({
+      data: [
+        {
+          storeId:store.storeId,
+        },
+        {
+          storeId:store.storeId,
+        },
+        {
+          storeId:store.storeId,
+        }
+      ]
+    })
+
+  })
+
+  afterAll(async () => {
+    const deleteUser = testPrisma.user.deleteMany()
+    const deleteMenu = testPrisma.menu.deleteMany()
+    await testPrisma.$transaction([
+      deleteMenu,     
+    ])
+    const deleteStore = testPrisma.store.deleteMany()
+    const deleteOrderItem = testPrisma.orderItem.deleteMany()
+
+    await testPrisma.$transaction([
+      deleteOrderItem,     
+    ])
+
+    const deleteOrder = testPrisma.order.deleteMany()
+
+    await testPrisma.$transaction([
+      deleteUser,
+      deleteStore,
+      deleteOrderItem,
+      deleteOrder,
+      
+    ])
+  })
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -105,14 +177,35 @@ describe('OrdersService', () => {
     });
     // describe('Order General Validation Check', () => {
     //   it('should return error if business ueser tries to make an order', () => {
+    //     const sampleCreaetOrderDTO1 = {
+    //       user: {
+    //         userId: 12345,
+    //         email: "john@example.com",
+    //         name: "John Doe",
+    //         password: "password123",
+    //         type: UserType.CUSTOMER,
+    //       },
+    //       storeId: 67890,
+    //       orderItem: [
+    //         {
+    //           quantity: 2,
+    //           menuId: 101,
+    //         },
+    //         {
+    //           quantity: 1,
+    //           menuId: 102,
+    //         },
+    //       ],
+    //     };
+        
     //     const result = service.isUserTypeCustomer(1)
     //     expect(result).toBe(false)
-    //     // expect(() => {
-    //     //   service.addOrder(order1, businessUser);
-    //     // }).toThrowError('Only customers are allowed to add orders.');
+        // expect(() => {
+        //   service.addOrder(order1, businessUser);
+        // }).toThrowError('Only customers are allowed to add orders.');
 
 
-    //   });
+      });
     //   it('should return error if a user tries to make an order from a non-existing store', () => {
     //     const result = service.isValidStore(1)
     //     expect(result).toBe(false)
@@ -126,7 +219,7 @@ describe('OrdersService', () => {
     //     expect(result).toBe(false)
     //   });
 
-    // });
+    });
     // describe('Order Business Validation Check', () => {
     //   it('should return false if a user tries to make an order of more than 10 item', () => {
     //     const orderItemList = [
@@ -212,5 +305,4 @@ describe('OrdersService', () => {
     //   });
 
     // });
-  });
-});
+
