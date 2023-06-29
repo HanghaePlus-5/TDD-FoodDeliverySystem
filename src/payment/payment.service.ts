@@ -8,6 +8,7 @@ import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.s
 
 import { PaymentCreateDto } from './dto/payment-create.dto';
 import { validatePaymentStatus, validateCardHolder, validateCardNumber } from './func';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PaymentService {
@@ -16,11 +17,16 @@ export class PaymentService {
     private readonly pgService: PaymentGatewayService,
   ) { }
   // payment request
-  async makePayment(data: PaymentCreateDto, orderDto: any) {
-    validateCardHolder(data.cardHolderName, orderDto.customerName)
-    validateCardNumber(data.cardNumber)
-    const response = await this.pgService.sendPaymentRequestToPG(data);
+  async makePayment(paymentForm: PaymentCreateDto, orderDto: any) {
+    validateCardHolder(paymentForm.cardHolderName, orderDto.customerName)
+    validateCardNumber(paymentForm.cardNumber)
+
+    const response = await this.pgService.sendPaymentRequestToPG(paymentForm);
     if (response.status === HttpStatus.ACCEPTED) {
+      const data: Prisma.PaymentCreateInput = {
+        ...paymentForm,
+        order: orderDto
+      }
       const payment = await this.prisma.payment.create({ data });
       return payment;
     }
