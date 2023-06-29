@@ -1,14 +1,13 @@
-import {
-  BadRequestException, HttpCode, HttpException, HttpStatus,
-} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
-import { PaymentDto } from 'src/payment/dto/payment.dto';
+import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
 
 import { PaymentService } from './payment.service';
+
+import { PaymentStatus } from 'src/types';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -16,65 +15,77 @@ describe('PaymentService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PaymentService, PrismaService],
+      providers: [PaymentService, PrismaService, PaymentGatewayService],
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
       .compile();
+
     service = module.get<PaymentService>(PaymentService);
+    mockPrisma = module.get(PrismaService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  const paymentDto : PaymentDto = {
-    paymentId: 1,
+  const paymentCreateDto = {
     cardExpiryMonth: 6,
     cardExpiryYear: 2027,
     cardHolderName: 'michael',
     cardIssuer: 'abc',
     cardNumber: '1111-1111-1111-1121',
+    paymentGatewayId: '1',
+    paymentStatus: PaymentStatus.completed,
   };
-  const orderInfo = {
+  const paymentDto = {
+    ...paymentCreateDto,
+    paymentId: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const orderDto = {
     customerName: 'michael',
+    paymentId: 10,
   };
+  const issue = (issue: string) => {
+    return `Not throwing error with${issue}`;
+  };
+
   describe('send payment request to payment-gateway', () => {
     describe('validate payment request', () => {
-      it('should return false if user and card holder name are different', () => {
-        const cardHolderName = 'foo';
-        const customerName = 'poo';
-        expect(service.validateCardHolder(cardHolderName, customerName)).toBe(false);
+      it(issue('unathorized card holder'), async () => {
+        const mOrderDto = { ...orderDto, customerName: 'dan' };
+        await expect(service.makePayment(paymentCreateDto, mOrderDto)).rejects.toThrow();
       });
-      it('should return false with invalid card number format', () => {
-        const cardNumber = '4124-1244-4124-414';
-        expect(service.validateCardNumber(cardNumber)).toBe(false);
+      it(issue('invalid card number format'), async () => {
+        const mPayment = { ...paymentCreateDto, cardNumber: '4124-1244-4124-414' };
+        await expect(service.makePayment(mPayment, orderDto)).rejects.toThrow();
       });
     });
-    describe('paymentRequest to PG', () => {
-      it('should throw error if failed', () => {
-        const mock = { ...paymentDto, cardNumber: '1111-1111-1111-1111' };
-        expect(() => service.sendPaymentRequestToPG(mock)).toThrow(BadRequestException);
-      });
-      it('should return ACCEPTED if successful', () => {
-        const mock = { ...paymentDto, cardNumber: '1111-1111-1111-1112' };
-        expect(service.sendPaymentRequestToPG(mock)).toBe(HttpStatus.ACCEPTED);
+    describe('payment request to PG', () => {
+      it(issue('unacceptable card'), async () => {
+        const mock = { ...paymentCreateDto, cardNumber: '1111-1111-1111-1111' };
+        await expect(service.makePayment(mock, orderDto)).rejects.toThrow();
       });
     });
   });
 
-  describe('cancelRequest to PG', () => {
+  describe('cancel payment request', () => {
     describe('validate cancel request', () => {
-      it('should return false if order data is not exist', () => {
-        const orderId = '10';
-        expect(service.isExistingOrder()).toBe(false);
+      it(issue('no payment data'), async () => {
+        mockPrisma.payment.findUnique.mockResolvedValueOnce(null);
+        await expect(service.cancelPayment(orderDto.paymentId)).rejects.toThrow();
       });
-      it('should return false if order status is not `ORDER ACCEPTED`', () => {
-        const oderStatus = 'ORDER CONFIRMED';
-        expect(service.isOrderStatusAccepted()).toBe(false);
+      it(issue('status which is not completed'), async () => {
+        mockPrisma.payment.findUnique.mockResolvedValueOnce({ ...paymentDto, paymentStatus: PaymentStatus.canceled });
+        await expect(service.cancelPayment(orderDto.paymentId)).rejects.toThrow();
       });
-      it('should return false if payment status is not `payment completed`', () => {
-        const paymentStatus = 'payment canceled';
-        expect(service.isPaymentStatusCompleted()).toBe(false);
+    });
+
+    describe('cancel request to PG', () => {
+      it(issue('invalid paymentId'), async () => {
+        mockPrisma.payment.findUnique.mockResolvedValueOnce({ ...paymentDto, paymentGatewayId: '123456' });
+        await expect(service.cancelPayment(orderDto.paymentId)).rejects.toThrow();
       });
     });
   });
