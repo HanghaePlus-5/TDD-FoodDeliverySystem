@@ -64,7 +64,6 @@ describe('AuthService', () => {
 
     it('should return jwt token if success.', async () => {
       const result = await service.createAccessToken(signedUser);
-      console.log('created token', result);
 
       expect(result).toBeDefined();
       expect(jwtService.verify(result!)).toBeTruthy();

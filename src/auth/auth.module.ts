@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { EnvService } from 'src/config/env';
 import { CustomConfigModule } from 'src/config';
 
-import { UserTypeGuard } from './guards/user-type.guard';
+import { BearerAuthGuard } from './guards';
+import { JwtStrategy } from './passport';
 import { JwtAuthService } from './services';
 
 @Module({
@@ -22,7 +24,16 @@ import { JwtAuthService } from './services';
       inject: [EnvService],
     })
   ],
-  providers: [UserTypeGuard, JwtAuthService],
-  exports: [UserTypeGuard],
-  })
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: BearerAuthGuard,
+    },
+    JwtAuthService,
+    JwtStrategy,
+  ],
+  exports: [
+    JwtAuthService,
+  ],
+})
 export class AuthModule {}
