@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Payment } from '@prisma/client';
+
 import { PaymentStatus } from 'src/types';
 
 export function validateCardHolder(cardHolderName: string, customerName: string) {

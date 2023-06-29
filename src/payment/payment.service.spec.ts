@@ -36,10 +36,11 @@ describe('PaymentService', () => {
     cardNumber: '1111-1111-1111-1121',
     paymentGatewayId: '1',
     paymentStatus: PaymentStatus.completed,
+    orderId : 1,
   };
   const paymentDto = {
     ...paymentCreateDto,
-    paymentId: 1,
+    paymentId: 10,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -68,6 +69,12 @@ describe('PaymentService', () => {
         await expect(service.makePayment(mock, orderDto)).rejects.toThrow();
       });
     });
+    describe('payment creation', () => {
+      it('payment successfully created', async () => {
+        mockPrisma.payment.create.mockResolvedValueOnce(paymentDto)
+        await expect(service.makePayment(paymentCreateDto, orderDto)).resolves.toEqual(paymentDto);
+      });
+    });
   });
 
   describe('cancel payment request', () => {
@@ -86,6 +93,14 @@ describe('PaymentService', () => {
       it(issue('invalid paymentId'), async () => {
         mockPrisma.payment.findUnique.mockResolvedValueOnce({ ...paymentDto, paymentGatewayId: '123456' });
         await expect(service.cancelPayment(orderDto.paymentId)).rejects.toThrow();
+      });
+    });
+    
+    describe('update payment status', () => {
+      it('payment data is not successfully updated', async () => {
+        mockPrisma.payment.findUnique.mockResolvedValueOnce({ ...paymentDto, paymentId: 10 });
+        mockPrisma.payment.update.mockResolvedValueOnce({ ...paymentDto, paymentId: 10, paymentStatus: PaymentStatus.canceled })
+        await expect(service.cancelPayment(orderDto.paymentId)).resolves.toEqual({ ...paymentDto, paymentId: 10, paymentStatus: PaymentStatus.canceled });
       });
     });
   });
