@@ -21,6 +21,15 @@ describe('OrdersService', () => {
   let menu1: Menu;
   let menu2: Menu;
   let menu3: Menu;
+  let menu4: Menu;
+  let menu5: Menu;
+  let menu6: Menu;
+  let menu7: Menu;
+  let menu8: Menu;
+  let menu9: Menu;
+  let menu10: Menu;
+  let menu11: Menu;
+  let menu12: Menu;
   let sampleCreaetOrderDTO1: OrderCreateDto;
   let sampleCreaetOrderDTO2: OrderCreateDto;
 
@@ -95,6 +104,60 @@ describe('OrdersService', () => {
           storeId:store.storeId,
         }
     })
+    menu4 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu5 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu6 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        }
+    })
+    menu7 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu8 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu9 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        }
+    })
+    menu10 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu11 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        },
+    })
+    menu12 = await testPrisma.menu.create({
+      data: 
+        {
+          storeId:store.storeId,
+        }
+    })
 
     sampleCreaetOrderDTO1 = {
       user: user1,
@@ -107,6 +170,41 @@ describe('OrdersService', () => {
         {
           quantity: 1,
           menuId: menu2.menuId,
+        },{
+          quantity: 2,
+          menuId: menu3.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu4.menuId,
+        },{
+          quantity: 2,
+          menuId: menu5.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu6.menuId,
+        },{
+          quantity: 2,
+          menuId: menu7.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu8.menuId,
+        },{
+          quantity: 2,
+          menuId: menu9.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu10.menuId,
+        },{
+          quantity: 2,
+          menuId: menu11.menuId,
+        },
+        {
+          quantity: 1,
+          menuId: menu12.menuId,
         },
       ],
     };
@@ -196,7 +294,7 @@ describe('OrdersService', () => {
       });
 
       it('should return true if a user tries to make an order from a existing store', async () => {
-        const storeId = store.storeId;
+        const storeId = store.storeId;  
         const result = await service.isValidStore(storeId)
         expect(result).toBe(true)
         // expect(() => {
@@ -204,7 +302,7 @@ describe('OrdersService', () => {
         // }).toThrowError('Only customers are allowed to add orders.');
       });
 
-      it('should return false if a user tries to make an order of a non-existing item', async () => {
+      it('should return error if a user tries to make an order of a non-existing item', async () => {
         const storeId = store.storeId - 1;
         await expect(service.isValidStore(storeId)).rejects.toThrowError();
       });
@@ -213,86 +311,26 @@ describe('OrdersService', () => {
   
 
 });
-    // describe('Order Business Validation Check', () => {
-    //   it('should return false if a user tries to make an order of more than 10 item', () => {
-    //     const orderItemList = [
-    //       {
-    //         orderId: 1,
-    //         quantity: 1,
-    //         menuId: 1,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 2,
-    //         menuId: 2,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 3,
-    //         menuId: 3,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 4,
-    //         menuId: 4,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 5,
-    //         menuId: 5,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 6,
-    //         menuId: 6,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 7,
-    //         menuId: 7,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 8,
-    //         menuId: 8,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 9,
-    //         menuId: 9,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 10,
-    //         menuId: 10,
-    //       },
-    //       {
-    //         orderId: 1,
-    //         quantity: 11,
-    //         menuId: 11,
-    //       },
-    //     ];
-    //     const orderItem1 = { 
-    //       orderId: 1,
-    //       quantity: 1,
-    //       menuId: 1,
-    //     }
-    //     const result = service.isOrderItemCountInRange(orderItemList)
-    //     expect(result).toBe(false)
-    //   });
-
-    //   it('should return false if a user tries to make an order of 0 item', () => {
-    //     const orderItem1 = []
-    //     const result = service.isOrderItemCountInRange(orderItem1)
-    //     expect(result).toBe(false)
-    //   });
-
-    //   it('should return error if a user tries to make an order while incomplete order exists', () => {
-    //     const result = service.hasOngoingOrder(1)
-    //     expect(result).toBe(false)
-    //   });
-
-    //   it('should return false if a user tries to make an order with not enough stock', () => {
-    //     const result = service.hasOngoingOrder(1)
-    //     expect(result).toBe(false)
+    describe('Order Business Validation Check', () => {
+      it('should return false if a user tries to make an order of more than 10 item', () => {
+        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO1.orderItem)
+        expect(result).toBe(false)
       });
+
+      // it('should return false if a user tries to make an order of 0 item', () => {
+      //   const orderItem1 = []
+      //   const result = service.isOrderItemCountInRange(orderItem1)
+      //   expect(result).toBe(false)
+      // });
+
+      // it('should return error if a user tries to make an order while incomplete order exists', () => {
+      //   const result = service.hasOngoingOrder(1)
+      //   expect(result).toBe(false)
+      // });
+
+      // it('should return false if a user tries to make an order with not enough stock', () => {
+      //   const result = service.hasOngoingOrder(1)
+      //   expect(result).toBe(false)
+      // });
+    })
+  })
