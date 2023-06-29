@@ -87,6 +87,10 @@ export class StoresService {
     return await this.storesRepository.findAllByUserId({ userId });
   }
 
+  async getStoreByStoreId(storeId: number): Promise<StoreDto | null> {
+    return await this.storesRepository.findOne({ storeId });
+  }
+
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
     return await this.storesRepository.findOne(dto);
   }

@@ -483,4 +483,16 @@ describe('StoresService', () => {
       expect(mockFindAllByUserId).toHaveBeenCalledWith({ userId: 1 });
     });
   });
+
+  describe('getStoreByStoreId', () => {
+    it('should exec findOne', async () => {
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(sampleStoreDto);
+
+      const result = await storesService.getStoreByStoreId(1);
+      expect(result).toEqual(sampleStoreDto);
+
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
+    });
+  })
 });
