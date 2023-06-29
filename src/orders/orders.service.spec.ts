@@ -206,7 +206,7 @@ describe('OrdersService', () => {
 
       it('should return false if a user tries to make an order of a non-existing item', async () => {
         const storeId = store.storeId - 1;
-        await expect(service.isValidMenu(storeId)).rejects.toThrowError();
+        await expect(service.isValidStore(storeId)).rejects.toThrowError();
       });
 
     });
