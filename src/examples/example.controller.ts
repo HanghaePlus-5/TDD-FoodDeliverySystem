@@ -77,7 +77,7 @@ export class ExampleController {
   userTypeExample(
     @Req() req: Express.Request,
   ) {
-    const user = req.user;
+    const user = req.payload;
     return user;
   }
 }
