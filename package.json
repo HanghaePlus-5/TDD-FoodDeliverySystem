@@ -13,11 +13,12 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --quiet --fix -c \".eslintrc.json\"",
-    "test": "jest",
+    "test": "pnpm test:migrate && jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:migrate": "dotenv -e \".env.test\" -- npx prisma migrate deploy",
     "prepare": "ts-patch install"
   },
   "dependencies": {
@@ -35,9 +36,9 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "jest-mock-extended": "^3.0.4",
+    "module-alias": "^2.2.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "module-alias": "^2.2.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typia": "^4.1.0"
