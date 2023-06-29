@@ -6,6 +6,7 @@ import { OrderCreateDto } from './dto/order-create.dto';
 import { OrderItemCreateDto, OrderItemCreatePrismaDto } from './dto/orderItem-create.dto';
 
 
+
 @Injectable()
 export class OrdersService {
     constructor(
@@ -61,23 +62,23 @@ export class OrdersService {
         return result
     }
     isValidMenu(orderItem: any) {
-        throw new Error('Method not implemented.');
+        return 0;
     }
     isValidStore(storeId: number) {
-        throw new Error('Method not implemented.');
+        return 0;;
     }
 
     alarmStoreInitially(processedOrder: Order) {
-        throw new Error('Method not implemented.');
+        return 0;;
     }
     hasOngoingOrder(userId: number) {
-        throw new Error('Method not implemented.');
+        return 0;;
     }
     hasEnoughStock(orderItem: OrderItemCreateDto) {
-        throw new Error('Method not implemented.');
+        return 0;;
     }
     isOrderItemCountInRange(orderItem: OrderItemCreateDto[]) {
-        throw new Error('Method not implemented.');
+        return 0;;
     }
     saveOrder( data: Prisma.OrderUncheckedCreateInput): Prisma.Prisma__OrderClient<Order, never>
         {
@@ -87,6 +88,12 @@ export class OrdersService {
         return this.prisma.orderItem.createMany({data})
     }
     processPayment(order: Order) {
+        try {
+            this.callPaymentMethod(order)
+        } catch (error) {
+            throw new Error();
+        }
+        return "callPaymentMethod has been called";
     }
 
     isUserTypeCustomer(userId: number): boolean {
@@ -106,5 +113,10 @@ export class OrdersService {
 
     }
     
+    callPaymentMethod(order: Order) {    
+    }
     
 }
+
+
+

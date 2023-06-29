@@ -15,7 +15,6 @@ declare global {
         orderId: number;
         userId: number;
         storeId: number;
-        paymentId: number;
         createdAt: Date;
         updatedAt:Date;
         status: OrderStatus;
