@@ -88,20 +88,20 @@ describe('OrdersService', () => {
       //   // expect(serviceMock).toBeCalledWith(order1);
       // });
 
-      // it('should inform payment module by calling processPayment function', () => {
-      //   let serviceMock =jest.spyOn(service,"callPaymentMethod")
-      //   const testOrder: Order = {
-      //     orderId: 12345,
-      //     userId: 9876,
-      //     storeId: 54321,
-      //     createdAt: new Date('2023-06-28T10:30:00Z'),
-      //     updatedAt: new Date('2023-06-29T15:45:00Z'),
-      //     status: OrderStatus.PAYMENT_PROCESSING,
-      //   };
+      it('should inform payment module by calling processPayment function', () => {
+        let serviceMock =jest.spyOn(service,"callPaymentMethod")
+        const testOrder: Order = {
+          orderId: 12345,
+          userId: 9876,
+          storeId: 54321,
+          createdAt: new Date('2023-06-28T10:30:00Z'),
+          updatedAt: new Date('2023-06-29T15:45:00Z'),
+          status: OrderStatus.PAYMENT_PROCESSING,
+        };
 
-      //   service.processPayment(testOrder);
-      //   expect(serviceMock).toBeCalledWith(testOrder);
-      // });
+        service.processPayment(testOrder);
+        expect(serviceMock).toBeCalledWith(testOrder);
+      });
     });
     // describe('Order General Validation Check', () => {
     //   it('should return error if business ueser tries to make an order', () => {
