@@ -9,6 +9,7 @@ import { EnvService } from 'src/config/env';
 import { MenusRepository } from './menus.repository';
 import { MenusService } from './menus.service';
 import { StoresService } from '../stores/stores.service';
+import { StoresRepository } from '../stores/stores.repository';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -22,6 +23,7 @@ describe('MenusService', () => {
         MenusService,
         StoresService,
         MenusRepository,
+        StoresRepository,
         EnvService,
         PrismaService,
       ],
