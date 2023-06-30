@@ -38,3 +38,17 @@ $ pnpm run start:prod
 
 
 ## Convention Templates (PR, Issue)
+### PR Template:
+```bash
+Title: 커밋 내역을 최대한 한 문장으로 정리
+```
+```bash
+## 주요내용(Optional):
+- 커밋 세부 작업 내용의 요약 1
+- 커밋 세부 작업 내용의 요약 2
+- 커밋 세부 작업 내용의 요약 3
+
+## 기타(Optional):
+- 다른 팀원들의 작업내용과 충돌 할 수 있는 사항 1
+- 그 외 다른 팀원들과 함께 공유 및 고려 하고싶은 사항 1
+```
