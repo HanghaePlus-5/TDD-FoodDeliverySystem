@@ -4,7 +4,14 @@ import axios from 'axios';
 import { EnvService } from 'src/config/env';
 
 import { StoresRepository } from './stores.repository';
-import { StoreCreateDto, StoreDuplicationDto } from '../dto';
+import {
+  StoreCreateDto,
+  StoreDto,
+  StoreOptionalDto,
+  StoreOwnedDto,
+} from '../dto';
+import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
+import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
 export class StoresService {
@@ -16,27 +23,82 @@ export class StoresService {
     private readonly storesRepository: StoresRepository,
   ) {}
 
-  async createStore(userId: number, dto: StoreCreateDto): Promise<boolean> {
-    const isValidation = await this.checkValidation(dto);
+  async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
+    const storeOptionalDto = { ...dto, userId };
+    const isValidation = await this.checkValidation(storeOptionalDto);
     if (!isValidation) {
-      return false;
+      throw new Error('Validation failed.');
     }
 
     const isBusinessNumber = await this.checkBusinessNumber(dto.businessNumber);
     if (!isBusinessNumber) {
-      return false;
+      throw new Error('Invalid business number.');
     }
 
-    await this.storesRepository.create(dto);
-
-    return true;
+    return await this.storesRepository.create(storeOptionalDto);
   }
 
-  public async checkValidationCaller(dto: StoreCreateDto): Promise<boolean> {
+  async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+    const isStore = await this.checkStoreOwned(storeOwnedDto);
+    if (!isStore) {
+      throw new Error('Store not owned.');
+    }
+    const isStoreStatusGroup = await this.checkStoreStatusGroup(
+      isStore.status,
+      ['REGISTERED', 'OPEN', 'CLOSED'],
+    );
+    if (!isStoreStatusGroup) {
+      throw new Error('Store status is not allowed.');
+    }
+
+    const storeOptionalDto: StoreOptionalDto = { ...isStore, ...dto };
+    const isValidation = await this.checkValidation(storeOptionalDto);
+    if (!isValidation) {
+      throw new Error('Validation failed.');
+    }
+
+    return await this.storesRepository.update(storeOptionalDto);
+  }
+
+  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto) {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+    const isStore = await this.checkStoreOwned(storeOwnedDto);
+    if (!isStore) {
+      throw new Error('Store not owned.');
+    }
+    const isStoreStatusGroup = await this.checkStoreStatusGroup(
+      isStore.status,
+      ['REGISTERED', 'OPEN', 'CLOSED'],
+    );
+    if (!isStoreStatusGroup) {
+      throw new Error('Store status is not allowed.');
+    }
+
+    const isStoreStatusChangeCondition = await this.checkStoreStatusChangeCondition(isStore.status, dto.status);
+    if (!isStoreStatusChangeCondition) {
+      throw new Error('Store status change condition not met.');
+    }
+
+    return await this.storesRepository.update(dto);
+  }
+
+  async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
+    return await this.storesRepository.findOne(dto);
+  }
+
+  async checkStoreStatusGroup(
+    status: StoreStatus,
+    type: StoreStatus[],
+  ): Promise<boolean> {
+    return type.includes(status);
+  }
+
+  public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
     return await this.checkValidation(dto);
   }
 
-  private async checkValidation(dto: StoreCreateDto): Promise<boolean> {
+  private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
     if (
       !dto.name
       || !dto.businessNumber
@@ -46,6 +108,7 @@ export class StoresService {
       || !dto.openingTime
       || !dto.closingTime
       || !dto.cookingTime
+      || !dto.userId
     ) {
       return false;
     }
@@ -67,6 +130,7 @@ export class StoresService {
       || dto.closingTime < 0
       || dto.cookingTime < this.MIN_COOKING_TIME
       || dto.cookingTime > this.MAX_COOKING_TIME
+      || dto.userId < 1
     ) {
       return false;
     }
@@ -110,7 +174,29 @@ export class StoresService {
     return true;
   }
 
-  private async checkDuplication(dto: StoreDuplicationDto): Promise<boolean> {
-    return true;
+  public async checkStoreStatusChangeConditionCaller(
+    fromStatus: StoreStatus,
+    toStatus: StoreStatus,
+  ): Promise<boolean> {
+    return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
+  }
+
+  private async checkStoreStatusChangeCondition(
+    fromStatus: StoreStatus,
+    toStatus: StoreStatus,
+  ): Promise<boolean> {
+    if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
+      return true;
+    }
+    if (fromStatus === 'OPEN' && toStatus === 'CLOSED') {
+      return true;
+    }
+    if (
+      fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED')
+      && toStatus === ('TERMINATED' || 'OUT_OF_BUSINESS')
+    ) {
+      return true;
+    }
+    return false;
   }
 }
