@@ -56,7 +56,7 @@ export class OrdersService {
 
         // 주문번호, 주문상태
         const result = processedOrder;
-        return result;
+        return true;
     }
     async isValidMenu(menuId: number) {
         const menu = await this.prisma.menu.findUnique({
@@ -76,7 +76,7 @@ export class OrdersService {
     }
 
     alarmStoreInitially(processedOrder: Order) {
-        return 0;
+        return true;
     }
     async hasOngoingOrder(userId: number) {
         const validStatuses = ['PAYMENT_PROCESSING',
@@ -100,7 +100,7 @@ export class OrdersService {
         return result.length > 0;
     }
     hasEnoughStock(orderItem: OrderItemCreateDto) {
-        return 0;
+        return true;
     }
     isOrderItemCountInRange(orderItem: OrderItemCreateDto[]) {
         return orderItem.length > 0 && orderItem.length <= 10;

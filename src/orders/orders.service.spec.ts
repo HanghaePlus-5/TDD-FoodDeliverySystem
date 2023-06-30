@@ -260,14 +260,10 @@ describe('OrdersService', () => {
 
   describe('Order Creation', () => {
     describe('Order Creates normally', () => {
-      // it('should create an order', () => {
-      //   expect(() => {
-      //     service.createOrder(sampleCreaetOrderDTO1);
-      //   }).toThrowError('Method not implemented.');
-      //   // let serviceMock =jest.spyOn(service,"saveOrder")
-      //   // service.createOrder(order1);
-      //   // expect(serviceMock).toBeCalledWith(order1);
-      // });
+      it('should create an order', async () => {
+        const result = await service.createOrder(sampleCreaetOrderDTO1)
+        expect(result).toBe(true);
+      });
 
       it('should inform payment module by calling processPayment function', () => {
         const serviceMock = jest.spyOn(service, 'callPaymentMethod');
@@ -332,13 +328,11 @@ describe('OrdersService', () => {
         });
         console.log(order1);
         const result = await service.hasOngoingOrder(user1.userId);
-        console.log(result)
         expect(result).toBe(true);
       });
 
       it('should return false if a user tries to make an order with not enough stock', async () => {
         const result = await service.isValidMenu(menu1.menuId);
-        console.log(result)
         expect(result).toBe(true)
       });
     });
