@@ -43,8 +43,21 @@ describe('MenusService', () => {
   });
 
   describe('createMenu', () => {
-    it('should check store owned', async () => {
-      
+    it('should exec checkStoreOwned', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
+
+      await expect(
+        menusService.createMenu(1, sampleCreateMenuDto),
+      ).rejects.toThrowError('User does not own store');
+
+      expect(mockCheckStoreOwned).toBeCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
     });
   })
 });
