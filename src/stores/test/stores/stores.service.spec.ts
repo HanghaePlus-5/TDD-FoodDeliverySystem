@@ -10,6 +10,7 @@ import { StoresService } from 'src/stores/stores/stores.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoreCreateDto, StoreDto } from 'src/stores/dto';
 import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
+import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto } from '../utils/testUtils';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -18,54 +19,6 @@ describe('StoresService', () => {
 
   const MIN_COOKING_TIME = 5;
   const MAX_COOKING_TIME = 120;
-
-  const sampleCreateStoreDto: StoreCreateDto = {
-    name: '커피커피',
-    type: 'CAFE',
-    businessNumber: '783-86-01715',
-    phoneNumber: '02-1234-1234',
-    postalNumber: '06210',
-    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
-    openingTime: 9,
-    closingTime: 22,
-    cookingTime: 10,
-    origin: '커피원두(국내산), 우유(국내산)',
-    description: '코딩이 맛있어요!',
-  };
-
-  const sampleUpdateStoreDto: StoreUpdateDto = {
-    storeId: 1,
-    name: '커피커피',
-    type: 'CAFE',
-    phoneNumber: '02-1234-1234',
-    postalNumber: '06210',
-    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
-    openingTime: 9,
-    closingTime: 22,
-    cookingTime: 10,
-    origin: '커피원두(국내산), 우유(국내산)',
-    description: '코딩이 맛있어요!',
-  };
-
-  const sampleStoreDto: StoreDto = {
-    storeId: 1,
-    name: '커피커피',
-    type: 'CAFE',
-    status: 'REGISTERED',
-    businessNumber: '783-86-01715',
-    phoneNumber: '02-1234-1234',
-    postalNumber: '06210',
-    address: '서울 강남구 테헤란로44길 8 12층(아이콘역삼빌딩)',
-    openingTime: 9,
-    closingTime: 22,
-    cookingTime: 10,
-    reviewNumber: 0,
-    averageScore: 0,
-    origin: '커피원두(국내산), 우유(국내산)',
-    description: '코딩이 맛있어요!',
-    registrationDate: new Date(),
-    userId: 1,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -87,6 +40,7 @@ describe('StoresService', () => {
 
   describe('createStore', () => {
     it('should throw error if validation fails', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const mockCheckValidation = jest.spyOn(
         storesService,
         'checkValidation' as any,
@@ -101,6 +55,7 @@ describe('StoresService', () => {
     });
 
     it('should throw error if store business number check fails', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
         'checkBusinessNumber' as any,
@@ -115,6 +70,8 @@ describe('StoresService', () => {
     });
 
     it('should create store and return storeDto', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({});
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const mockcreate = jest.spyOn(storesReposiroty, 'create');
       mockcreate.mockResolvedValue(sampleStoreDto);
 
@@ -130,51 +87,61 @@ describe('StoresService', () => {
 
   describe('checkValidation', () => {
     it('should include store name length > 0', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, name: '' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include store name english', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, name: 'english' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include store name special character', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, name: '커피커피!' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should include businessNumber length 12', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, businessNumber: '123-12-1234' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include phoneNumber length < 11', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, phoneNumber: '02-123-123' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include phoneNumber length > 13', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, phoneNumber: '031-1234-12345' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should include postalNumber length 5', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, postalNumber: '1234' };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include openingTime over 23', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, openingTime: 24 };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include closingTime under 0', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = { ...sampleCreateStoreDto, closingTime: -1 };
       expect(await storesService.checkValidationCaller(dto)).toBe(false);
     });
 
     it('should not include cookingTime under min time', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = {
         ...sampleCreateStoreDto,
         cookingTime: MIN_COOKING_TIME - 1,
@@ -183,6 +150,7 @@ describe('StoresService', () => {
     });
 
     it('should not include cookingTime over max time', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       const dto = {
         ...sampleCreateStoreDto,
         cookingTime: MAX_COOKING_TIME + 1,
@@ -191,6 +159,7 @@ describe('StoresService', () => {
     });
 
     it('should pass validation', async () => {
+      const sampleCreateStoreDto: StoreCreateDto = createSampleCreateStoreDto({})
       expect(
         await storesService.checkValidationCaller({
           ...sampleCreateStoreDto,
@@ -227,6 +196,7 @@ describe('StoresService', () => {
 
   describe('updateStore', () => {
     it('should throw error if store is not owned', async () => {
+      const sampleUpdateStoreDto: StoreUpdateDto = createSampleUpdateStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -244,6 +214,8 @@ describe('StoresService', () => {
     });
 
     it('should throw error if store status is not allowed', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
+      const sampleUpdateStoreDto: StoreUpdateDto = createSampleUpdateStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -268,6 +240,8 @@ describe('StoresService', () => {
     });
 
     it('should throw error if validation fails', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
+      const sampleUpdateStoreDto: StoreUpdateDto = createSampleUpdateStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -294,6 +268,8 @@ describe('StoresService', () => {
     });
 
     it('should update store and return storeDto', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
+      const sampleUpdateStoreDto: StoreUpdateDto = createSampleUpdateStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -324,6 +300,7 @@ describe('StoresService', () => {
 
   describe('checkStoreOwned', () => {
     it('should find store by userId & storeId', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
       mockFindOne.mockResolvedValue(sampleStoreDto);
 
@@ -377,6 +354,8 @@ describe('StoresService', () => {
     });
 
     it('should throw error if store status is not allowed', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
+      const sampleUpdateStoreDto: StoreUpdateDto = createSampleUpdateStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -401,6 +380,7 @@ describe('StoresService', () => {
     });
 
     it('should throw error if not meet store status change condition', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -433,6 +413,7 @@ describe('StoresService', () => {
     });
 
     it('should change store status and return StoreStatusDto', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -484,6 +465,7 @@ describe('StoresService', () => {
 
   describe('getStoresByBusinessUser', () => {
     it('should exec findAllByUserId', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockFindAllByUserId = jest.spyOn(
         storesReposiroty,
         'findAllByUserId' as any,
@@ -499,6 +481,7 @@ describe('StoresService', () => {
 
   describe('getStoreByStoreId', () => {
     it('should exec findOne', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
       mockFindOne.mockResolvedValue(sampleStoreDto);
 
@@ -511,6 +494,7 @@ describe('StoresService', () => {
 
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
+      const sampleStoreDto: StoreDto = createSampleStoreDto({})
       const mockFindManyBySearch = jest.spyOn(
         storesReposiroty,
         'findManyBySearch' as any,
