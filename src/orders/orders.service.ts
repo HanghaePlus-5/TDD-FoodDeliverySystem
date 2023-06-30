@@ -24,7 +24,7 @@ export class OrdersService {
 
         if (orderCreateDto.orderItem) {
             for (const orderItem of orderCreateDto.orderItem) {
-            this.isValidMenu(orderItem);
+            this.isValidMenu(orderItem.menuId);
             this.hasEnoughStock(orderItem);
             }
         } else {
@@ -58,8 +58,13 @@ export class OrdersService {
         const result = processedOrder;
         return result;
     }
-    isValidMenu(orderItem: any) {
-        return 0;
+    async isValidMenu(menuId: number) {
+        const menu = await this.prisma.menu.findUnique({
+            where:{
+                menuId
+            }
+        })
+        return menu !== null;
     }
     async isValidStore(storeId: number) {
             const store = await this.prisma.store.findUniqueOrThrow({
@@ -74,15 +79,25 @@ export class OrdersService {
         return 0;
     }
     async hasOngoingOrder(userId: number) {
-        const validStatuses = ['PAYMENT_PROCESSING', 'ORDER_RECEIVED', 'ORDER_CONFIRMED', 'DELIVERY_STARTED', 'CANCEL_REQUESTED'];
+        const validStatuses = ['PAYMENT_PROCESSING',
+         'ORDER_RECEIVED', 
+         'ORDER_CONFIRMED', 
+         'DELIVERY_STARTED', 
+         'CANCEL_REQUESTED'];
 
-        const result = await this.prisma.order.groupBy({
-            by: ['status'],
+        const result = await this.prisma.order.findMany({
             where: {
                 userId,
+                status: {
+                    in: ['PAYMENT_PROCESSING',
+                    'ORDER_RECEIVED', 
+                    'ORDER_CONFIRMED', 
+                    'DELIVERY_STARTED', 
+                    'CANCEL_REQUESTED']
+                }
             },
         });
-        return result.some((item) => validStatuses.includes(item.status));
+        return result.length > 0;
     }
     hasEnoughStock(orderItem: OrderItemCreateDto) {
         return 0;

@@ -332,12 +332,14 @@ describe('OrdersService', () => {
         });
         console.log(order1);
         const result = await service.hasOngoingOrder(user1.userId);
+        console.log(result)
         expect(result).toBe(true);
       });
 
-      // it('should return false if a user tries to make an order with not enough stock', () => {
-      //   const result = service.hasOngoingOrder(1)
-      //   expect(result).toBe(false)
-      // });
+      it('should return false if a user tries to make an order with not enough stock', async () => {
+        const result = await service.isValidMenu(menu1.menuId);
+        console.log(result)
+        expect(result).toBe(true)
+      });
     });
   });
