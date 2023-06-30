@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import {
+ Menu, PrismaClient, Store, StoreStatus, StoreType,
+} from '@prisma/client';
 
-import { OrdersService } from './orders.service';
-
-
-import { UserType } from 'src/types';
 import { PrismaService } from 'src/prisma';
 // import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { Menu, PrismaClient, Store, StoreStatus, StoreType } from '@prisma/client';
 import { OrderStatus } from 'src/types/orders';
+
 import { OrderCreateDto } from './dto/order-create.dto';
+import { OrdersService } from './orders.service';
 
-
+import { UserType } from 'src/types';
 
 describe('OrdersService', () => {
   let service: OrdersService;
@@ -34,7 +34,6 @@ describe('OrdersService', () => {
   let sampleCreaetOrderDTO2: OrderCreateDto;
   let sampleCreaetOrderDTO3: OrderCreateDto;
 
-
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -47,118 +46,116 @@ describe('OrdersService', () => {
 
     service = module.get<OrdersService>(OrdersService);
     testPrisma = module.get(PrismaService);
-    //create sample user
+    // create sample user
     user1 = await testPrisma.user.create({
-      data: 
+      data:
         {
-          email: "customerUser@gmail.com",
-          name: "Customer Kim",
-          password: "qwer123123",
+          email: 'customerUser@gmail.com',
+          name: 'Customer Kim',
+          password: 'qwer123123',
           type: UserType.CUSTOMER,
         },
-    })
+    });
 
     user2 = await testPrisma.user.create({
-      data: 
+      data:
         {
-          email: "businessUser@gmail.com",
-          name: "Business Kim",
-          password: "qwer123123",
+          email: 'businessUser@gmail.com',
+          name: 'Business Kim',
+          password: 'qwer123123',
           type: UserType.CUSTOMER,
-        }
-      
-    })
+        },
 
-    
+    });
 
     store = await testPrisma.store.create({
       data:
       {
-        name:"Sample Store",
+        name: 'Sample Store',
         type: StoreType.KOREAN,
         status: StoreStatus.OPEN,
-        businessNumber: "1234567890",
-        phoneNumber: "010-1234-5678",
-        postalNumber: "12345",
-        address: "Seoul, Korea",
+        businessNumber: '1234567890',
+        phoneNumber: '010-1234-5678',
+        postalNumber: '12345',
+        address: 'Seoul, Korea',
         openingTime: 1,
         closingTime: 1,
         cookingTime: 1,
-      }
-    })
+      },
+    });
 
     menu1 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu2 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu3 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
-        }
-    })
+          storeId: store.storeId,
+        },
+    });
     menu4 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu5 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu6 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
-        }
-    })
+          storeId: store.storeId,
+        },
+    });
     menu7 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu8 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu9 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
-        }
-    })
+          storeId: store.storeId,
+        },
+    });
     menu10 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu11 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
+          storeId: store.storeId,
         },
-    })
+    });
     menu12 = await testPrisma.menu.create({
-      data: 
+      data:
         {
-          storeId:store.storeId,
-        }
-    })
+          storeId: store.storeId,
+        },
+    });
 
     sampleCreaetOrderDTO1 = {
       user: user1,
@@ -171,35 +168,35 @@ describe('OrdersService', () => {
         {
           quantity: 1,
           menuId: menu2.menuId,
-        },{
+        }, {
           quantity: 2,
           menuId: menu3.menuId,
         },
         {
           quantity: 1,
           menuId: menu4.menuId,
-        },{
+        }, {
           quantity: 2,
           menuId: menu5.menuId,
         },
         {
           quantity: 1,
           menuId: menu6.menuId,
-        },{
+        }, {
           quantity: 2,
           menuId: menu7.menuId,
         },
         {
           quantity: 1,
           menuId: menu8.menuId,
-        },{
+        }, {
           quantity: 2,
           menuId: menu9.menuId,
         },
         {
           quantity: 1,
           menuId: menu10.menuId,
-        },{
+        }, {
           quantity: 2,
           menuId: menu11.menuId,
         },
@@ -231,33 +228,31 @@ describe('OrdersService', () => {
       orderItem: [
       ],
     };
-
-  })
+  });
 
   afterAll(async () => {
-    const deleteOrderItem = testPrisma.orderItem.deleteMany()
+    const deleteOrderItem = testPrisma.orderItem.deleteMany();
 
     await testPrisma.$transaction([
-      deleteOrderItem,     
-    ])
-    const deleteUser = testPrisma.user.deleteMany()
-    const deleteMenu = testPrisma.menu.deleteMany()
+      deleteOrderItem,
+    ]);
+    const deleteUser = testPrisma.user.deleteMany();
+    const deleteMenu = testPrisma.menu.deleteMany();
     await testPrisma.$transaction([
-      deleteMenu,     
-    ])
-    const deleteStore = testPrisma.store.deleteMany()
-    
+      deleteMenu,
+    ]);
+    const deleteStore = testPrisma.store.deleteMany();
 
-    const deleteOrder = testPrisma.order.deleteMany()
+    const deleteOrder = testPrisma.order.deleteMany();
 
     await testPrisma.$transaction([
       deleteOrderItem,
       deleteOrder,
       deleteUser,
       deleteStore,
-      
-    ])
-  })
+
+    ]);
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -275,7 +270,7 @@ describe('OrdersService', () => {
       // });
 
       it('should inform payment module by calling processPayment function', () => {
-        let serviceMock =jest.spyOn(service,"callPaymentMethod")
+        const serviceMock = jest.spyOn(service, 'callPaymentMethod');
         const testOrder: Order = {
           orderId: 12345,
           userId: 9876,
@@ -291,21 +286,21 @@ describe('OrdersService', () => {
     });
     describe('Order General Validation Check', () => {
       it('should return true if customer ueser tries to make an order', () => {
-        let serviceMock =jest.spyOn(service,"verifyType")
-        const result = service.isUserTypeCustomer(user1.userId)
+        const serviceMock = jest.spyOn(service, 'verifyType');
+        const result = service.isUserTypeCustomer(user1.userId);
         expect(serviceMock).toBeCalledWith(user1.userId);
       });
 
       it('should return false if business ueser tries to make an order', () => {
-        let serviceMock =jest.spyOn(service,"verifyType")
-        const result = service.isUserTypeCustomer(user2.userId)
+        const serviceMock = jest.spyOn(service, 'verifyType');
+        const result = service.isUserTypeCustomer(user2.userId);
         expect(serviceMock).toBeCalledWith(user2.userId);
       });
 
       it('should return true if a user tries to make an order from a existing store', async () => {
-        const storeId = store.storeId;  
-        const result = await service.isValidStore(storeId)
-        expect(result).toBe(true)
+        const { storeId } = store;
+        const result = await service.isValidStore(storeId);
+        expect(result).toBe(true);
         // expect(() => {
         //   service.addOrder(order1, businessUser);
         // }).toThrowError('Only customers are allowed to add orders.');
@@ -315,37 +310,34 @@ describe('OrdersService', () => {
         const storeId = store.storeId - 1;
         await expect(service.isValidStore(storeId)).rejects.toThrowError();
       });
-
     });
-  
-
 });
     describe('Order Business Validation Check', () => {
       it('should return false if a user tries to make an order of more than 10 item', () => {
-        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO1.orderItem)
-        expect(result).toBe(false)
+        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO1.orderItem);
+        expect(result).toBe(false);
       });
 
       it('should return false if a user tries to make an order of 0 item', () => {
-        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO3.orderItem)
-        expect(result).toBe(false)
+        const result = service.isOrderItemCountInRange(sampleCreaetOrderDTO3.orderItem);
+        expect(result).toBe(false);
       });
 
       it('should return true if a user have on going order', async () => {
         const order1 = await testPrisma.order.create({
-          data:{
+          data: {
             userId: user1.userId,
-            storeId:store.storeId
-          }
-        })
+            storeId: store.storeId,
+          },
+        });
         console.log(order1);
-        const result = await service.hasOngoingOrder(user1.userId)
-        expect(result).toBe(true)
+        const result = await service.hasOngoingOrder(user1.userId);
+        expect(result).toBe(true);
       });
 
       // it('should return false if a user tries to make an order with not enough stock', () => {
       //   const result = service.hasOngoingOrder(1)
       //   expect(result).toBe(false)
       // });
-    })
-  })
+    });
+  });
