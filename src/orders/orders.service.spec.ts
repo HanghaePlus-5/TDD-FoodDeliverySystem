@@ -235,25 +235,26 @@ describe('OrdersService', () => {
   })
 
   afterAll(async () => {
+    const deleteOrderItem = testPrisma.orderItem.deleteMany()
+
+    await testPrisma.$transaction([
+      deleteOrderItem,     
+    ])
     const deleteUser = testPrisma.user.deleteMany()
     const deleteMenu = testPrisma.menu.deleteMany()
     await testPrisma.$transaction([
       deleteMenu,     
     ])
     const deleteStore = testPrisma.store.deleteMany()
-    const deleteOrderItem = testPrisma.orderItem.deleteMany()
-
-    await testPrisma.$transaction([
-      deleteOrderItem,     
-    ])
+    
 
     const deleteOrder = testPrisma.order.deleteMany()
 
     await testPrisma.$transaction([
-      deleteUser,
-      deleteStore,
       deleteOrderItem,
       deleteOrder,
+      deleteUser,
+      deleteStore,
       
     ])
   })
@@ -330,10 +331,17 @@ describe('OrdersService', () => {
         expect(result).toBe(false)
       });
 
-      // it('should return error if a user tries to make an order while incomplete order exists', () => {
-      //   const result = service.hasOngoingOrder(1)
-      //   expect(result).toBe(false)
-      // });
+      it('should return true if a user have on going order', async () => {
+        const order1 = await testPrisma.order.create({
+          data:{
+            userId: user1.userId,
+            storeId:store.storeId
+          }
+        })
+        console.log(order1);
+        const result = await service.hasOngoingOrder(user1.userId)
+        expect(result).toBe(true)
+      });
 
       // it('should return false if a user tries to make an order with not enough stock', () => {
       //   const result = service.hasOngoingOrder(1)

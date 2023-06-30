@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma';
-import { Prisma, Order, OrderItem} from '@prisma/client';
+import { Prisma, Order, OrderItem, UserType, OrderStatus} from '@prisma/client';
 import { OrderCreateDto } from './dto/order-create.dto';
 import { OrderItemCreateDto, OrderItemCreatePrismaDto } from './dto/orderItem-create.dto';
 
-
+OrderStatus
 
 @Injectable()
 export class OrdersService {
@@ -76,8 +76,16 @@ export class OrdersService {
     alarmStoreInitially(processedOrder: Order) {
         return 0;;
     }
-    hasOngoingOrder(userId: number) {
-        return 0;;
+    async hasOngoingOrder(userId: number) { 
+        const validStatuses = ['PAYMENT_PROCESSING', 'ORDER_RECEIVED', 'ORDER_CONFIRMED', 'DELIVERY_STARTED', 'CANCEL_REQUESTED'];
+
+        const result = await this.prisma.order.groupBy({
+            by: ['status'],
+            where:{
+                userId: userId,            
+            },
+        })
+        return result.some((item) => validStatuses.includes(item.status));;
     }
     hasEnoughStock(orderItem: OrderItemCreateDto) {
         return 0;;
