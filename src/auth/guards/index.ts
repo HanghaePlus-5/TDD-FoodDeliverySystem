@@ -1,2 +1,1 @@
-export * from './auth.guard';
-export * from './user-type.guard';
+export * from './bearer-auth.guard';

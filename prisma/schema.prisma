@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  userId    Int     @id @default(autoincrement())
-  email     String  @unique
-  name      String
-  password  String
-  type      UserType
+  userId   Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String
+  password String
+  type     UserType
 
+  stores    Store[]
   orders    Order[]
   review    Review[]
   favourite Favourite[]
@@ -28,43 +29,45 @@ enum UserType {
 }
 
 model Store {
-  storeId   Int     @id @default(autoincrement())
-  name      String  @unique
-  type    StoreType
-  status  StoreStatus
-  businessNumber String @unique
-  phoneNumber String
-  postalNumber String
-  address   String
-  openingTime Int
-  closingTime Int
-  cookingTime Int
-  reviewNumber Int @default(0)
-  averageScore Float @default(0)
-  origin  String?
-  description String?
-  registrationDate DateTime @default(now())
-  menu      Menu[]
-  orders    Order[]
-  favourite Favourite[]
+  storeId          Int         @id @default(autoincrement())
+  name             String      @unique
+  type             StoreType
+  status           StoreStatus
+  businessNumber   String      @unique
+  phoneNumber      String
+  postalNumber     String
+  address          String
+  openingTime      Int
+  closingTime      Int
+  cookingTime      Int
+  reviewNumber     Int         @default(0)
+  averageScore     Float       @default(0)
+  origin           String?
+  description      String?
+  registrationDate DateTime    @default(now())
+  menu             Menu[]
+  orders           Order[]
+  favourite        Favourite[]
+  User             User?       @relation(fields: [userId], references: [userId])
+  userId           Int?
 
   @@index([name, type])
 }
 
 enum StoreType {
-  KOREAN  // 한식
-  CHINESE  // 중식
-  JAPANESE  // 일식
-  WESTERN  // 양식
-  CAFE  // 카페
+  KOREAN // 한식
+  CHINESE // 중식
+  JAPANESE // 일식
+  WESTERN // 양식
+  CAFE // 카페
 }
 
 enum StoreStatus {
-  REGISTERED  // 등록
-  OPEN  // 영업중
-  CLOSED  // 휴무
-  TERMINATED  // 해지
-  OUT_OF_BUSINESS  // 폐업
+  REGISTERED // 등록
+  OPEN // 영업중
+  CLOSED // 휴무
+  TERMINATED // 해지
+  OUT_OF_BUSINESS // 폐업
 }
 
 model Menu {
@@ -75,7 +78,7 @@ model Menu {
 }
 
 model Order {
-  orderId   Int     @id @default(autoincrement())
+  orderId   Int      @id @default(autoincrement())
   userId    Int
   user      User?    @relation(fields: [userId], references: [userId])
   storeId   Int      
@@ -109,7 +112,7 @@ model OrderItem{
 }
 
 model Payment {
-  paymentId Int     @id @default(autoincrement())
+  paymentId Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
   cardExpiryMonth Int
@@ -127,21 +130,21 @@ enum PaymentStatus {
 }
 
 model Review {
-  reviewId  Int     @id @default(autoincrement())
+  reviewId  Int      @id @default(autoincrement())
   userId    Int
-  user      User    @relation(fields: [userId], references: [userId])
-  orderId   Int     @unique
-  order     Order   @relation(fields: [orderId], references: [orderId])
-  content   String  @db.Text
-  score     Int     @default(0)
+  user      User     @relation(fields: [userId], references: [userId])
+  orderId   Int      @unique
+  order     Order    @relation(fields: [orderId], references: [orderId])
+  content   String   @db.Text
+  score     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Favourite {
-  favouriteId Int     @id @default(autoincrement())
+  favouriteId Int   @id @default(autoincrement())
   userId      Int
-  user        User    @relation(fields: [userId], references: [userId])
+  user        User  @relation(fields: [userId], references: [userId])
   storeId     Int
-  store       Store   @relation(fields: [storeId], references: [storeId])
+  store       Store @relation(fields: [storeId], references: [storeId])
 }

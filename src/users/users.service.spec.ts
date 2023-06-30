@@ -4,6 +4,7 @@ import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { is } from 'typia';
 
 import { PrismaService } from 'src/prisma';
+import { bcryptHash } from 'src/lib/bcrypt';
 
 import { UsersService } from './users.service';
 
@@ -143,7 +144,7 @@ describe('UsersService', () => {
       });
 
       it('should return null if no user match.', async () => {
-        mockPrisma.user.findFirst.mockResolvedValueOnce(null);
+        mockPrisma.user.findUnique.mockResolvedValueOnce(null);
 
         const result = await service.findUserByEmailAndPassword(signinForm);
 
@@ -151,17 +152,16 @@ describe('UsersService', () => {
       });
 
       it('should return the User if user match.', async () => {
-        mockPrisma.user.findFirst.mockResolvedValueOnce(testUser);
+        const hashedUser = {
+          ...testUser,
+          password: await bcryptHash(testUser.password),
+        };
+        mockPrisma.user.findUnique.mockResolvedValueOnce(hashedUser);
 
         const result = await service.findUserByEmailAndPassword(signinForm);
 
-        expect(result).toEqual(testUser);
+        expect(result).toEqual(hashedUser);
       });
-    });
-    describe('Create JWT token.', () => {
-      it.todo('should return null if create fails.');
-      it.todo('should return null if invalid user payload.');
-      it.todo('should return jwt token if create succeeds.');
     });
   });
 });
