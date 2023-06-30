@@ -13,16 +13,16 @@ export function mockingPaymentCreateDto(dto? : Partial<PaymentCreateDto>) : Paym
         ...dto,
     }
 }
-export function paymentDto(dto : Partial<PaymentDto>) : PaymentDto{
+export function mockingPaymentDto(dto? : Partial<PaymentDto>) : PaymentDto{
     return {
+        cardExpiryMonth: 6,
+        cardExpiryYear: 2027,
+        cardHolderName: 'michael',
+        cardIssuer: 'abc',
+        cardNumber: '1111-1111-1111-1121',
+        paymentStatus: PaymentStatus.completed,
+        orderId : 1,
         paymentGatewayId : "1",
-        cardExpiryMonth : 1,
-        cardExpiryYear : 2021,
-        cardHolderName : "dan",
-        cardIssuer : "kb",
-        paymentStatus : PaymentStatus.canceled,
-        orderId : 2,
-        cardNumber : '2222-2222-2222-2222',
         paymentId: 10,
         createdAt: new Date(),
         updatedAt: new Date(),
