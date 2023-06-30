@@ -507,7 +507,7 @@ describe('StoresService', () => {
 
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
     });
-  })
+  });
 
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
@@ -530,5 +530,5 @@ describe('StoresService', () => {
         limit: 10,
       });
     });
-  })
+  });
 });

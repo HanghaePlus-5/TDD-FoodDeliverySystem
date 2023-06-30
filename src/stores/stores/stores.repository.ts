@@ -4,8 +4,8 @@ import { Store, StoreStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma';
 
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
-import { storeToDtoMap } from '../mapper/stores.mapper';
 import { StoreSearchDto } from '../dto/store-search.dto';
+import { storeToDtoMap } from '../mapper/stores.mapper';
 
 @Injectable()
 export class StoresRepository {
@@ -73,7 +73,7 @@ export class StoresRepository {
           { name: { contains: dto.keyword } },
           { address: { contains: dto.keyword } },
           { description: { contains: dto.keyword } },
-        ]
+        ],
       },
       orderBy: {
         storeId: 'asc',

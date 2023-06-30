@@ -11,8 +11,8 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
-import { StoreUpdateDto } from '../dto/store-update.dto';
 import { StoreSearchDto } from '../dto/store-search.dto';
+import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
 export class StoresService {
