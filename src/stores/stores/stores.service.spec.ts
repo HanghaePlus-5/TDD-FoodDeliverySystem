@@ -495,4 +495,27 @@ describe('StoresService', () => {
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
     });
   })
+
+  describe('getStoresBySearch', () => {
+    it('should exec findManyBySearch', async () => {
+      const mockFindManyBySearch = jest.spyOn(
+        storesReposiroty,
+        'findManyBySearch' as any,
+      );
+      mockFindManyBySearch.mockResolvedValue([sampleStoreDto]);
+
+      const result = await storesService.getStoresBySearch({
+        keyword: '커피',
+        page: 1,
+        limit: 10,
+      });
+      expect(result).toEqual([sampleStoreDto]);
+
+      expect(mockFindManyBySearch).toHaveBeenCalledWith({
+        keyword: '커피',
+        page: 1,
+        limit: 10,
+      });
+    });
+  })
 });

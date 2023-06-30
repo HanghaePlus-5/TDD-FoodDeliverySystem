@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma';
 
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
+import { StoreSearchDto } from '../dto/store-search.dto';
 
 @Injectable()
 export class StoresRepository {
@@ -57,6 +58,22 @@ export class StoresRepository {
     const stores = await this.prisma.store.findMany({
       where: {
         userId,
+      },
+      orderBy: {
+        storeId: 'asc',
+      },
+    });
+    return stores.map(storeToDtoMap);
+  }
+
+  async findManyBySearch(dto: StoreSearchDto) {
+    const stores = await this.prisma.store.findMany({
+      where: {
+        OR: [
+          { name: { contains: dto.keyword } },
+          { address: { contains: dto.keyword } },
+          { description: { contains: dto.keyword } },
+        ]
       },
       orderBy: {
         storeId: 'asc',
