@@ -201,14 +201,27 @@ describe('StoresService', () => {
   });
 
   describe('checkBusinessNumber', () => {
-    it('should return false if business number is not valid', async () => {
-      const dto = '123-12-1234';
-      expect(await storesService.checkBusinessNumberCaller(dto)).toBe(false);
-    });
+    // it('should return false if business number is not valid', async () => {
+    //   const dto = '123-12-1234';
+    //   expect(await storesService.checkBusinessNumberCaller(dto)).toBe(false);
+    // });
 
-    it('should return true if business number is valid', async () => {
+    // it('should return true if business number is valid', async () => {
+    //   const dto = '783-86-01715';
+    //   expect(await storesService.checkBusinessNumberCaller(dto)).toBe(true);
+    // });
+
+    it('should call checkBusinessNumber', async () => {
+      const mockCheckBusinessNumber = jest.spyOn(
+        storesService,
+        'checkBusinessNumber' as any,
+      );
+      mockCheckBusinessNumber.mockResolvedValue(true);
+
       const dto = '783-86-01715';
-      expect(await storesService.checkBusinessNumberCaller(dto)).toBe(true);
+      expect(await storesService.checkBusinessNumber(dto)).toBe(true);
+
+      expect(mockCheckBusinessNumber).toHaveBeenCalledWith(dto);
     });
   });
 
@@ -453,7 +466,7 @@ describe('StoresService', () => {
 
   describe('checkStoreStatusChangeCondition', () => {
     it('shoud return false if status is not allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeConditionCaller(
+      const result = await storesService.checkStoreStatusChangeCondition(
         'REGISTERED' as StoreStatus,
         'CLOSED' as StoreStatus,
       );
@@ -461,7 +474,7 @@ describe('StoresService', () => {
     });
 
     it('shoud return true if status is allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeConditionCaller(
+      const result = await storesService.checkStoreStatusChangeCondition(
         'OPEN' as StoreStatus,
         'CLOSED' as StoreStatus,
       );

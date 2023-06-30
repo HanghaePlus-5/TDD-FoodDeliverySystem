@@ -151,13 +151,7 @@ export class StoresService {
     return true;
   }
 
-  public async checkBusinessNumberCaller(
-    BusinessNumber: string,
-  ): Promise<boolean> {
-    return await this.checkBusinessNumber(BusinessNumber);
-  }
-
-  private async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
+  async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
     const modifiedBusinessNumber = BusinessNumber.replace(/-/g, '');
     const data = {
       b_no: [`${modifiedBusinessNumber}`],
@@ -187,14 +181,7 @@ export class StoresService {
     return true;
   }
 
-  public async checkStoreStatusChangeConditionCaller(
-    fromStatus: StoreStatus,
-    toStatus: StoreStatus,
-  ): Promise<boolean> {
-    return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
-  }
-
-  private async checkStoreStatusChangeCondition(
+  async checkStoreStatusChangeCondition(
     fromStatus: StoreStatus,
     toStatus: StoreStatus,
   ): Promise<boolean> {
