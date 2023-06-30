@@ -85,7 +85,7 @@ export class StoresService {
   }
 
   async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
-    return await this.storesRepository.findAllByUserId({ userId });
+    return await this.storesRepository.findAllByUserId(userId);
   }
 
   async getStoreByStoreId(storeId: number): Promise<StoreDto | null> {

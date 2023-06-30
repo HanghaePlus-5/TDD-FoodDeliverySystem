@@ -480,7 +480,7 @@ describe('StoresService', () => {
       const result = await storesService.getStoresByBusinessUser(1);
       expect(result).toEqual([sampleStoreDto]);
 
-      expect(mockFindAllByUserId).toHaveBeenCalledWith({ userId: 1 });
+      expect(mockFindAllByUserId).toHaveBeenCalledWith(1);
     });
   });
 
