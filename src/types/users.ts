@@ -19,4 +19,10 @@ declare global {
     name: string;
     type: UserType;
   }
+
+  namespace Express {
+    interface Request {
+      payload: UserPayload;
+    }
+  }
 }
