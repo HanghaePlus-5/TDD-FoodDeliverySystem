@@ -1,0 +1,641 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Server"
+    }
+  ],
+  "info": {
+    "version": "0.0.1",
+    "title": "hanghae-plus-0101",
+    "description": ""
+  },
+  "paths": {
+    "/example/nestia": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "example.nestia.useNestia",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/example/typia": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/__object"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "example.typia.nouseNestia",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/example/env": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "example.env.envExample",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/example/auth": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "example.auth.ignoreAuthExample",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/example/usertype": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/global.UserPayload"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "example.usertype.userTypeExample",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/users/signup": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseForm_lt_global.User_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "users.signup.signup",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseForm_lt_global.User_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "users.signin.signin",
+        "x-nestia-jsDocTags": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FormDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "@minLength 4\n@maxLength 10",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 10
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "10",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 10
+          },
+          "email": {
+            "description": "@format email",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email"
+          },
+          "age": {
+            "description": "@type int",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "integer"
+          },
+          "options": {
+            "$ref": "#/components/schemas/OptionsDto"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "name",
+          "email",
+          "age",
+          "options"
+        ],
+        "description": "@type int",
+        "x-typia-jsDocTags": []
+      },
+      "OptionsDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/UserType"
+          },
+          "isNew": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "isNew"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "user"
+        ]
+      },
+      "Response": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "options": {
+            "$ref": "#/components/schemas/OptionsDto"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "age",
+          "options"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "__object": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "options": {
+            "$ref": "#/components/schemas/OptionsDto"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "age",
+          "options"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "global.UserPayload": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "name": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/global.UserType"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "userId",
+          "name",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "global.UserType": {
+        "type": "string",
+        "enum": [
+          "CUSTOMER",
+          "BUSINESS"
+        ]
+      },
+      "UserCreateDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "User email\n@format email",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "description": "User name",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "description": "User password\n@minLength 4\n@maxLength 12",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 12
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "12",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 12
+          },
+          "type": {
+            "$ref": "#/components/schemas/global.UserType"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email",
+          "name",
+          "password",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_global.User_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/global.User"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "global.User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "name": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/global.UserType"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "userId",
+          "email",
+          "name",
+          "password",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserSignDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "User email\n@format email",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "description": "User password\n@minLength 4\n@maxLength 12",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 12
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "12",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 12
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "x-typia-jsDocTags": []
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}
