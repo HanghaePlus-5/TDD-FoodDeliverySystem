@@ -30,6 +30,7 @@ $ pnpm run start:prod
 ```
 
 ## Swagger
+### TDD 로 unit 테스트 단위 부터 작성 하며 구축하고 있기 때문에 아직 API 문서가 존재하지 않습니다.
 <img width="882" alt="KakaoTalk_Image_2023-06-30-22-43-54" src="https://github.com/HanghaePlus-5/TDD-FoodDeliverySystem/assets/92039854/59baac57-19b3-4ad3-9948-553d525c1739">
 <img width="878" alt="KakaoTalk_Image_2023-06-30-22-43-59" src="https://github.com/HanghaePlus-5/TDD-FoodDeliverySystem/assets/92039854/717a0445-6400-46c1-986b-70032259ee09">
 
