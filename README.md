@@ -37,6 +37,19 @@ $ pnpm run start:prod
 <img width="878" alt="KakaoTalk_Image_2023-06-30-22-43-59" src="https://github.com/HanghaePlus-5/TDD-FoodDeliverySystem/assets/92039854/717a0445-6400-46c1-986b-70032259ee09">
 
 ## Git Branching Strategies
+### Git Flow 의 간소화 된 버전 사용 ( `Feature/<도메인>` -> `Dev` -> `Prod` )
+#### 소규모 팀으로 소규모 서비스를 구현하였기 때문에 간소화 된 버전의 Git Flow 를 사용하였습니다.
+#### 다만 서로의 코드를 효과 적으로 리뷰 하고 소통 할 수 있도록 PR 시 전원의 Review/Approval 후 Merge 할 수 있도록 하였습니다.
+
+### Git Flow 전략이란?
+#### 5가지 브랜치:
+- master: 최상위 브랜치, 서비스의 배포 
+- develop: 기능단위의 작업물들을 통합
+- feature: 기능 단위의 개발
+- release: 배포전 QA 등을 수행 
+- horfix: 버그의 긴급 수정
+
+![image](https://github.com/HanghaePlus-5/TDD-FoodDeliverySystem/assets/92039854/65297edf-cad8-4ef6-8385-188fa4630882)
 
 
 ## Convention Templates (PR, Issue)
