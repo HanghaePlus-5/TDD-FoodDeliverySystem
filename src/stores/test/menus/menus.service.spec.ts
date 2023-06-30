@@ -6,10 +6,11 @@ import { mockDeep } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
 
-import { MenusRepository } from './menus.repository';
-import { MenusService } from './menus.service';
-import { StoresService } from '../stores/stores.service';
-import { StoresRepository } from '../stores/stores.repository';
+import { MenusService } from 'src/stores/menus/menus.service';
+import { StoresService } from 'src/stores/stores/stores.service';
+import { MenusRepository } from 'src/stores/menus/menus.repository';
+import { StoresRepository } from 'src/stores/stores/stores.repository';
+
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -40,4 +41,10 @@ describe('MenusService', () => {
   it('should be defined', () => {
     expect(menusService).toBeDefined();
   });
+
+  describe('createMenu', () => {
+    it('should check store owned', async () => {
+      
+    });
+  })
 });

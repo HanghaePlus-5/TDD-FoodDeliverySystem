@@ -6,10 +6,10 @@ import { mockDeep } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
 
-import { StoresRepository } from './stores.repository';
-import { StoresService } from './stores.service';
-import { StoreCreateDto, StoreDto } from '../dto';
-import { StoreUpdateDto } from '../dto/store-update.dto';
+import { StoresService } from 'src/stores/stores/stores.service';
+import { StoresRepository } from 'src/stores/stores/stores.repository';
+import { StoreCreateDto, StoreDto } from 'src/stores/dto';
+import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
