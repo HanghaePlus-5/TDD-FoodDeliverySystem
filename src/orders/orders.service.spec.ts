@@ -261,7 +261,7 @@ describe('OrdersService', () => {
   describe('Order Creation', () => {
     describe('Order Creates normally', () => {
       it('should create an order', async () => {
-        const result = await service.createOrder(sampleCreaetOrderDTO1)
+        const result = await service.createOrder(sampleCreaetOrderDTO1);
         expect(result).toBe(true);
       });
 
@@ -333,7 +333,7 @@ describe('OrdersService', () => {
 
       it('should return false if a user tries to make an order with not enough stock', async () => {
         const result = await service.isValidMenu(menu1.menuId);
-        expect(result).toBe(true)
+        expect(result).toBe(true);
       });
     });
   });

@@ -60,10 +60,10 @@ export class OrdersService {
     }
     async isValidMenu(menuId: number) {
         const menu = await this.prisma.menu.findUnique({
-            where:{
-                menuId
-            }
-        })
+            where: {
+                menuId,
+            },
+        });
         return menu !== null;
     }
     async isValidStore(storeId: number) {
@@ -80,9 +80,9 @@ export class OrdersService {
     }
     async hasOngoingOrder(userId: number) {
         const validStatuses = ['PAYMENT_PROCESSING',
-         'ORDER_RECEIVED', 
-         'ORDER_CONFIRMED', 
-         'DELIVERY_STARTED', 
+         'ORDER_RECEIVED',
+         'ORDER_CONFIRMED',
+         'DELIVERY_STARTED',
          'CANCEL_REQUESTED'];
 
         const result = await this.prisma.order.findMany({
@@ -90,11 +90,11 @@ export class OrdersService {
                 userId,
                 status: {
                     in: ['PAYMENT_PROCESSING',
-                    'ORDER_RECEIVED', 
-                    'ORDER_CONFIRMED', 
-                    'DELIVERY_STARTED', 
-                    'CANCEL_REQUESTED']
-                }
+                    'ORDER_RECEIVED',
+                    'ORDER_CONFIRMED',
+                    'DELIVERY_STARTED',
+                    'CANCEL_REQUESTED'],
+                },
             },
         });
         return result.length > 0;
