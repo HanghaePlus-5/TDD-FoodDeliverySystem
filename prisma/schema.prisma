@@ -121,6 +121,7 @@ model Payment {
   cardNumber String
   paymentGatewayId String
   paymentStatus PaymentStatus
+  cardIssuer String
   orderId   Int   @unique    
   order     Order @relation(fields: [orderId], references: [orderId])
 }
