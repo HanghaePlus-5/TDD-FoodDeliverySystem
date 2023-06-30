@@ -8,6 +8,7 @@ import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.s
 import { PaymentService } from './payment.service';
 
 import { PaymentStatus } from 'src/types';
+import { PaymentDto } from './dto/payment.dto';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -34,12 +35,12 @@ describe('PaymentService', () => {
     cardHolderName: 'michael',
     cardIssuer: 'abc',
     cardNumber: '1111-1111-1111-1121',
-    paymentGatewayId: '1',
     paymentStatus: PaymentStatus.completed,
-    orderId : 1,
   };
-  const paymentDto = {
+  const paymentDto : PaymentDto = {
     ...paymentCreateDto,
+    orderId : 1,
+    paymentGatewayId : "1",
     paymentId: 10,
     createdAt: new Date(),
     updatedAt: new Date(),

@@ -21,7 +21,7 @@ export class PaymentService {
     validateCardHolder(paymentCreateDto.cardHolderName, orderDto.customerName);
     validateCardNumber(paymentCreateDto.cardNumber);
     const response = await this.pgService.sendPaymentRequestToPG(paymentCreateDto);
-    const data = { ...paymentCreateDto, paymentGatewayId: response.data.paymentGatewayId }
+    const data = { ...paymentCreateDto, paymentGatewayId: response.data.paymentGatewayId, orderId : orderDto.orderId }
     const payment = await this.prisma.payment.create({ data });
     return payment;
   }

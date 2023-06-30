@@ -49,4 +49,12 @@ export interface PaymentDto {
      * OrderId
      */
     orderId: number;
+    /**
+     * CreatedAt
+     */
+    createdAt: Date;
+    /**
+     * OrderId
+     */
+    updatedAt: Date;
 }
