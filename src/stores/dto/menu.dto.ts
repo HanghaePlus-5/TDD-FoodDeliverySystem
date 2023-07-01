@@ -3,7 +3,8 @@ export interface MenuDto {
   name: string;
   sort: number;
   status: MenuStatus;
-  price: string[];
-  description: string;
-  registrationDate: Date;
+  price: number;
+  description: string | null;
+  registrationDate: Date; 
+  storeId: number;
 }
