@@ -17,7 +17,6 @@ export class StoresRepository {
       store = await this.prisma.store.create({
         data: {
           ...dto,
-          status: StoreStatus.REGISTERED,
         },
       });
     } catch (e) {

@@ -15,6 +15,7 @@ export function createSampleCreateStoreDto(dto: Partial<StoreCreateDto>): StoreC
     cookingTime: 10,
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
+    userId: 1,
     ...dto,
   };
 }
