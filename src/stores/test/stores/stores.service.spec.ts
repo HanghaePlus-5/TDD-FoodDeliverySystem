@@ -387,7 +387,7 @@ describe('StoresService', () => {
         storesService,
         'checkStoreStatusChangeCondition' as any,
       );
-      checkStoreStatusChangeCondition.mockResolvedValue(false);
+      checkStoreStatusChangeCondition.mockReturnValue(false);
 
       await expect(
         storesService.changeStoreStatus(1, {
@@ -420,7 +420,7 @@ describe('StoresService', () => {
         storesService,
         'checkStoreStatusChangeCondition' as any,
       );
-      checkStoreStatusChangeCondition.mockResolvedValue(true);
+      checkStoreStatusChangeCondition.mockReturnValue(true);
 
       const mockSave = jest.spyOn(storesReposiroty, 'update');
       mockSave.mockResolvedValue(sampleStoreDto);
@@ -436,16 +436,16 @@ describe('StoresService', () => {
   });
 
   describe('checkStoreStatusChangeCondition', () => {
-    it('shoud return false if status is not allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeCondition(
+    it('shoud return false if status is not allowed', () => {
+      const result = storesService.checkStoreStatusChangeCondition(
         'REGISTERED' as StoreStatus,
         'CLOSED' as StoreStatus,
       );
       expect(result).toBe(false);
     });
 
-    it('shoud return true if status is allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeCondition(
+    it('shoud return true if status is allowed', () => {
+      const result = storesService.checkStoreStatusChangeCondition(
         'OPEN' as StoreStatus,
         'CLOSED' as StoreStatus,
       );

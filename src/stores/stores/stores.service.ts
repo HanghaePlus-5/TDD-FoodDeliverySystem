@@ -187,10 +187,10 @@ export class StoresService {
     return true;
   }
 
-  async checkStoreStatusChangeCondition(
+  checkStoreStatusChangeCondition(
     fromStatus: StoreStatus,
     toStatus: StoreStatus,
-  ): Promise<boolean> {
+  ): boolean {
     if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
       return true;
     }
