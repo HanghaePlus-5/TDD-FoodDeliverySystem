@@ -143,6 +143,13 @@ export class MenusService {
         throw new Error('User does not own store');
       }
     }
+
+    try {
+      const menus = await this.menusRepository.findAllByStoreId(storeId, viewType);
+      return menus;
+    } catch (error) {
+      throw new Error('Menu retrieval failed.');
+    }
   }
 
   checkMenuStatusChangeCondition(

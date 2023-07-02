@@ -60,4 +60,18 @@ export class MenusRepository {
     }
     return menuToDtoMap(menu);
   }
+
+  async findAllByStoreId(storeId: number, viewType: ViewType): Promise<MenuDto[]> {
+    const menus = await this.prisma.menu.findMany({
+      where: {
+        storeId,
+        status: viewType === 'OWNER' ? { not: 'DELETED' } : 'OPEN',
+      },
+      orderBy: {
+        sort: 'asc',
+      },
+    });
+
+    return menus.map(menuToDtoMap);
+  }
 }
