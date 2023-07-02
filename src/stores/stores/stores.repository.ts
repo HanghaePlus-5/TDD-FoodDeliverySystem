@@ -7,6 +7,8 @@ import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 import { StoreSearchDto } from '../dto/store-search.dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
 import { OPENED_STORE_STATUES } from 'src/constants/stores';
+import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
+import { StoreMenuDto } from '../dto/store-menu.dto';
 
 @Injectable()
 export class StoresRepository {
@@ -67,7 +69,7 @@ export class StoresRepository {
     return stores.map(storeToDtoMap);
   }
 
-  async findManyBySearch(dto: StoreSearchDto): Promise<StoreDto[]> {
+  async findManyBySearch(dto: StoreSearchDto): Promise<StoreMenuDto[]> {
     const { keyword, page, limit } = dto;
     const offset = (page - 1) * limit;
     const stores = await this.prisma.store.findMany({
@@ -87,7 +89,14 @@ export class StoresRepository {
       },
       skip: offset,
       take: limit,
+      include: {
+        menu: {
+          orderBy: {
+            sort: 'asc',
+          },
+        },
+      }
     });
-    return stores.map(storeToDtoMap);
+    return stores.map(StoreMenuDtoMap);
   }
 }
