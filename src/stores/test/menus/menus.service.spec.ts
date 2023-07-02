@@ -10,7 +10,7 @@ import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateMenuDto } from '../utils/testUtils';
+import { createSampleCreateMenuDto, createSampleStoreDto } from '../utils/testUtils';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -59,6 +59,31 @@ describe('MenusService', () => {
         storeId: 1,
         userId: 1,
       });
+    });
+
+    it('should exec checkStoreStatusGroup', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(false);
+
+      await expect(
+        menusService.createMenu(1, 1, sampleCreateMenuDto),
+      ).rejects.toThrowError('Store status is not allowed.');
+
+      expect(mockCheckStoreStatusGroup).toBeCalledWith(
+        'REGISTERED',
+        ['REGISTERED', 'OPEN', 'CLOSED'],
+      );
     });
   });
 });
