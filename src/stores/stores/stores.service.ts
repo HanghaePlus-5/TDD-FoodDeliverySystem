@@ -37,7 +37,7 @@ export class StoresService {
     }
 
     try { 
-      const store = await this.storesRepository.create(userId, storeOptionalDto);
+      const store = await this.storesRepository.create(1, dto);
       return store;
     } catch (error) {
       throw new Error('Store creation failed.');

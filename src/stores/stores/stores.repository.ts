@@ -16,8 +16,8 @@ export class StoresRepository {
     try {
       store = await this.prisma.store.create({
         data: {
-          userId,
           ...dto,
+          userId,
         },
       });
     } catch (e) {

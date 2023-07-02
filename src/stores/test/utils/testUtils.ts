@@ -15,7 +15,6 @@ export function createSampleCreateStoreDto(dto: Partial<StoreCreateDto>): StoreC
     cookingTime: 10,
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
-    userId: 1,
     ...dto,
   };
 }
@@ -63,7 +62,6 @@ export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
 export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCreateDto {
   return {
     name: '아메리카노',
-    sort: 1,
     price: 4000,
     description: '커피의 정석',
     storeId: 1,

@@ -78,10 +78,7 @@ describe('StoresService', () => {
       const result = await storesService.createStore(1, sampleCreateStoreDto);
       expect(result).toBe(sampleStoreDto);
 
-      expect(mockcreate).toHaveBeenCalledWith({
-        ...sampleCreateStoreDto,
-        userId: 1,
-      });
+      expect(mockcreate).toHaveBeenCalledWith(1, sampleCreateStoreDto);
     });
   });
 
