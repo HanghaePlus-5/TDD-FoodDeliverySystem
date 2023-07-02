@@ -85,5 +85,36 @@ describe('MenusService', () => {
         ['REGISTERED', 'OPEN', 'CLOSED'],
       );
     });
+
+    it('should exec checkMenuNameUnique', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockCheckMenuNameUnique = jest.spyOn(
+        menusService,
+        'checkMenuNameUnique',
+      );
+      mockCheckMenuNameUnique.mockResolvedValue(false);
+
+      await expect(
+        menusService.createMenu(1, 1, sampleCreateMenuDto),
+      ).rejects.toThrowError('Menu name is not unique.');
+
+      expect(mockCheckMenuNameUnique).toBeCalledWith({
+        storeId: 1,
+        name: '아메리카노'
+      });
+    });
   });
 });
