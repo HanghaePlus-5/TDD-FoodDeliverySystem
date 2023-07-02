@@ -33,7 +33,7 @@ export class MenusRepository {
     return menuToDtoMap(menu);
   }
 
-  async findOne(dto: Partial<MenuCreateDto>, statusValues: MenuStatus[] = []): Promise<MenuDto | null> {
+  async findOne(dto: Partial<MenuDto>, statusValues: MenuStatus[] = []): Promise<MenuDto | null> {
     const munu = await this.prisma.menu.findFirst({
       where: {
         ...dto,
