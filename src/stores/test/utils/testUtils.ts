@@ -99,7 +99,7 @@ export function createSampleMenuDto(dto?: Partial<MenuDto>): MenuDto {
   };
 }
 
-export function createSampleStoreMenuDto(dto: Partial<StoreMenuDto>): StoreMenuDto {
+export function createSampleStoreMenuDto(dto?: Partial<StoreMenuDto>): StoreMenuDto {
   return {
     storeId: 1,
     name: '커피커피',
@@ -125,5 +125,6 @@ export function createSampleStoreMenuDto(dto: Partial<StoreMenuDto>): StoreMenuD
       inventory: 100,
       description: '커피의 정석',
     }],
+    ...dto,
   }
 }

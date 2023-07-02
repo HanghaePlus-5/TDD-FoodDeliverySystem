@@ -483,7 +483,7 @@ describe('StoresService', () => {
 
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
-      const sampleStoreMenuDto = createSampleStoreMenuDto({});
+      const sampleStoreMenuDto = createSampleStoreMenuDto();
       const mockFindManyBySearch = jest.spyOn(
         storesReposiroty,
         'findManyBySearch' as any,
