@@ -120,5 +120,39 @@ describe('MenusService', () => {
         name: '아메리카노',
       }, ACTIVATE_MENU_STATUES);
     });
+
+    it('should create menu and return menu dto', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const sampleMenuDto = createSampleMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockFindOne = jest.spyOn(
+        menusRepository,
+        'findOne',
+      );
+      mockFindOne.mockResolvedValue(null);
+
+      const mockCreate = jest.spyOn(
+        menusRepository,
+        'create',
+      );
+      mockCreate.mockResolvedValue(sampleMenuDto);
+
+      const result = await menusService.createMenu(1, sampleCreateMenuDto);
+      expect(result).toBe(sampleMenuDto);
+
+      expect(mockCreate).toBeCalledWith(1, sampleCreateMenuDto);
+    });
   });
 });
