@@ -111,10 +111,7 @@ describe('MenusService', () => {
         menusService.createMenu(1, sampleCreateMenuDto),
       ).rejects.toThrowError('Menu name is not unique.');
 
-      expect(mockCheckMenuNameUnique).toBeCalledWith({
-        storeId: 1,
-        name: '아메리카노'
-      });
+      expect(mockCheckMenuNameUnique).toBeCalledWith(1, '아메리카노');
     });
   });
 });
