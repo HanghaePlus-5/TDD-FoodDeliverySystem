@@ -1,6 +1,6 @@
 import { StoreDto } from './store.dto';
 
-export interface StoreCreateDto extends Omit<
+export type StoreCreateDto = Omit<
     StoreDto,
     'storeId' | 'status' | 'reviewNumber' | 'averageScore' | 'registrationDate' | 'userId'
-  > {}
+  >

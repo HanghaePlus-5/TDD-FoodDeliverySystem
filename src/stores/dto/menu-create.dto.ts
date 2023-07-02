@@ -1,6 +1,6 @@
 import { MenuDto } from './menu.dto';
 
-export interface MenuCreateDto extends Omit<
+export type MenuCreateDto = Omit<
     MenuDto,
     'menuId' | 'sort' | 'status' | 'registrationDate'
-  > {}
+  >

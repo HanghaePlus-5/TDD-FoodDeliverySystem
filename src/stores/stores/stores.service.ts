@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 import { EnvService } from 'src/config/env';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { StoresRepository } from './stores.repository';
 import {
@@ -13,7 +14,6 @@ import {
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
 import { StoreSearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
-import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 @Injectable()
 export class StoresService {
@@ -37,7 +37,7 @@ export class StoresService {
       throw new Error('Invalid business number.');
     }
 
-    try { 
+    try {
       const store = await this.storesRepository.create(1, dto);
       return store;
     } catch (error) {

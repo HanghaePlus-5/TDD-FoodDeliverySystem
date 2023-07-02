@@ -10,4 +10,4 @@ export interface MenuDto {
   storeId: number;
 }
 
-export interface MenuOptionalDto extends Partial<MenuDto> {}
+export type MenuOptionalDto = Partial<MenuDto>

@@ -11,7 +11,9 @@ import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto } from '../utils/testUtils';
+import {
+ createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
+} from '../utils/testUtils';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -237,7 +239,7 @@ describe('MenusService', () => {
         name: '아메리카노',
       });
       const sampleMenuDto = createSampleMenuDto({});
-      const sampleMenuDto2 = createSampleMenuDto({menuId: 2});
+      const sampleMenuDto2 = createSampleMenuDto({ menuId: 2 });
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned',
@@ -254,11 +256,10 @@ describe('MenusService', () => {
       mockFindOne.mockImplementation(async (dto, statusValues) => {
         if (dto.menuId === sampleCreateMenuUpdateDto.menuId) {
           return Promise.resolve(sampleMenuDto);
-        } else if (dto.name === sampleCreateMenuUpdateDto.name) {
+        } if (dto.name === sampleCreateMenuUpdateDto.name) {
           return Promise.resolve(sampleMenuDto2);
-        } else {
-          return Promise.resolve(null);
         }
+          return Promise.resolve(null);
       });
 
       await expect(
@@ -273,7 +274,7 @@ describe('MenusService', () => {
 
     it('should update menu and return menu dto', async () => {
       const sampleStoreDto = createSampleStoreDto({});
-      const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({name: undefined});
+      const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({ name: undefined });
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
