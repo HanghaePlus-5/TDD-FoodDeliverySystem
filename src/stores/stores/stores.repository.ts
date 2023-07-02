@@ -11,11 +11,12 @@ import { storeToDtoMap } from '../mapper/stores.mapper';
 export class StoresRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: StoreCreateDto) {
+  async create(userId: number, dto: StoreCreateDto) {
     let store: Store;
     try {
       store = await this.prisma.store.create({
         data: {
+          userId,
           ...dto,
         },
       });
