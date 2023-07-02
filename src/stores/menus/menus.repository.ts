@@ -10,11 +10,10 @@ import { menuToDtoMap } from '../mapper/menus.mapper';
 export class MenusRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(storeId: number, dto: MenuCreateDto) {
+  async create(dto: MenuCreateDto) {
     const menu = await this.prisma.menu.create({
       data: {
         ...dto,
-        storeId,
       },
     });
     return menuToDtoMap(menu);

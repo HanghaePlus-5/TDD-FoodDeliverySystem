@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { ACTIVATE_MENU_STATUES } from 'src/constants/stores';
 
 import { MenusRepository } from './menus.repository';
-import { MenuDto } from '../dto';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { StoresService } from '../stores/stores.service';
 
@@ -40,7 +39,7 @@ export class MenusService {
     }
 
     try {
-      const menu = await this.menusRepository.create(userId, dto);
+      const menu = await this.menusRepository.create(dto);
       return menu;
     } catch (error) {
       throw new Error('Menu creation failed.');
