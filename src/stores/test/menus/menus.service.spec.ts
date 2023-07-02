@@ -11,7 +11,7 @@ import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto } from '../utils/testUtils';
+import { createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto } from '../utils/testUtils';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -153,6 +153,26 @@ describe('MenusService', () => {
       expect(result).toBe(sampleMenuDto);
 
       expect(mockCreate).toBeCalledWith(sampleCreateMenuDto);
+    });
+  });
+
+  describe('updateMenu', () => {
+    it('should exec checkStoreOwned', async () => {
+      const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
+
+      await expect(
+        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+      ).rejects.toThrowError('User does not own store');
+
+      expect(mockCheckStoreOwned).toBeCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
     });
   });
 });
