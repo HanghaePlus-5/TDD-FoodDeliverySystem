@@ -66,6 +66,7 @@ export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCrea
     sort: 1,
     price: 4000,
     description: '커피의 정석',
+    storeId: 1,
     ...dto,
   };
 }

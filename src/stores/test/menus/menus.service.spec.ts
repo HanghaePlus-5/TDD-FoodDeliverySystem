@@ -52,7 +52,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.createMenu(1, 1, sampleCreateMenuDto),
+        menusService.createMenu(1, sampleCreateMenuDto),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -77,7 +77,7 @@ describe('MenusService', () => {
       mockCheckStoreStatusGroup.mockResolvedValue(false);
 
       await expect(
-        menusService.createMenu(1, 1, sampleCreateMenuDto),
+        menusService.createMenu(1, sampleCreateMenuDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
@@ -108,7 +108,7 @@ describe('MenusService', () => {
       mockCheckMenuNameUnique.mockResolvedValue(null);
 
       await expect(
-        menusService.createMenu(1, 1, sampleCreateMenuDto),
+        menusService.createMenu(1, sampleCreateMenuDto),
       ).rejects.toThrowError('Menu name is not unique.');
 
       expect(mockCheckMenuNameUnique).toBeCalledWith({

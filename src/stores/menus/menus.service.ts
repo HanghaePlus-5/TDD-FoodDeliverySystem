@@ -11,8 +11,11 @@ export class MenusService {
     private readonly menusRepository: MenusRepository,
   ) {}
 
-  async createMenu(userId: number, storeId: number, dto: MenuCreateDto) {
-    const isStoreOwned = await this.storesService.checkStoreOwned({ userId, storeId });
+  async createMenu(userId: number, dto: MenuCreateDto) {
+    const isStoreOwned = await this.storesService.checkStoreOwned({
+      userId,
+      storeId: dto.storeId
+    });
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
@@ -25,12 +28,12 @@ export class MenusService {
       throw new Error('Store status is not allowed.');
     }
 
-    const isMenuNameUnique = await this.checkMenuNameUnique(storeId, dto.name);
+    const isMenuNameUnique = await this.checkMenuNameUnique(dto.storeId, dto.name);
     if (!isMenuNameUnique) {
       throw new Error('Menu name is not unique.');
     }
 
-    return this.menusRepository.createMenu(storeId, dto);
+    return this.menusRepository.createMenu(dto);
   }
 
   async checkMenuNameUnique(storeId: number, name: string) {

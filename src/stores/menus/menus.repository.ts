@@ -8,7 +8,7 @@ import { MenuCreateDto } from '../dto/menu-create.dto';
 export class MenusRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createMenu(storeId: number, dto: MenuCreateDto) {}
+  async createMenu(dto: MenuCreateDto) {}
 
   async findOne(dto: Partial<MenuCreateDto>) {
     return this.prisma.menu.findFirst({ where: dto });
