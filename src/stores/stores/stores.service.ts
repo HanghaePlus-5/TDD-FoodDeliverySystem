@@ -68,7 +68,7 @@ export class StoresService {
     return await this.storesRepository.update(storeOptionalDto);
   }
 
-  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto) {
+  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto): Promise<StoreDto> {
     const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
     const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {

@@ -66,7 +66,7 @@ export class StoresRepository {
     return stores.map(storeToDtoMap);
   }
 
-  async findManyBySearch(dto: StoreSearchDto) {
+  async findManyBySearch(dto: StoreSearchDto): Promise<StoreDto[]> {
     const stores = await this.prisma.store.findMany({
       where: {
         OR: [
