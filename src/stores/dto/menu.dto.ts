@@ -4,7 +4,9 @@ export interface MenuDto {
   sort: number;
   status: MenuStatus;
   price: number;
-  description: string | null;
+  description: string;
   registrationDate: Date;
   storeId: number;
 }
+
+export interface MenuOptionalDto extends Partial<MenuDto> {}
