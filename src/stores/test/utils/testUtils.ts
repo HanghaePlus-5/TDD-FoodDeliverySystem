@@ -64,6 +64,7 @@ export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCrea
   return {
     name: '아메리카노',
     price: 4000,
+    inventory: 100,
     description: '커피의 정석',
     storeId: 1,
     ...dto,
@@ -75,6 +76,7 @@ export function createSampleUpdateMenuDto(dto: Partial<MenuUpdateDto>): MenuUpda
     menuId: 1,
     name: '아메리카노',
     price: 4000,
+    inventory: 100,
     description: '커피의 정석',
     storeId: 1,
     ...dto,
@@ -88,6 +90,7 @@ export function createSampleMenuDto(dto: Partial<MenuDto>): MenuDto {
     sort: 1,
     status: 'REGISTERED',
     price: 4000,
+    inventory: 100,
     description: '커피의 정석',
     registrationDate: new Date(),
     storeId: 1,
