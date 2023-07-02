@@ -1,15 +1,12 @@
 import {
-  BadRequestException,
-  HttpStatus, Injectable, NotFoundException,
+  Injectable, NotFoundException
 } from '@nestjs/common';
 
-import { PrismaService } from 'src/prisma';
 import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
+import { PrismaService } from 'src/prisma';
 
-import { PaymentCreateDto } from './dto/payment-create.dto';
-import { validatePaymentStatus, validateCardHolder, validateCardNumber } from './func';
-import { Payment, PaymentStatus } from '@prisma/client';
-import { OrderDto } from 'src/orders/dto/order.dto';
+import { PaymentStatus } from '@prisma/client';
+import { validateCardHolder, validateCardNumber, validatePaymentStatus } from './func';
 
 @Injectable()
 export class PaymentService {
@@ -17,11 +14,13 @@ export class PaymentService {
     private readonly prisma: PrismaService,
     private readonly pgService: PaymentGatewayService,
   ) { }
-  async makePayment(paymentCreateDto: PaymentCreateDto, orderDto: OrderDto): Promise<Payment> {
-    validateCardHolder(paymentCreateDto.cardHolderName, orderDto.user.name);
-    validateCardNumber(paymentCreateDto.cardNumber);
-    const response = await this.pgService.sendPaymentRequestToPG(paymentCreateDto);
-    const data = { ...paymentCreateDto, paymentGatewayId: response.data.paymentGatewayId, orderId: orderDto.orderId }
+  async makePayment(args: PaymentProcessArgs): Promise<Payment> {
+    const {paymentCreateDto: paymentInfo, user, order} = args;
+    console.log('user', user);
+    validateCardHolder(paymentInfo.cardHolderName, user.name);
+    validateCardNumber(paymentInfo.cardNumber);
+    const response = await this.pgService.sendPaymentRequestToPG(paymentInfo);
+    const data = { ...paymentInfo, paymentGatewayId: response.data.paymentGatewayId, orderId: order.orderId }
     const payment = await this.prisma.payment.create({ data });
     return payment;
   }

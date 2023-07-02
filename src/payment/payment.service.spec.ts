@@ -6,12 +6,11 @@ import { PrismaService } from 'src/prisma';
 import { PaymentService } from './payment.service';
 
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { Payment, StoreStatus, StoreType, UserType } from '@prisma/client';
-import { PaymentStatus } from 'src/types';
-import { mockingOrderDto } from 'src/utils/mocking-helper/mocking-order';
-import { mockingPaymentCreateDto, mockingPaymentDto } from 'src/utils/mocking-helper/mocking-payment';
+// import { StoreStatus, StoreType, UserType } from '@prisma/client';
+import { PaymentStatus, UserType } from 'src/types';
+import { mockingPaymentInfo } from 'src/utils/mocking-helper/mocking-payment';
 import { is } from 'typia';
-import { after, before } from 'node:test';
+import { StoreStatus, StoreType } from '@prisma/client';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -23,7 +22,7 @@ describe('PaymentService', () => {
   let menu;
   let orderItem
   let orderDto;
-
+  let paymentProcessArgs: PaymentProcessArgs
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -88,6 +87,8 @@ describe('PaymentService', () => {
     orderDto = {
       ...order, user: user
     }
+    
+    paymentProcessArgs  = { paymentCreateDto: mockingPaymentInfo(), order: order, user: user };
 
   });
   afterAll(async () => {
@@ -127,20 +128,26 @@ describe('PaymentService', () => {
   describe('send payment request to payment-gateway', () => {
     describe('validate payment request', () => {
       it(issue('unathorized card holder'), async () => {
-        await expect(service.makePayment(mockingPaymentCreateDto({ cardHolderName: "dan" }), orderDto)).rejects.toThrow();
+
+        await expect(service.makePayment(
+          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardHolderName: "dan" }) })).rejects.toThrow();
       });
       it(issue('invalid card number format'), async () => {
-        await expect(service.makePayment(mockingPaymentCreateDto({ cardNumber: '4124-1244-4124-414' }), orderDto)).rejects.toThrow();
+        await expect(service.makePayment(
+          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardNumber: '4124-1244-4124-414' }) }
+        )).rejects.toThrow();
       });
     });
     describe('payment request to PG', () => {
       it(issue('unacceptable card'), async () => {
-        await expect(service.makePayment(mockingPaymentCreateDto({ cardNumber: '1111-1111-1111-1111' }), orderDto)).rejects.toThrow();
+        await expect(service.makePayment(
+          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardNumber: '1111-1111-1111-1111' }) }
+        )).rejects.toThrow();
       });
     });
     describe('payment creation', () => {
       it('payment successfully created', async () => {
-        const result = await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        const result = await service.makePayment(paymentProcessArgs)
         expect(is<Payment>(result)).toBe(true)
       });
     });
@@ -149,26 +156,26 @@ describe('PaymentService', () => {
   describe('cancel payment request', () => {
     describe('validate cancel request', () => {
       it(issue('no payment data'), async () => {
-        await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        await service.makePayment(paymentProcessArgs)
         await expect(service.cancelPayment(123123)).rejects.toThrow(NotFoundException);
       });
       it(issue('status not completed'), async () => {
-        await service.makePayment(mockingPaymentCreateDto({ paymentStatus: PaymentStatus.canceled }), orderDto)
+        await service.makePayment(
+          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ paymentStatus: PaymentStatus.canceled }) })
         await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
       });
     });
 
     describe('cancel request to PG', () => {
       it(issue('invalid paymentGatewayId'), async () => {
-        await testPrisma.payment.create({ data: { ...mockingPaymentCreateDto(), paymentGatewayId: '123456', orderId: orderDto.orderId } })
+        await testPrisma.payment.create({ data: { ...mockingPaymentInfo(), paymentGatewayId: '123456', orderId: orderDto.orderId } })
         await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow(NotAcceptableException);
       });
     });
 
     describe('update payment status', () => {
       it('payment data is successfully updated', async () => {
-
-        await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        await service.makePayment(paymentProcessArgs)
         const result = await service.cancelPayment(order.orderId)
         expect(is<Payment>(result)).toBe(true)
         expect(result.paymentStatus).toBe(PaymentStatus.canceled)
