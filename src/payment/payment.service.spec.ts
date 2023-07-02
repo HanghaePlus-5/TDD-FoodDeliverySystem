@@ -1,69 +1,133 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OrderStatus, PrismaClient } from '@prisma/client';
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
-import { PrismaService } from 'src/prisma';
 import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
+import { PrismaService } from 'src/prisma';
 
 import { PaymentService } from './payment.service';
 
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { Payment, StoreStatus, StoreType, UserType } from '@prisma/client';
 import { PaymentStatus } from 'src/types';
-import { PaymentDto } from './dto/payment.dto';
+import { mockingOrderDto } from 'src/utils/mocking-helper/mocking-order';
 import { mockingPaymentCreateDto, mockingPaymentDto } from 'src/utils/mocking-helper/mocking-payment';
-import { OrderDto } from 'src/orders/dto/order.dto';
+import { is } from 'typia';
+import { after, before } from 'node:test';
 
 describe('PaymentService', () => {
   let service: PaymentService;
-  let mockPrisma: DeepMockProxy<PrismaClient>;
+  let testPrisma: PrismaService;
+  // data
+  let order;
+  let user;
+  let store
+  let menu;
+  let orderItem
+  let orderDto;
 
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PaymentService, PrismaService, PaymentGatewayService],
     })
-      .overrideProvider(PrismaService)
-      .useValue(mockDeep<PrismaClient>())
       .compile();
 
     service = module.get<PaymentService>(PaymentService);
-    mockPrisma = module.get(PrismaService);
+    testPrisma = module.get(PrismaService);
+
+    const random = Math.floor(Math.random() * 1000) + 1;
+
+    user = await testPrisma.user.create({
+      data:
+      {
+        email: 'michael' + random + '@gmail.com',
+        name: 'michael',
+        password: 'qwer123123',
+        type: UserType.CUSTOMER,
+      },
+
+    });
+
+    store = await testPrisma.store.create({
+      data:
+      {
+        name: 'Sample Store' + random,
+        type: StoreType.KOREAN,
+        status: StoreStatus.OPEN,
+        businessNumber: '1234567890' + random,
+        phoneNumber: '010-1234-5678',
+        postalNumber: '12345',
+        address: 'Seoul, Korea',
+        openingTime: 1,
+        closingTime: 1,
+        cookingTime: 1,
+      },
+    });
+
+
+    menu = await testPrisma.menu.create({
+      data:
+      {
+        storeId: store.storeId,
+      },
+    });
+
+    order = await testPrisma.order.create({
+      data: {
+        userId: user.userId,
+        storeId: store.storeId,
+      }
+    });
+
+    orderItem = await testPrisma.orderItem.createMany({
+      data: [{
+        orderId: order.orderId,
+        quantity: 1,
+        menuId: menu.menuId,
+      },]
+    })
+    orderDto = {
+      ...order, user: user
+    }
+
   });
+  afterAll(async () => {
+    const deleteOrderItem = testPrisma.orderItem.deleteMany();
+    await testPrisma.$transaction([
+      deleteOrderItem,
+    ]);
+    const deleteUser = testPrisma.user.deleteMany();
+    const deleteMenu = testPrisma.menu.deleteMany();
+    await testPrisma.$transaction([
+      deleteMenu,
+    ]);
+    const deleteStore = testPrisma.store.deleteMany();
+    const deleteOrder = testPrisma.order.deleteMany();
+    await testPrisma.$transaction([
+      deleteOrderItem,
+      deleteOrder,
+      deleteUser,
+      deleteStore,
+    ]);
+  });
+  afterEach(async () => {
+    const deletePayment = testPrisma.payment.deleteMany();
+    await testPrisma.$transaction([
+      deletePayment,
+    ]);
+  })
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  const orderDto : OrderDto = {
-    orderId : 1,
-    user: {
-      userId: 12345,
-      email: "john@example.com",
-      name: "michael",
-      password: "password123",
-      type: "CUSTOMER",
-    },
-    status : OrderStatus.CANCELED,
-    createdAt : new Date(),
-    updatedAt : new Date(),
-    storeId: 67890,
-    orderItem: [
-      {
-        quantity: 2,
-        menuId: 101,
-      },
-      {
-        quantity: 1,
-        menuId: 102,
-      },
-    ],
-  };
+
   const issue = (issue: string) => {
-    return `Not throwing error with${issue}`;
+    return `throw error with ${issue}`;
   };
 
   describe('send payment request to payment-gateway', () => {
     describe('validate payment request', () => {
       it(issue('unathorized card holder'), async () => {
-        const mOrderDto = { ...orderDto, user : {...orderDto.user, name : "dan"} };
-        await expect(service.makePayment(mockingPaymentCreateDto(), mOrderDto)).rejects.toThrow();
+        await expect(service.makePayment(mockingPaymentCreateDto({ cardHolderName: "dan" }), orderDto)).rejects.toThrow();
       });
       it(issue('invalid card number format'), async () => {
         await expect(service.makePayment(mockingPaymentCreateDto({ cardNumber: '4124-1244-4124-414' }), orderDto)).rejects.toThrow();
@@ -76,8 +140,8 @@ describe('PaymentService', () => {
     });
     describe('payment creation', () => {
       it('payment successfully created', async () => {
-        mockPrisma.payment.create.mockResolvedValueOnce(mockingPaymentDto())
-        await expect(service.makePayment(mockingPaymentCreateDto(), orderDto)).resolves.toEqual(mockingPaymentDto());
+        const result = await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        expect(is<Payment>(result)).toBe(true)
       });
     });
   });
@@ -85,27 +149,29 @@ describe('PaymentService', () => {
   describe('cancel payment request', () => {
     describe('validate cancel request', () => {
       it(issue('no payment data'), async () => {
-        mockPrisma.payment.findUnique.mockResolvedValueOnce(null);
-        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
+        await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        await expect(service.cancelPayment(123123)).rejects.toThrow(NotFoundException);
       });
-      it(issue('status which is not completed'), async () => {
-        mockPrisma.payment.findUnique.mockResolvedValueOnce(mockingPaymentDto({ paymentStatus: PaymentStatus.canceled }));
+      it(issue('status not completed'), async () => {
+        await service.makePayment(mockingPaymentCreateDto({ paymentStatus: PaymentStatus.canceled }), orderDto)
         await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
       });
     });
 
     describe('cancel request to PG', () => {
       it(issue('invalid paymentGatewayId'), async () => {
-        mockPrisma.payment.findUnique.mockResolvedValueOnce(mockingPaymentDto({ paymentGatewayId: '123456' }));
-        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
+        await testPrisma.payment.create({ data: { ...mockingPaymentCreateDto(), paymentGatewayId: '123456', orderId: orderDto.orderId } })
+        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow(NotAcceptableException);
       });
     });
 
     describe('update payment status', () => {
       it('payment data is successfully updated', async () => {
-        mockPrisma.payment.findUnique.mockResolvedValueOnce(mockingPaymentDto({ paymentId: 10 }));
-        mockPrisma.payment.update.mockResolvedValueOnce(mockingPaymentDto({ paymentId: 10, paymentStatus: PaymentStatus.canceled }))
-        await expect(service.cancelPayment(orderDto.orderId)).resolves.toEqual(mockingPaymentDto({ paymentId: 10, paymentStatus: PaymentStatus.canceled }));
+
+        await service.makePayment(mockingPaymentCreateDto(), orderDto)
+        const result = await service.cancelPayment(order.orderId)
+        expect(is<Payment>(result)).toBe(true)
+        expect(result.paymentStatus).toBe(PaymentStatus.canceled)
       });
     });
   });

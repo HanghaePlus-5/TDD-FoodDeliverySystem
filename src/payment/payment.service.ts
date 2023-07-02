@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  HttpStatus, Injectable,
+  HttpStatus, Injectable, NotFoundException,
 } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma';
@@ -17,7 +17,6 @@ export class PaymentService {
     private readonly prisma: PrismaService,
     private readonly pgService: PaymentGatewayService,
   ) { }
-  // payment request
   async makePayment(paymentCreateDto: PaymentCreateDto, orderDto: OrderDto): Promise<Payment> {
     validateCardHolder(paymentCreateDto.cardHolderName, orderDto.user.name);
     validateCardNumber(paymentCreateDto.cardNumber);
@@ -27,13 +26,12 @@ export class PaymentService {
     return payment;
   }
 
-  // cancel request
   async cancelPayment(orderId: number): Promise<Payment> {
     const payment = await this.prisma.payment.findUnique({ where: { orderId: orderId } });
-    if (!payment) throw new BadRequestException('payment not exist');
+    if (!payment) throw new NotFoundException('payment not exist');
     validatePaymentStatus(payment.paymentStatus);
     await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
-    const updatedPayment = await this.prisma.payment.update({ where: { paymentId: orderId }, data: { paymentStatus: PaymentStatus.canceled } })
+    const updatedPayment = await this.prisma.payment.update({ where: { orderId: orderId }, data: { paymentStatus: PaymentStatus.canceled, updatedAt : new Date() } })
     return updatedPayment;
   }
 }
