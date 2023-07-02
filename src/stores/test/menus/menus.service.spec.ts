@@ -305,4 +305,23 @@ describe('MenusService', () => {
       expect(mockUpdate).toBeCalledWith(sampleCreateMenuUpdateDto);
     });
   });
+
+  describe('changeMenuStatus', () => {
+    it('should exec checkStoreOwned', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
+
+      await expect(
+        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+      ).rejects.toThrowError('User does not own store');
+
+      expect(mockCheckStoreOwned).toBeCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
+    });
+  })
 });

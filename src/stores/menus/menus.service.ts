@@ -6,6 +6,7 @@ import { MenusRepository } from './menus.repository';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { StoresService } from '../stores/stores.service';
 import { MenuUpdateDto } from '../dto/menu-update.dto';
+import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 
 @Injectable()
 export class MenusService {
@@ -87,6 +88,16 @@ export class MenusService {
       return menu;
     } catch (error) {
       throw new Error('Menu update failed.');
+    }
+  }
+
+  async changeMenuStatus(userId: number, dto: MenuChangeStatusDto) {
+    const isStoreOwned = await this.storesService.checkStoreOwned({
+      userId,
+      storeId: dto.storeId,
+    });
+    if (!isStoreOwned) {
+      throw new Error('User does not own store');
     }
   }
 }
