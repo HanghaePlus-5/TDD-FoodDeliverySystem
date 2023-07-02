@@ -11,7 +11,8 @@ import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto } from '../utils/testUtils';
+import { createSampleCreateStoreDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
+import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -484,19 +485,19 @@ describe('StoresService', () => {
 
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
-      const sampleStoreDto: StoreDto = createSampleStoreDto({});
+      const sampleStoreMenuDto: StoreMenuDto = createSampleStoreMenuDto({});
       const mockFindManyBySearch = jest.spyOn(
         storesReposiroty,
         'findManyBySearch' as any,
       );
-      mockFindManyBySearch.mockResolvedValue([sampleStoreDto]);
+      mockFindManyBySearch.mockResolvedValue([sampleStoreMenuDto]);
 
       const result = await storesService.getStoresBySearch({
         keyword: '커피',
         page: 1,
         limit: 10,
       });
-      expect(result).toEqual([sampleStoreDto]);
+      expect(result).toEqual([sampleStoreMenuDto]);
 
       expect(mockFindManyBySearch).toHaveBeenCalledWith({
         keyword: '커피',
