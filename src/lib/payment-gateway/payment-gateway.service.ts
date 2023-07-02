@@ -1,4 +1,6 @@
-import { BadRequestException, HttpStatus, Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+ BadRequestException, HttpStatus, Injectable, NotAcceptableException,
+} from '@nestjs/common';
 
 import { PaymentGatewayResponseDto } from 'src/lib/payment-gateway/dto/payment-gateway-response.dto';
 import { PaymentCreateDto } from 'src/payment/dto/payment-create.dto';

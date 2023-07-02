@@ -5,11 +5,11 @@ import { PaymentStatus } from 'src/types';
 
 export function validateCardHolder(cardHolderName: string, customerName: string) {
     if (cardHolderName !== customerName) {
-        throw new BadRequestException('card holder name and user name are different')
-    };
+        throw new BadRequestException('card holder name and user name are different');
+    }
 }
 export function validateCardNumber(cardNumber: string) {
-    cardNumber = cardNumber.replace(/[-\s]/g, '')
+    cardNumber = cardNumber.replace(/[-\s]/g, '');
     if (cardNumber.length !== 16) {
         throw new BadRequestException('card number is not valid');
     }

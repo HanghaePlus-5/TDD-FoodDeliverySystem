@@ -1,6 +1,7 @@
-import { PaymentStatus } from "@prisma/client";
-import { PaymentCreateDto } from "src/payment/dto/payment-create.dto";
-import { PaymentDto } from "src/payment/dto/payment.dto";
+import { PaymentStatus } from '@prisma/client';
+
+import { PaymentCreateDto } from 'src/payment/dto/payment-create.dto';
+import { PaymentDto } from 'src/payment/dto/payment.dto';
 
 export function mockingPaymentInfo(dto? : Partial<PaymentCreateDto>) : PaymentCreateDto {
     return {
@@ -11,5 +12,5 @@ export function mockingPaymentInfo(dto? : Partial<PaymentCreateDto>) : PaymentCr
         cardNumber: '1111-1111-1111-1121',
         paymentStatus: PaymentStatus.completed,
         ...dto,
-    }
+    };
 }

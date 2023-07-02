@@ -1,4 +1,4 @@
-import { PaymentCreateDto } from "src/payment/dto/payment-create.dto";
+import { PaymentCreateDto } from 'src/payment/dto/payment-create.dto';
 
 export const PaymentStatus = {
   completed: 'completed',
@@ -22,7 +22,7 @@ declare global {
 }
 
   interface PaymentProcessArgs {
-    order : Order, 
+    order : Order,
     user : User,
     paymentCreateDto : PaymentCreateDto
   }
