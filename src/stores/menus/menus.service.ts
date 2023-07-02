@@ -99,5 +99,13 @@ export class MenusService {
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
+
+    const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
+      isStoreOwned.status,
+      ACTIVATE_STORE_STATUES,
+    );
+    if (!isStoreStatusGroup) {
+      throw new Error('Store status is not allowed.');
+    }
   }
 }

@@ -324,5 +324,29 @@ describe('MenusService', () => {
         userId: 1,
       });
     });
+
+    it('should exec checkStoreStatusGroup', async () => {
+      const sampleStoreDto = createSampleStoreDto({status: 'TERMINATED'});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(false);
+
+      await expect(
+        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+      ).rejects.toThrowError('Store status is not allowed.');
+
+      expect(mockCheckStoreStatusGroup).toBeCalledWith(
+        'TERMINATED',
+        ACTIVATE_STORE_STATUES,
+      );
+    });
   })
 });
