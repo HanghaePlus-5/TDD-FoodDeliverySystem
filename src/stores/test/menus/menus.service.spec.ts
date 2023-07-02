@@ -504,6 +504,25 @@ describe('MenusService', () => {
       });
     });
 
+    it('should get menus', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleMenuDto = createSampleMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
+      const mockFindAllByStoreId = jest.spyOn(
+        menusRepository,
+        'findAllByStoreId',
+      );
+      mockFindAllByStoreId.mockResolvedValue([sampleMenuDto]);
+
+      const result = await menusService.getMenus(1, 1, 'OWNER' as ViewType);
+      expect(result).toEqual([sampleMenuDto]);
+
+      expect(mockFindAllByStoreId).toBeCalledWith(1, 'OWNER' as ViewType);
+    });
   });
 });
