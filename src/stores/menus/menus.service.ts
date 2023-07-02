@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { ACTIVATE_MENU_STATUES } from 'src/constants/stores';
+import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { MenusRepository } from './menus.repository';
 import { MenuCreateDto } from '../dto/menu-create.dto';
@@ -25,7 +25,7 @@ export class MenusService {
 
     const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
       isStoreOwned.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -58,7 +58,7 @@ export class MenusService {
     
     const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
       isStoreOwned.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');

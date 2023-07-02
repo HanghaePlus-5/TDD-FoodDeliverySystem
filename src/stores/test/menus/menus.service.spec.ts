@@ -5,7 +5,7 @@ import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
-import { ACTIVATE_MENU_STATUES } from 'src/constants/stores';
+import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
@@ -85,7 +85,7 @@ describe('MenusService', () => {
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
         'REGISTERED',
-        ['REGISTERED', 'OPEN', 'CLOSED'],
+        ACTIVATE_STORE_STATUES,
       );
     });
 
@@ -196,7 +196,7 @@ describe('MenusService', () => {
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
         'REGISTERED',
-        ['REGISTERED', 'OPEN', 'CLOSED'],
+        ACTIVATE_STORE_STATUES,
       );
     });
   });

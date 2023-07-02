@@ -11,6 +11,7 @@ import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto } from '../utils/testUtils';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -229,11 +230,7 @@ describe('StoresService', () => {
         storesService.updateStore(1, sampleUpdateStoreDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
-      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', [
-        'REGISTERED',
-        'OPEN',
-        'CLOSED',
-      ]);
+      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', ACTIVATE_STORE_STATUES);
     });
 
     it('should throw error if validation fails', async () => {
@@ -369,11 +366,7 @@ describe('StoresService', () => {
         storesService.updateStore(1, sampleUpdateStoreDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
-      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', [
-        'REGISTERED',
-        'OPEN',
-        'CLOSED',
-      ]);
+      expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', ACTIVATE_STORE_STATUES);
     });
 
     it('should throw error if not meet store status change condition', async () => {

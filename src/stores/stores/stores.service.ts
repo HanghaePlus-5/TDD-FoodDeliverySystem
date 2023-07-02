@@ -13,6 +13,7 @@ import {
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
 import { StoreSearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 @Injectable()
 export class StoresService {
@@ -52,7 +53,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -75,7 +76,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
