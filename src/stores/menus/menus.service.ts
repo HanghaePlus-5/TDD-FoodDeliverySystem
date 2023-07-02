@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import { ACTIVATE_MENU_STATUES } from 'src/constants/stores';
+
 import { MenusRepository } from './menus.repository';
+import { MenuDto } from '../dto';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { StoresService } from '../stores/stores.service';
-import { MenuDto } from '../dto';
 
 @Injectable()
 export class MenusService {
@@ -15,34 +17,28 @@ export class MenusService {
   async createMenu(userId: number, dto: MenuCreateDto) {
     const isStoreOwned = await this.storesService.checkStoreOwned({
       userId,
-      storeId: dto.storeId
+      storeId: dto.storeId,
     });
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
-    
+
     const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
-      isStoreOwned.status, 
+      isStoreOwned.status,
       ['REGISTERED', 'OPEN', 'CLOSED'],
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
     }
 
-    const isMenuNameUnique = await this.checkMenuNameUnique(dto.storeId, dto.name);
-    if (isMenuNameUnique) {
-      throw new Error('Menu name is not unique.');
+    const duplicateMenu = await this.menusRepository.findOne({
+      storeId: dto.storeId,
+      name: dto.name,
+    }, ACTIVATE_MENU_STATUES);
+    if (duplicateMenu) {
+      throw new Error('Menu name is not unique on ACTIVATE_MENU_STATUES.');
     }
 
     return await this.menusRepository.createMenu(dto);
-  }
-
-  async checkMenuNameUnique(storeId: number, name: string): Promise<MenuDto | null> {
-    const menu = await this.menusRepository.findOne({ storeId, name });
-    const type: MenuStatus[] = ['REGISTERED', 'OPEN', 'CLOSED']
-    if (menu && type.includes(menu.status)) {
-      return null;
-    }
-    return menu;
   }
 }
