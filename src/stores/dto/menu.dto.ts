@@ -5,6 +5,6 @@ export interface MenuDto {
   status: MenuStatus;
   price: number;
   description: string | null;
-  registrationDate: Date; 
+  registrationDate: Date;
   storeId: number;
 }

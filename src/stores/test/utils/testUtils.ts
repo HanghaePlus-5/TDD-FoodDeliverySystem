@@ -34,7 +34,7 @@ export function createSampleUpdateStoreDto(dto: Partial<StoreUpdateDto>): StoreU
     origin: '커피원두(국내산), 우유(국내산)',
     description: '코딩이 맛있어요!',
     ...dto,
-  }
+  };
 }
 
 export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
@@ -60,7 +60,7 @@ export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
   };
 }
 
-export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCreateDto{
+export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCreateDto {
   return {
     name: '아메리카노',
     sort: 1,

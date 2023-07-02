@@ -5,13 +5,12 @@ import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
-
-import { MenusService } from 'src/stores/menus/menus.service';
-import { StoresService } from 'src/stores/stores/stores.service';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
+import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
-import { createSampleCreateMenuDto } from '../utils/testUtils';
+import { StoresService } from 'src/stores/stores/stores.service';
 
+import { createSampleCreateMenuDto } from '../utils/testUtils';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -61,5 +60,5 @@ describe('MenusService', () => {
         userId: 1,
       });
     });
-  })
+  });
 });

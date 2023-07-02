@@ -4,10 +4,10 @@ import { PrismaClient } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
-
-import { StoresService } from 'src/stores/stores/stores.service';
-import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoreCreateDto, StoreDto } from 'src/stores/dto';
+import { StoresRepository } from 'src/stores/stores/stores.repository';
+import { StoresService } from 'src/stores/stores/stores.service';
+
 import { createSampleStoreDto } from '../utils/testUtils';
 
 describe('StoresRepository', () => {

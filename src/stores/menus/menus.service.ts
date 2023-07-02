@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
 import { MenusRepository } from './menus.repository';
-import { StoresService } from '../stores/stores.service';
 import { MenuCreateDto } from '../dto/menu-create.dto';
+import { StoresService } from '../stores/stores.service';
 
 @Injectable()
 export class MenusService {
@@ -15,7 +16,6 @@ export class MenusService {
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
-
     return this.menusRepository.createMenu(storeId, dto);
   }
 }
