@@ -48,12 +48,16 @@ export class MenusRepository {
   }
 
   async findOne(dto: Partial<MenuDto>, statusValues: MenuStatus[] = []): Promise<MenuDto | null> {
-    const munu = await this.prisma.menu.findFirst({
+    const menu = await this.prisma.menu.findFirst({
       where: {
         ...dto,
         status: statusValues.length > 0 ? { in: statusValues } : undefined,
       },
-});
-    return menuToDtoMap(munu);
+    });
+
+    if (!menu) {
+      return null;
+    }
+    return menuToDtoMap(menu);
   }
 }
