@@ -10,7 +10,15 @@ import { menuToDtoMap } from '../mapper/menus.mapper';
 export class MenusRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createMenu(dto: MenuCreateDto) {}
+  async create(storeId: number, dto: MenuCreateDto) {
+    const menu = await this.prisma.menu.create({
+      data: {
+        ...dto,
+        storeId,
+      },
+    });
+    return menuToDtoMap(menu);
+  }
 
   async findOne(dto: Partial<MenuCreateDto>, statusValues: MenuStatus[] = []): Promise<MenuDto | null> {
     const munu = await this.prisma.menu.findFirst({

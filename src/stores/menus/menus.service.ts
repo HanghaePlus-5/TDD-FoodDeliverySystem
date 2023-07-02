@@ -39,6 +39,11 @@ export class MenusService {
       throw new Error('Menu name is not unique on ACTIVATE_MENU_STATUES.');
     }
 
-    return await this.menusRepository.createMenu(dto);
+    try {
+      const menu = await this.menusRepository.create(userId, dto);
+      return menu;
+    } catch (error) {
+      throw new Error('Menu creation failed.');
+    }
   }
 }
