@@ -19,7 +19,7 @@ export function StoreMenuDtoMap(store: (Store & {menu: Menu[];})): StoreMenuDto 
     averageScore: store.averageScore,
     origin: store.origin ? store.origin : '',
     description: store.description ? store.description : '',
-    Menus: store.menu.map(MenuToViewDtoMap),
+    menus: store.menu.map(MenuToViewDtoMap),
   };
 }
 
