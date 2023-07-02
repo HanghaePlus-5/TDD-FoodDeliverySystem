@@ -107,5 +107,13 @@ export class MenusService {
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
     }
+
+    const isMenu = await this.menusRepository.findOne({
+      storeId: dto.storeId,
+      menuId: dto.menuId,
+    }, ACTIVATE_MENU_STATUES);
+    if (!isMenu) {
+      throw new Error('Menu not found.');
+    }
   }
 }

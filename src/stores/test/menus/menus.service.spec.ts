@@ -348,5 +348,35 @@ describe('MenusService', () => {
         ACTIVATE_STORE_STATUES,
       );
     });
+
+    it('should throw error if menu is not found', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockFindOne = jest.spyOn(
+        menusRepository,
+        'findOne',
+      );
+      mockFindOne.mockResolvedValue(null);
+
+      await expect(
+        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+      ).rejects.toThrowError('Menu not found.');
+
+      expect(mockFindOne).toBeCalledWith({
+        storeId: 1,
+        menuId: 1,
+      }, ACTIVATE_MENU_STATUES);
+    });
   })
 });
