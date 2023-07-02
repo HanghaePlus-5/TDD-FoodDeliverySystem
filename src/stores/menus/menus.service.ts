@@ -123,6 +123,13 @@ export class MenusService {
     if (!isMenuStatusChangeCondition) {
       throw new Error('Menu status change condition is not met.');
     }
+
+    try {
+      const menu = await this.menusRepository.update(dto);
+      return menu;
+    } catch (error) {
+      throw new Error('Menu status change failed.');
+    }
   }
 
   checkMenuStatusChangeCondition(

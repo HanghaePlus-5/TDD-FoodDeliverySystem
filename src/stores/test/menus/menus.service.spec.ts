@@ -415,6 +415,49 @@ describe('MenusService', () => {
         'OPEN',
       );
     });
+
+    it('should change menu status and return menu dto', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleMenuDto = createSampleMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockFindOne = jest.spyOn(
+        menusRepository,
+        'findOne',
+      );
+      mockFindOne.mockResolvedValue(sampleMenuDto);
+
+      const mockCheckMenuStatusChangeCondition = jest.spyOn(
+        menusService,
+        'checkMenuStatusChangeCondition',
+      );
+      mockCheckMenuStatusChangeCondition.mockReturnValue(true);
+
+      const mockUpdate = jest.spyOn(
+        menusRepository,
+        'update',
+      );
+      mockUpdate.mockResolvedValue(sampleMenuDto);
+
+      const result = await menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'});
+      expect(result).toBe(sampleMenuDto);
+
+      expect(mockUpdate).toBeCalledWith({
+        menuId: 1,
+        storeId: 1,
+        status: 'OPEN',
+      });
+    });
   })
 
   describe('checkMenuStatusChangeCondition', () => {
