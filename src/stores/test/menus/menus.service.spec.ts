@@ -152,7 +152,7 @@ describe('MenusService', () => {
       const result = await menusService.createMenu(1, sampleCreateMenuDto);
       expect(result).toBe(sampleMenuDto);
 
-      expect(mockCreate).toBeCalledWith(1, sampleCreateMenuDto);
+      expect(mockCreate).toBeCalledWith(sampleCreateMenuDto);
     });
   });
 });
