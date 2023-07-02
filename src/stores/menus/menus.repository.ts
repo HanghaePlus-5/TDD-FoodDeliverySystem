@@ -10,7 +10,7 @@ import { menuToDtoMap } from '../mapper/menus.mapper';
 export class MenusRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: MenuCreateDto) {
+  async create(dto: MenuCreateDto): Promise<MenuDto> {
     const { storeId } = dto;
     const maxSortMenu = await this.prisma.menu.findFirst({
       where: {
@@ -33,7 +33,7 @@ export class MenusRepository {
     return menuToDtoMap(menu);
   }
 
-  async update(dto: MenuUpdateDto) {
+  async update(dto: MenuUpdateDto): Promise<MenuDto> {
     const { menuId, ...rest } = dto;
     const menu = await this.prisma.menu.update({
       where: {

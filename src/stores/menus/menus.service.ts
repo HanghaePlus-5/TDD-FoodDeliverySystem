@@ -7,6 +7,7 @@ import { MenuCreateDto } from '../dto/menu-create.dto';
 import { MenuUpdateDto } from '../dto/menu-update.dto';
 import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 import { StoresService } from '../stores/stores.service';
+import { MenuDto } from '../dto';
 
 @Injectable()
 export class MenusService {
@@ -15,7 +16,7 @@ export class MenusService {
     private readonly menusRepository: MenusRepository,
   ) {}
 
-  async createMenu(userId: number, dto: MenuCreateDto) {
+  async createMenu(userId: number, dto: MenuCreateDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesService.checkStoreOwned({
       userId,
       storeId: dto.storeId,
@@ -48,7 +49,7 @@ export class MenusService {
     }
   }
 
-  async updateMenu(userId: number, dto: MenuUpdateDto) {
+  async updateMenu(userId: number, dto: MenuUpdateDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesService.checkStoreOwned({
       userId,
       storeId: dto.storeId,
@@ -91,7 +92,7 @@ export class MenusService {
     }
   }
 
-  async changeMenuStatus(userId: number, dto: MenuChangeStatusDto) {
+  async changeMenuStatus(userId: number, dto: MenuChangeStatusDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesService.checkStoreOwned({
       userId,
       storeId: dto.storeId,
