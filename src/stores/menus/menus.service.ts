@@ -30,7 +30,7 @@ export class MenusService {
     }
 
     const isMenuNameUnique = await this.checkMenuNameUnique(dto.storeId, dto.name);
-    if (!isMenuNameUnique) {
+    if (isMenuNameUnique) {
       throw new Error('Menu name is not unique.');
     }
 
