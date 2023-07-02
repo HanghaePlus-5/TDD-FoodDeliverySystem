@@ -4,8 +4,8 @@ import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/sto
 
 import { MenusRepository } from './menus.repository';
 import { MenuCreateDto } from '../dto/menu-create.dto';
-import { StoresService } from '../stores/stores.service';
 import { MenuUpdateDto } from '../dto/menu-update.dto';
+import { StoresService } from '../stores/stores.service';
 
 @Injectable()
 export class MenusService {
@@ -55,7 +55,7 @@ export class MenusService {
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
-    
+
     const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
       isStoreOwned.status,
       ACTIVATE_STORE_STATUES,

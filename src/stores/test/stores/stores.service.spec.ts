@@ -5,13 +5,13 @@ import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { StoreCreateDto, StoreDto } from 'src/stores/dto';
 import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto } from '../utils/testUtils';
-import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 describe('StoresService', () => {
   let storesService: StoresService;

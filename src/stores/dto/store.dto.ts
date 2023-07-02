@@ -18,7 +18,7 @@ export interface StoreDto {
   userId: number;
 }
 
-export interface StoreOptionalDto extends Partial<StoreDto> {}
+export type StoreOptionalDto = Partial<StoreDto>
 
 export interface StoreOwnedDto {
   storeId: number;
