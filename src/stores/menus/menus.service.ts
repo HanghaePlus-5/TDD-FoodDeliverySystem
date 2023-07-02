@@ -16,6 +16,15 @@ export class MenusService {
     if (!isStoreOwned) {
       throw new Error('User does not own store');
     }
+    
+    const isStoreStatusGroup = await this.storesService.checkStoreStatusGroup(
+      isStoreOwned.status, 
+      ['REGISTERED', 'OPEN', 'CLOSED'],
+    );
+    if (!isStoreStatusGroup) {
+      throw new Error('Store status is not allowed.');
+    }
+
     return this.menusRepository.createMenu(storeId, dto);
   }
 }
