@@ -18,6 +18,14 @@ export interface StoreDto {
   userId: number;
 }
 
-export type StoreOptionalDto = Partial<StoreDto>;
-export type StoreOwnedDto = Pick<StoreDto, 'storeId' | 'userId'>;
-export type StoreStatusDto = Pick<StoreDto, 'storeId' | 'status'>;
+export interface StoreOptionalDto extends Partial<StoreDto> {}
+
+export interface StoreOwnedDto {
+  storeId: number;
+  userId: number;
+}
+
+export interface StoreStatusDto {
+  storeId: number;
+  status: StoreStatus;
+}

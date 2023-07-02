@@ -1,3 +1,6 @@
 import { StoreDto } from './store.dto';
 
-export type StoreChangeStatusDto = Pick<StoreDto, 'storeId' | 'status'>;
+export interface StoreChangeStatusDto extends Pick<
+    StoreDto,
+    'storeId' | 'status'
+  > {}
