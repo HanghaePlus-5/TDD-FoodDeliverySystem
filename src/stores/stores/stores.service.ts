@@ -36,7 +36,12 @@ export class StoresService {
       throw new Error('Invalid business number.');
     }
 
-    return await this.storesRepository.create(storeOptionalDto);
+    try { 
+      const store = await this.storesRepository.create(storeOptionalDto);
+      return store;
+    } catch (error) {
+      throw new Error('Store creation failed.');
+    }
   }
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {

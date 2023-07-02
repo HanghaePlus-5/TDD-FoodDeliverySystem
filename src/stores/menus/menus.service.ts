@@ -34,7 +34,7 @@ export class MenusService {
       throw new Error('Menu name is not unique.');
     }
 
-    return this.menusRepository.createMenu(dto);
+    return await this.menusRepository.createMenu(dto);
   }
 
   async checkMenuNameUnique(storeId: number, name: string): Promise<MenuDto | null> {
