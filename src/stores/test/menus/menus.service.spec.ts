@@ -5,6 +5,7 @@ import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
+import { ACTIVATE_MENU_STATUES } from 'src/constants/stores';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
@@ -14,6 +15,7 @@ import { createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto } 
 
 describe('MenusService', () => {
   let menusService: MenusService;
+  let menusRepository: MenusRepository;
   let storesService: StoresService;
   let envService: EnvService;
 
@@ -34,6 +36,7 @@ describe('MenusService', () => {
       .compile();
 
     menusService = module.get<MenusService>(MenusService);
+    menusRepository = module.get<MenusRepository>(MenusRepository);
     storesService = module.get<StoresService>(StoresService);
     envService = module.get<EnvService>(EnvService);
   });
@@ -86,7 +89,7 @@ describe('MenusService', () => {
       );
     });
 
-    it('should exec checkMenuNameUnique', async () => {
+    it('should exec checkDuplicateMenu', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const sampleMenuDto = createSampleMenuDto({});
@@ -102,17 +105,20 @@ describe('MenusService', () => {
       );
       mockCheckStoreStatusGroup.mockResolvedValue(true);
 
-      const mockCheckMenuNameUnique = jest.spyOn(
-        menusService,
-        'checkMenuNameUnique',
+      const mockFindOne = jest.spyOn(
+        menusRepository,
+        'findOne',
       );
-      mockCheckMenuNameUnique.mockResolvedValue(sampleMenuDto);
+      mockFindOne.mockResolvedValue(sampleMenuDto);
 
       await expect(
         menusService.createMenu(1, sampleCreateMenuDto),
-      ).rejects.toThrowError('Menu name is not unique.');
+      ).rejects.toThrowError('Menu name is not unique on ACTIVATE_MENU_STATUES.');
 
-      expect(mockCheckMenuNameUnique).toBeCalledWith(1, '아메리카노');
+      expect(mockFindOne).toBeCalledWith({
+        storeId: 1,
+        name: '아메리카노',
+      }, ACTIVATE_MENU_STATUES);
     });
   });
 });
