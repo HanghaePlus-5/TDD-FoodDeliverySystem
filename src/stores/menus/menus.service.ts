@@ -81,5 +81,12 @@ export class MenusService {
         throw new Error('Menu name is not unique on ACTIVATE_MENU_STATUES.');
       }
     }
+
+    try {
+      const menu = await this.menusRepository.update(dto);
+      return menu;
+    } catch (error) {
+      throw new Error('Menu update failed.');
+    }
   }
 }

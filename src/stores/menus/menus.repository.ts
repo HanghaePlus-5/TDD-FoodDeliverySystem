@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma';
 
-import { MenuDto } from '../dto';
+import { MenuDto, MenuUpdateDto } from '../dto';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { menuToDtoMap } from '../mapper/menus.mapper';
 
@@ -27,6 +27,20 @@ export class MenusRepository {
       data: {
         ...dto,
         sort: nextSort,
+      },
+    });
+
+    return menuToDtoMap(menu);
+  }
+
+  async update(dto: MenuUpdateDto) {
+    const { menuId, ...rest } = dto;
+    const menu = await this.prisma.menu.update({
+      where: {
+        menuId,
+      },
+      data: {
+        ...rest,
       },
     });
 
