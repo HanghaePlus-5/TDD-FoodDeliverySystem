@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { MenusRepository } from './menus.repository';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { StoresService } from '../stores/stores.service';
+import { MenuDto } from '../dto';
 
 @Injectable()
 export class MenusService {
@@ -36,7 +37,7 @@ export class MenusService {
     return this.menusRepository.createMenu(dto);
   }
 
-  async checkMenuNameUnique(storeId: number, name: string) {
+  async checkMenuNameUnique(storeId: number, name: string): Promise<MenuDto | null> {
     const menu = await this.menusRepository.findOne({ storeId, name });
     const type: MenuStatus[] = ['REGISTERED', 'OPEN', 'CLOSED']
     if (menu && type.includes(menu.status)) {
