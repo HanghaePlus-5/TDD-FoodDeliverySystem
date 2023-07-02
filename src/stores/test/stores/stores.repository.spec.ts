@@ -37,16 +37,16 @@ describe('StoresRepository', () => {
   describe('create', () => {
     it('should throw an error if store name already exists', async () => {
       const sampleCreateStoreDto = createSampleStoreDto();
-      await repository.create(sampleCreateStoreDto);
+      await repository.create(1, sampleCreateStoreDto);
 
       await expect(
-        repository.create(sampleCreateStoreDto),
+        repository.create(1, sampleCreateStoreDto),
       ).rejects.toThrowError('already exists');
     });
 
     it('should create a store', async () => {
       const sampleCreateStoreDto = createSampleStoreDto();
-      const createdStore = await repository.create(sampleCreateStoreDto);
+      const createdStore = await repository.create(1, sampleCreateStoreDto);
       const savedStore = await repository.findOne({ name: createdStore.name });
 
       expect(createdStore).toEqual(savedStore);
@@ -62,7 +62,7 @@ describe('StoresRepository', () => {
 
     it('should return a store if there is a store', async () => {
       const sampleCreateStoreDto = createSampleStoreDto();
-      const createdStore = await repository.create(sampleCreateStoreDto);
+      const createdStore = await repository.create(1, sampleCreateStoreDto);
       const store = await repository.findOne({ name: createdStore.name });
 
       expect(store).toEqual(createdStore);
