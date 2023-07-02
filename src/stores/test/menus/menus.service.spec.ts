@@ -485,4 +485,25 @@ describe('MenusService', () => {
       expect(result).toBe(true);
     });
   });
+
+  describe('getMenus', () => {
+    it('should exec checkStoreOwned if viewtype is OWNER', async () => {
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(null);
+
+      await expect(
+        menusService.getMenus(1, 1, 'OWNER' as ViewType),
+      ).rejects.toThrowError('User does not own store');
+
+      expect(mockCheckStoreOwned).toBeCalledWith({
+        storeId: 1,
+        userId: 1,
+      });
+    });
+
+
+  });
 });

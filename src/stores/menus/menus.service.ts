@@ -133,6 +133,18 @@ export class MenusService {
     }
   }
 
+  async getMenus(userId: number, storeId: number, viewType: ViewType) {
+    if (viewType === 'OWNER') {
+      const isStoreOwned = await this.storesService.checkStoreOwned({
+        userId,
+        storeId,
+      });
+      if (!isStoreOwned) {
+        throw new Error('User does not own store');
+      }
+    }
+  }
+
   checkMenuStatusChangeCondition(
     fromStatus: MenuStatus,
     toStatus: MenuStatus,
