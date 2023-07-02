@@ -12,7 +12,7 @@ import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import {
- createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
+createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
 } from '../utils/testUtils';
 
 describe('MenusService', () => {

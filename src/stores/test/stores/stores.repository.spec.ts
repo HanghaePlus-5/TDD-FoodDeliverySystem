@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
 import { EnvService } from 'src/config/env';
-import { StoreCreateDto, StoreDto } from 'src/stores/dto';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
@@ -37,7 +36,7 @@ describe('StoresRepository', () => {
 
   describe('create', () => {
     it('should throw an error if store name already exists', async () => {
-      const sampleCreateStoreDto: StoreCreateDto = createSampleStoreDto({});
+      const sampleCreateStoreDto = createSampleStoreDto();
       await repository.create(sampleCreateStoreDto);
 
       await expect(
@@ -46,7 +45,7 @@ describe('StoresRepository', () => {
     });
 
     it('should create a store', async () => {
-      const sampleCreateStoreDto: StoreCreateDto = createSampleStoreDto({});
+      const sampleCreateStoreDto = createSampleStoreDto();
       const createdStore = await repository.create(sampleCreateStoreDto);
       const savedStore = await repository.findOne({ name: createdStore.name });
 
@@ -62,7 +61,7 @@ describe('StoresRepository', () => {
     });
 
     it('should return a store if there is a store', async () => {
-      const sampleCreateStoreDto: StoreCreateDto = createSampleStoreDto({});
+      const sampleCreateStoreDto = createSampleStoreDto();
       const createdStore = await repository.create(sampleCreateStoreDto);
       const store = await repository.findOne({ name: createdStore.name });
 
