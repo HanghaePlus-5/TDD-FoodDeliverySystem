@@ -404,7 +404,7 @@ describe('MenusService', () => {
         menusService,
         'checkMenuStatusChangeCondition',
       );
-      mockCheckMenuStatusChangeCondition.mockResolvedValue(false);
+      mockCheckMenuStatusChangeCondition.mockReturnValue(false);
 
       await expect(
         menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
@@ -416,4 +416,30 @@ describe('MenusService', () => {
       );
     });
   })
+
+  describe('checkMenuStatusChangeCondition', () => {
+    it('should return false if [REGISTERED -> CLOSED]', () => {
+      const result = menusService.checkMenuStatusChangeCondition(
+        'REGISTERED' as MenuStatus,
+        'CLOSED' as MenuStatus,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return false if [OPEN -> REGISTERED]', () => {
+      const result = menusService.checkMenuStatusChangeCondition(
+        'OPEN' as MenuStatus,
+        'REGISTERED' as MenuStatus,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return true if [REGISTERED -> OPEN]', () => {
+      const result = menusService.checkMenuStatusChangeCondition(
+        'REGISTERED' as MenuStatus,
+        'OPEN' as MenuStatus,
+      );
+      expect(result).toBe(true);
+    });
+  });
 });

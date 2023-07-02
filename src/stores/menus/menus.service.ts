@@ -125,10 +125,20 @@ export class MenusService {
     }
   }
 
-  async checkMenuStatusChangeCondition(
-    fromStatus: string,
-    toStatus: string,
-  ): Promise<boolean> {
-    return true;
+  checkMenuStatusChangeCondition(
+    fromStatus: MenuStatus,
+    toStatus: MenuStatus,
+  ): boolean {
+    if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
+      return true;
+    }
+    if (fromStatus === 'OPEN' && toStatus === 'CLOSED') {
+      return true;
+    }
+    if (fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED')
+      && toStatus === 'DELETED') {
+      return true;
+    }
+    return false;
   }
 }
