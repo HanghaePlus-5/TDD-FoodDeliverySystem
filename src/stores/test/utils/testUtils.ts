@@ -4,7 +4,7 @@ import { MenuUpdateDto } from 'src/stores/dto/menu-update.dto';
 import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
 import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 
-export function createSampleCreateStoreDto(dto: Partial<StoreCreateDto>): StoreCreateDto {
+export function createSampleCreateStoreDto(dto?: Partial<StoreCreateDto>): StoreCreateDto {
   return {
     name: '커피커피',
     type: 'CAFE',
@@ -21,7 +21,7 @@ export function createSampleCreateStoreDto(dto: Partial<StoreCreateDto>): StoreC
   };
 }
 
-export function createSampleUpdateStoreDto(dto: Partial<StoreUpdateDto>): StoreUpdateDto {
+export function createSampleUpdateStoreDto(dto?: Partial<StoreUpdateDto>): StoreUpdateDto {
   return {
     storeId: 1,
     name: '커피커피',
@@ -38,7 +38,7 @@ export function createSampleUpdateStoreDto(dto: Partial<StoreUpdateDto>): StoreU
   };
 }
 
-export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
+export function createSampleStoreDto(dto?: Partial<StoreDto>): StoreDto {
   return {
     storeId: 1,
     name: '커피커피',
@@ -61,7 +61,7 @@ export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
   };
 }
 
-export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCreateDto {
+export function createSampleCreateMenuDto(dto?: Partial<MenuCreateDto>): MenuCreateDto {
   return {
     name: '아메리카노',
     price: 4000,
@@ -72,7 +72,7 @@ export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCrea
   };
 }
 
-export function createSampleUpdateMenuDto(dto: Partial<MenuUpdateDto>): MenuUpdateDto {
+export function createSampleUpdateMenuDto(dto?: Partial<MenuUpdateDto>): MenuUpdateDto {
   return {
     menuId: 1,
     name: '아메리카노',
@@ -84,7 +84,7 @@ export function createSampleUpdateMenuDto(dto: Partial<MenuUpdateDto>): MenuUpda
   };
 }
 
-export function createSampleMenuDto(dto: Partial<MenuDto>): MenuDto {
+export function createSampleMenuDto(dto?: Partial<MenuDto>): MenuDto {
   return {
     menuId: 1,
     name: '아메리카노',
