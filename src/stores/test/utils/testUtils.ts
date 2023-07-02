@@ -1,5 +1,6 @@
 import { MenuDto, StoreCreateDto, StoreDto } from 'src/stores/dto';
 import { MenuCreateDto } from 'src/stores/dto/menu-create.dto';
+import { MenuUpdateDto } from 'src/stores/dto/menu-update.dto';
 import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 
 export function createSampleCreateStoreDto(dto: Partial<StoreCreateDto>): StoreCreateDto {
@@ -61,6 +62,17 @@ export function createSampleStoreDto(dto: Partial<StoreDto>): StoreDto {
 
 export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCreateDto {
   return {
+    name: '아메리카노',
+    price: 4000,
+    description: '커피의 정석',
+    storeId: 1,
+    ...dto,
+  };
+}
+
+export function createSampleUpdateMenuDto(dto: Partial<MenuUpdateDto>): MenuUpdateDto {
+  return {
+    menuId: 1,
     name: '아메리카노',
     price: 4000,
     description: '커피의 정석',
