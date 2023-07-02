@@ -71,5 +71,15 @@ export class MenusService {
     if (!isMenu) {
       throw new Error('Menu not found.');
     }
+
+    if (dto.name) {
+      const duplicateMenu = await this.menusRepository.findOne({
+        storeId: dto.storeId,
+        name: dto.name,
+      }, ACTIVATE_MENU_STATUES);
+      if (duplicateMenu && duplicateMenu.menuId !== dto.menuId) {
+        throw new Error('Menu name is not unique on ACTIVATE_MENU_STATUES.');
+      }
+    }
   }
 }

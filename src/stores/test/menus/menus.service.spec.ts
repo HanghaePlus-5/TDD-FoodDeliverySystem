@@ -230,5 +230,45 @@ describe('MenusService', () => {
         menuId: 1,
       }, ACTIVATE_MENU_STATUES);
     });
+
+    it('should check duplicate menu if name is changed', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({
+        name: '아메리카노',
+      });
+      const sampleMenuDto = createSampleMenuDto({});
+      const sampleMenuDto2 = createSampleMenuDto({menuId: 2});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockFindOne = jest.spyOn(menusRepository, 'findOne');
+      mockFindOne.mockImplementation(async (dto, statusValues) => {
+        if (dto.menuId === sampleCreateMenuUpdateDto.menuId) {
+          return Promise.resolve(sampleMenuDto);
+        } else if (dto.name === sampleCreateMenuUpdateDto.name) {
+          return Promise.resolve(sampleMenuDto2);
+        } else {
+          return Promise.resolve(null);
+        }
+      });
+
+      await expect(
+        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+      ).rejects.toThrowError('Menu name is not unique on ACTIVATE_MENU_STATUES.');
+
+      expect(mockFindOne).toBeCalledWith({
+        storeId: 1,
+        name: '아메리카노',
+      }, ACTIVATE_MENU_STATUES);
+    });
   });
 });
