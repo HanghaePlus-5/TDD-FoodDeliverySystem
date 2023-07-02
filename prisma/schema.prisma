@@ -76,6 +76,7 @@ model Menu {
   sort      Int?
   status    MenuStatus @default(REGISTERED)
   price     Int
+  inventory Int
   description String?
   registrationDate DateTime  @default(now())
   storeId   Int
