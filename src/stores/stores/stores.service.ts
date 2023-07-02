@@ -12,8 +12,9 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
-import { StoreSearchDto } from '../dto/store-search.dto';
+import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
+import { StoreMenuDto } from '../dto/store-menu.dto';
 
 @Injectable()
 export class StoresService {
@@ -98,7 +99,7 @@ export class StoresService {
     return await this.storesRepository.findOne({ storeId });
   }
 
-  async getStoresBySearch(dto: StoreSearchDto): Promise<StoreDto[]> {
+  async getStoresBySearch(dto: SearchDto): Promise<StoreMenuDto[]> {
     return await this.storesRepository.findManyBySearch(dto);
   }
 

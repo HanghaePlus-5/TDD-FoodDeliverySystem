@@ -4,7 +4,7 @@ import { Store, StoreStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma';
 
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
-import { StoreSearchDto } from '../dto/store-search.dto';
+import { SearchDto } from '../dto/store-search.dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
 import { OPENED_STORE_STATUES } from 'src/constants/stores';
 import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
@@ -69,7 +69,7 @@ export class StoresRepository {
     return stores.map(storeToDtoMap);
   }
 
-  async findManyBySearch(dto: StoreSearchDto): Promise<StoreMenuDto[]> {
+  async findManyBySearch(dto: SearchDto): Promise<StoreMenuDto[]> {
     const { keyword, page, limit } = dto;
     const offset = (page - 1) * limit;
     const stores = await this.prisma.store.findMany({
