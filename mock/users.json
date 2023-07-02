@@ -1,0 +1,37 @@
+[
+  {
+    "userId": 1,
+    "email": "test1@delivery.com",
+    "name": "Customer User1",
+    "password": "$2b$10$RRbBUc4dKHyK2zZRW1acs.MO9xo74eFyo2RdAPPsVLNO07awz4zR.",
+    "type": "CUSTOMER"
+  },
+  {
+    "userId": 2,
+    "email": "test2@delivery.com",
+    "name": "Customer User2",
+    "password": "$2b$10$RRbBUc4dKHyK2zZRW1acs.MO9xo74eFyo2RdAPPsVLNO07awz4zR.",
+    "type": "CUSTOMER"
+  },
+  {
+    "userId": 3,
+    "email": "test3@delivery.com",
+    "name": "Business User1",
+    "password": "$2b$10$RRbBUc4dKHyK2zZRW1acs.MO9xo74eFyo2RdAPPsVLNO07awz4zR.",
+    "type": "BUSINESS"
+  },
+  {
+    "userId": 4,
+    "email": "test4@delivery.com",
+    "name": "Business User2",
+    "password": "$2b$10$RRbBUc4dKHyK2zZRW1acs.MO9xo74eFyo2RdAPPsVLNO07awz4zR.",
+    "type": "BUSINESS"
+  },
+  {
+    "userId": 5,
+    "email": "test5@delivery.com",
+    "name": "Customer User3",
+    "password": "$2b$10$RRbBUc4dKHyK2zZRW1acs.MO9xo74eFyo2RdAPPsVLNO07awz4zR.",
+    "type": "CUSTOMER"
+  }
+]
