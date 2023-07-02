@@ -174,5 +174,30 @@ describe('MenusService', () => {
         userId: 1,
       });
     });
+
+    it('should exec checkStoreStatusGroup', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(false);
+
+      await expect(
+        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+      ).rejects.toThrowError('Store status is not allowed.');
+
+      expect(mockCheckStoreStatusGroup).toBeCalledWith(
+        'REGISTERED',
+        ['REGISTERED', 'OPEN', 'CLOSED'],
+      );
+    });
   });
 });
