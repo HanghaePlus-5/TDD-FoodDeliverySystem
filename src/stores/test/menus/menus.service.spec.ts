@@ -10,7 +10,7 @@ import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateMenuDto, createSampleStoreDto } from '../utils/testUtils';
+import { createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto } from '../utils/testUtils';
 
 describe('MenusService', () => {
   let menusService: MenusService;
@@ -89,6 +89,7 @@ describe('MenusService', () => {
     it('should exec checkMenuNameUnique', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned',
@@ -105,7 +106,7 @@ describe('MenusService', () => {
         menusService,
         'checkMenuNameUnique',
       );
-      mockCheckMenuNameUnique.mockResolvedValue(null);
+      mockCheckMenuNameUnique.mockResolvedValue(sampleMenuDto);
 
       await expect(
         menusService.createMenu(1, sampleCreateMenuDto),

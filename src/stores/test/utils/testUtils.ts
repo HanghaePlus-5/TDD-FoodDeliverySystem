@@ -1,4 +1,4 @@
-import { StoreCreateDto, StoreDto } from 'src/stores/dto';
+import { MenuDto, StoreCreateDto, StoreDto } from 'src/stores/dto';
 import { MenuCreateDto } from 'src/stores/dto/menu-create.dto';
 import { StoreUpdateDto } from 'src/stores/dto/store-update.dto';
 
@@ -66,6 +66,20 @@ export function createSampleCreateMenuDto(dto: Partial<MenuCreateDto>): MenuCrea
     sort: 1,
     price: 4000,
     description: '커피의 정석',
+    storeId: 1,
+    ...dto,
+  };
+}
+
+export function createSampleMenuDto(dto: Partial<MenuDto>): MenuDto {
+  return {
+    menuId: 1,
+    name: '아메리카노',
+    sort: 1,
+    status: 'REGISTERED',
+    price: 4000,
+    description: '커피의 정석',
+    registrationDate: new Date(),
     storeId: 1,
     ...dto,
   };
