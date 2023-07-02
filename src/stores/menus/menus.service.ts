@@ -133,7 +133,7 @@ export class MenusService {
     }
   }
 
-  async getMenus(userId: number, storeId: number, viewType: ViewType) {
+  async getMenus(userId: number, storeId: number, viewType: ViewType): Promise<MenuDto[]> {
     if (viewType === 'OWNER') {
       const isStoreOwned = await this.storesService.checkStoreOwned({
         userId,
