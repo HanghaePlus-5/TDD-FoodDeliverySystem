@@ -105,7 +105,7 @@ describe('MenusService', () => {
         menusService,
         'checkMenuNameUnique',
       );
-      mockCheckMenuNameUnique.mockResolvedValue(false);
+      mockCheckMenuNameUnique.mockResolvedValue(null);
 
       await expect(
         menusService.createMenu(1, 1, sampleCreateMenuDto),

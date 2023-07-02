@@ -25,6 +25,20 @@ export class MenusService {
       throw new Error('Store status is not allowed.');
     }
 
+    const isMenuNameUnique = await this.checkMenuNameUnique(storeId, dto.name);
+    if (!isMenuNameUnique) {
+      throw new Error('Menu name is not unique.');
+    }
+
     return this.menusRepository.createMenu(storeId, dto);
+  }
+
+  async checkMenuNameUnique(storeId: number, name: string) {
+    const menu = await this.menusRepository.findOne({ storeId, name });
+    const type: MenuStatus[] = ['REGISTERED', 'OPEN', 'CLOSED']
+    if (menu && type.includes(menu.status)) {
+      return null;
+    }
+    return menu;
   }
 }
