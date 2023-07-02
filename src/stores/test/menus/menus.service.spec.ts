@@ -378,5 +378,42 @@ describe('MenusService', () => {
         menuId: 1,
       }, ACTIVATE_MENU_STATUES);
     });
+
+    it('should exec checkMenuStatusChangeCondition', async () => {
+      const sampleStoreDto = createSampleStoreDto({});
+      const sampleMenuDto = createSampleMenuDto({});
+      const mockCheckStoreOwned = jest.spyOn(
+        storesService,
+        'checkStoreOwned',
+      );
+      mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
+
+      const mockCheckStoreStatusGroup = jest.spyOn(
+        storesService,
+        'checkStoreStatusGroup',
+      );
+      mockCheckStoreStatusGroup.mockResolvedValue(true);
+
+      const mockFindOne = jest.spyOn(
+        menusRepository,
+        'findOne',
+      );
+      mockFindOne.mockResolvedValue(sampleMenuDto);
+
+      const mockCheckMenuStatusChangeCondition = jest.spyOn(
+        menusService,
+        'checkMenuStatusChangeCondition',
+      );
+      mockCheckMenuStatusChangeCondition.mockResolvedValue(false);
+
+      await expect(
+        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+      ).rejects.toThrowError('Menu status change condition is not met.');
+
+      expect(mockCheckMenuStatusChangeCondition).toBeCalledWith(
+        'REGISTERED',
+        'OPEN',
+      );
+    });
   })
 });

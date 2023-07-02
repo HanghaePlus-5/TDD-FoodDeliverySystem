@@ -115,5 +115,20 @@ export class MenusService {
     if (!isMenu) {
       throw new Error('Menu not found.');
     }
+
+    const isMenuStatusChangeCondition = await this.checkMenuStatusChangeCondition(
+      isMenu.status,
+      dto.status,
+    );
+    if (!isMenuStatusChangeCondition) {
+      throw new Error('Menu status change condition is not met.');
+    }
+  }
+
+  async checkMenuStatusChangeCondition(
+    fromStatus: string,
+    toStatus: string,
+  ): Promise<boolean> {
+    return true;
   }
 }
