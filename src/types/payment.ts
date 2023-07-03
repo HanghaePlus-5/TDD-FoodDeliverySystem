@@ -5,7 +5,7 @@ export const PaymentStatus = {
   canceled: 'canceled',
 } as const;
 declare global {
-  type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
+  type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
 
   interface Payment {
     paymentId: number;
@@ -19,11 +19,11 @@ declare global {
     paymentStatus: PaymentStatus;
     createdAt: Date;
     updatedAt: Date;
-}
+  }
 
   interface PaymentProcessArgs {
-    order : Order,
-    user : User,
-    paymentCreateDto : PaymentCreateDto
+    order: Order;
+    user: User;
+    paymentCreateDto: PaymentCreateDto;
   }
 }

@@ -26,8 +26,7 @@ describe('PaymentService', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PaymentService, PrismaService, PaymentGatewayService],
-    })
-      .compile();
+    }).compile();
 
     service = module.get<PaymentService>(PaymentService);
     testPrisma = module.get(PrismaService);
@@ -35,19 +34,16 @@ describe('PaymentService', () => {
     const random = Math.floor(Math.random() * 1000) + 1;
 
     user = await testPrisma.user.create({
-      data:
-      {
+      data: {
         email: `michael${random}@gmail.com`,
         name: 'michael',
         password: 'qwer123123',
         type: UserType.CUSTOMER,
       },
-
     });
 
     store = await testPrisma.store.create({
-      data:
-      {
+      data: {
         name: `Sample Store${random}`,
         type: StoreType.KOREAN,
         status: StoreStatus.OPEN,
@@ -62,8 +58,7 @@ describe('PaymentService', () => {
     });
 
     menu = await testPrisma.menu.create({
-      data:
-      {
+      data: {
         storeId: store.storeId,
       },
     });
@@ -76,28 +71,31 @@ describe('PaymentService', () => {
     });
 
     orderItem = await testPrisma.orderItem.createMany({
-      data: [{
-        orderId: order.orderId,
-        quantity: 1,
-        menuId: menu.menuId,
-      }],
+      data: [
+        {
+          orderId: order.orderId,
+          quantity: 1,
+          menuId: menu.menuId,
+        },
+      ],
     });
     orderDto = {
-      ...order, user,
+      ...order,
+      user,
     };
 
-    paymentProcessArgs = { paymentCreateDto: mockingPaymentInfo(), order, user };
+    paymentProcessArgs = {
+      paymentCreateDto: mockingPaymentInfo(),
+      order,
+      user,
+    };
   });
   afterAll(async () => {
     const deleteOrderItem = testPrisma.orderItem.deleteMany();
-    await testPrisma.$transaction([
-      deleteOrderItem,
-    ]);
+    await testPrisma.$transaction([deleteOrderItem]);
     const deleteUser = testPrisma.user.deleteMany();
     const deleteMenu = testPrisma.menu.deleteMany();
-    await testPrisma.$transaction([
-      deleteMenu,
-    ]);
+    await testPrisma.$transaction([deleteMenu]);
     const deleteStore = testPrisma.store.deleteMany();
     const deleteOrder = testPrisma.order.deleteMany();
     await testPrisma.$transaction([
@@ -109,9 +107,7 @@ describe('PaymentService', () => {
   });
   afterEach(async () => {
     const deletePayment = testPrisma.payment.deleteMany();
-    await testPrisma.$transaction([
-      deletePayment,
-    ]);
+    await testPrisma.$transaction([deletePayment]);
   });
 
   it('should be defined', () => {
@@ -125,21 +121,34 @@ describe('PaymentService', () => {
   describe('send payment request to payment-gateway', () => {
     describe('validate payment request', () => {
       it(issue('unathorized card holder'), async () => {
-        await expect(service.makePayment(
-          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardHolderName: 'dan' }) },
-)).rejects.toThrow();
+        await expect(
+          service.makePayment({
+            ...paymentProcessArgs,
+            paymentCreateDto: mockingPaymentInfo({ cardHolderName: 'dan' }),
+          }),
+        ).rejects.toThrow();
       });
       it(issue('invalid card number format'), async () => {
-        await expect(service.makePayment(
-          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardNumber: '4124-1244-4124-414' }) },
-        )).rejects.toThrow();
+        await expect(
+          service.makePayment({
+            ...paymentProcessArgs,
+            paymentCreateDto: mockingPaymentInfo({
+              cardNumber: '4124-1244-4124-414',
+            }),
+          }),
+        ).rejects.toThrow();
       });
     });
     describe('payment request to PG', () => {
       it(issue('unacceptable card'), async () => {
-        await expect(service.makePayment(
-          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ cardNumber: '1111-1111-1111-1111' }) },
-        )).rejects.toThrow();
+        await expect(
+          service.makePayment({
+            ...paymentProcessArgs,
+            paymentCreateDto: mockingPaymentInfo({
+              cardNumber: '1111-1111-1111-1111',
+            }),
+          }),
+        ).rejects.toThrow();
       });
     });
     describe('payment creation', () => {
@@ -154,20 +163,33 @@ describe('PaymentService', () => {
     describe('validate cancel request', () => {
       it(issue('no payment data'), async () => {
         await service.makePayment(paymentProcessArgs);
-        await expect(service.cancelPayment(123123)).rejects.toThrow(NotFoundException);
+        await expect(service.cancelPayment(123123)).rejects.toThrow(
+          NotFoundException,
+        );
       });
       it(issue('status not completed'), async () => {
-        await service.makePayment(
-          { ...paymentProcessArgs, paymentCreateDto: mockingPaymentInfo({ paymentStatus: PaymentStatus.canceled }) },
-);
+        await service.makePayment({
+          ...paymentProcessArgs,
+          paymentCreateDto: mockingPaymentInfo({
+            paymentStatus: PaymentStatus.canceled,
+          }),
+        });
         await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
       });
     });
 
     describe('cancel request to PG', () => {
       it(issue('invalid paymentGatewayId'), async () => {
-        await testPrisma.payment.create({ data: { ...mockingPaymentInfo(), paymentGatewayId: '123456', orderId: orderDto.orderId } });
-        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow(NotAcceptableException);
+        await testPrisma.payment.create({
+          data: {
+            ...mockingPaymentInfo(),
+            paymentGatewayId: '123456',
+            orderId: orderDto.orderId,
+          },
+        });
+        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow(
+          NotAcceptableException,
+        );
       });
     });
 
