@@ -120,7 +120,7 @@ export function createSampleStoreMenuDto(dto?: Partial<StoreMenuDto>): StoreMenu
       menuId: 1,
       name: '아메리카노',
       sort: 1,
-      status: 'OPEN',
+      status: 'REGISTERED',
       price: 4000,
       inventory: 100,
       description: '커피의 정석',

@@ -105,7 +105,7 @@ export class StoresService {
   async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
     if(viewType === 'OWNER') {
       if (!userId) {
-        throw new Error('User not found.')
+        throw new Error('UserId is required at OWNER ViewType.')
       }
     }
 

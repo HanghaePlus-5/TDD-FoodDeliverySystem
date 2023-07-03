@@ -8,7 +8,7 @@ import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
+import { createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
 import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
 import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresModule } from 'src/stores/stores.module';
@@ -477,6 +477,43 @@ describe('StoresService', () => {
       expect(result).toEqual([sampleStoreDto]);
 
       expect(mockFindAllByUserId).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('getStoreByStoreId', () => {
+    it('should throw error if viewType OWNER and userId not included', async () => {
+      await expect(
+        storesService.getStoreByStoreId(1, 'OWNER' as ViewType),
+      ).rejects.toThrowError('UserId is required at OWNER ViewType.');
+    });
+
+    it('should throw error if store not found', async () => {
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(null);
+
+      await expect(
+        storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1),
+      ).rejects.toThrowError('Store not found.');
+    });
+
+    it('should exec find func', async () => {
+      const sampleStoreDto = createSampleStoreDto({status: 'OPEN' as StoreStatus});
+      const sampleMenuDto = createSampleMenuDto()
+      const sampleStoreMenuDto = createSampleStoreMenuDto()
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(sampleStoreDto);
+
+      const mockGetMenus = jest.spyOn(
+        menusService,
+        'getMenus' as any,
+      );
+      mockGetMenus.mockResolvedValue([sampleMenuDto]);
+
+      const result = await storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1);
+      expect(result).toEqual(sampleStoreMenuDto);
+
+      expect(mockFindOne).toHaveBeenCalledWith({storeId: 1, userId: 1}, 'OWNER' as ViewType);
+      expect(mockGetMenus).toHaveBeenCalledWith(1, 'OWNER' as ViewType, 1);
     });
   });
 
