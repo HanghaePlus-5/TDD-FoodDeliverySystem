@@ -7,7 +7,7 @@ import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 import { SearchDto } from '../dto/store-search.dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
 import { OPENED_MENU_STATUES, OPENED_STORE_STATUES } from 'src/constants/stores';
-import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
+import { StoreMenuSearchDtoMap } from '../mapper/store-menu.mapper';
 import { StoreMenuDto } from '../dto/store-menu.dto';
 
 @Injectable()
@@ -102,6 +102,6 @@ export class StoresRepository {
         },
       }
     });
-    return stores.map(StoreMenuDtoMap);
+    return stores.map(StoreMenuSearchDtoMap);
   }
 }

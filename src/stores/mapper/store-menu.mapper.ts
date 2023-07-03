@@ -2,7 +2,7 @@ import { Menu, Store } from '@prisma/client';
 
 import { MenuViewDto, StoreMenuDto } from '../dto/store-menu.dto';
 
-export function StoreMenuDtoMap(store: (Store & {menu: Menu[];})): StoreMenuDto {
+export function StoreMenuSearchDtoMap(store: (Store & {menu: Menu[];})): StoreMenuDto {
   return {
     storeId: store.storeId,
     name: store.name,
