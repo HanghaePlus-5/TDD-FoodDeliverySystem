@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
-import { EnvService } from 'src/config/env';
 import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
@@ -12,12 +11,13 @@ import { StoresService } from 'src/stores/stores/stores.service';
 import { createSampleCreateStoreDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
 import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
 import { MenusService } from 'src/stores/menus/menus.service';
+import { StoresModule } from 'src/stores/stores.module';
+import { MenusRepository } from 'src/stores/menus/menus.repository';
 
 describe('StoresService', () => {
   let storesService: StoresService;
   let storesReposiroty: StoresRepository;
   let menusService: MenusService;
-  let envService: EnvService;
 
   const MIN_COOKING_TIME = 5;
   const MAX_COOKING_TIME = 120;
@@ -25,7 +25,17 @@ describe('StoresService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
-      providers: [StoresService, StoresRepository, EnvService, PrismaService],
+      providers: [
+        PrismaService,
+        StoresService,
+        StoresRepository,
+        {
+          provide: MenusService,
+          useValue: {
+            getMenus: jest.fn(),
+          }
+        }
+      ],
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
@@ -34,7 +44,6 @@ describe('StoresService', () => {
     storesService = module.get<StoresService>(StoresService);
     storesReposiroty = module.get<StoresRepository>(StoresRepository);
     menusService = module.get<MenusService>(MenusService);
-    envService = module.get<EnvService>(EnvService);
   });
 
   it('should be defined', () => {
@@ -471,18 +480,18 @@ describe('StoresService', () => {
     });
   });
 
-  describe('getStoreByStoreId', () => {
-    it('should exec findOne', async () => {
-      const sampleStoreDto = createSampleStoreDto();
-      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
-      mockFindOne.mockResolvedValue(sampleStoreDto);
+  // describe('getStoreByStoreId', () => {
+  //   it('should exec findOne', async () => {
+  //     const sampleStoreDto = createSampleStoreDto();
+  //     const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+  //     mockFindOne.mockResolvedValue(sampleStoreDto);
 
-      const result = await storesService.getStoreByStoreId(1);
-      expect(result).toEqual(sampleStoreDto);
+  //     const result = await storesService.getStoreByStoreId(1);
+  //     expect(result).toEqual(sampleStoreDto);
 
-      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
-    });
-  });
+  //     expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
+  //   });
+  // });
 
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {

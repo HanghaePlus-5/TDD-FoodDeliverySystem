@@ -16,17 +16,22 @@ import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
 import { StoreMenuDto } from '../dto/store-menu.dto';
 import { MenusService } from '../menus/menus.service';
+import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class StoresService {
-  private readonly MIN_COOKING_TIME = this.env.get<number>('MIN_COOKING_TIME');
-  private readonly MAX_COOKING_TIME = this.env.get<number>('MAX_COOKING_TIME');
+  private MIN_COOKING_TIME;
+  private MAX_COOKING_TIME;
 
   constructor(
-    private readonly env: EnvService,
+    private readonly configService: ConfigService,
     private readonly storesRepository: StoresRepository,
     private readonly menusService: MenusService,
-  ) {}
+  ) {
+    this.MIN_COOKING_TIME = this.configService.get<number>('MIN_COOKING_TIME')
+    this.MAX_COOKING_TIME = this.configService.get<number>('MAX_COOKING_TIME')
+  }
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
     const storeOptionalDto = { ...dto, userId };
@@ -97,8 +102,19 @@ export class StoresService {
     return await this.storesRepository.findAllByUserId(userId);
   }
 
-  async getStoreByStoreId(storeId: number): Promise<StoreDto | null> {
-    return await this.storesRepository.findOne({ storeId });
+  async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
+    if(viewType === 'OWNER') {
+      if (!userId) {
+        throw new Error('User not found.')
+      }
+    }
+
+    const store = await this.storesRepository.findOne({ storeId, userId }, viewType);
+    if (!store) {
+      throw new Error('Store not found.');
+    }
+    const menu = await this.menusService.getMenus(storeId, viewType, userId);
+    return StoreMenuDtoMap(store, menu);
   }
 
   async getStoresBySearch(dto: SearchDto): Promise<StoreMenuDto[]> {
@@ -106,7 +122,7 @@ export class StoresService {
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
-    return await this.storesRepository.findOne(dto);
+    return await this.storesRepository.findOne(dto, 'OWNER');
   }
 
   async checkStoreStatusGroup(
@@ -167,7 +183,7 @@ export class StoresService {
     };
 
     try {
-      const BUSINESS_NUMBER_CHECK_API_KEY = this.env.get<string>(
+      const BUSINESS_NUMBER_CHECK_API_KEY = this.configService.get<string>(
         'BUSINESS_NUMBER_CHECK_API_KEY',
       );
       const response = await axios.post(
