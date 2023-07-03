@@ -1,6 +1,6 @@
 import { MenuDto } from './menu.dto';
 
-export interface MenuChangeStatusDto extends Pick<
+export type MenuChangeStatusDto = Pick<
     MenuDto,
     'storeId' | 'menuId' | 'status'
-  > {}
+  >

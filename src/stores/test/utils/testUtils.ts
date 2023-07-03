@@ -126,5 +126,5 @@ export function createSampleStoreMenuDto(dto?: Partial<StoreMenuDto>): StoreMenu
       description: '커피의 정석',
     }],
     ...dto,
-  }
+  };
 }

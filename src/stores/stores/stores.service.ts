@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
-import { EnvService } from 'src/config/env';
 import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { StoresRepository } from './stores.repository';
@@ -12,12 +12,11 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
+import { StoreMenuDto } from '../dto/store-menu.dto';
 import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
-import { StoreMenuDto } from '../dto/store-menu.dto';
-import { MenusService } from '../menus/menus.service';
 import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
-import { ConfigService } from '@nestjs/config';
+import { MenusService } from '../menus/menus.service';
 
 @Injectable()
 export class StoresService {
@@ -29,8 +28,8 @@ export class StoresService {
     private readonly storesRepository: StoresRepository,
     private readonly menusService: MenusService,
   ) {
-    this.MIN_COOKING_TIME = this.configService.get<number>('MIN_COOKING_TIME')
-    this.MAX_COOKING_TIME = this.configService.get<number>('MAX_COOKING_TIME')
+    this.MIN_COOKING_TIME = this.configService.get<number>('MIN_COOKING_TIME');
+    this.MAX_COOKING_TIME = this.configService.get<number>('MAX_COOKING_TIME');
   }
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
@@ -103,9 +102,9 @@ export class StoresService {
   }
 
   async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
-    if(viewType === 'OWNER') {
+    if (viewType === 'OWNER') {
       if (!userId) {
-        throw new Error('UserId is required at OWNER ViewType.')
+        throw new Error('UserId is required at OWNER ViewType.');
       }
     }
 

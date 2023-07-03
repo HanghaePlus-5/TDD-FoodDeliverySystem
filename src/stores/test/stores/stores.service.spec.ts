@@ -5,14 +5,13 @@ import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
 import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
+import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
-import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
-import { MenusService } from 'src/stores/menus/menus.service';
-import { StoresModule } from 'src/stores/stores.module';
-import { MenusRepository } from 'src/stores/menus/menus.repository';
+import {
+ createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto,
+} from '../utils/testUtils';
 
 describe('StoresService', () => {
   let storesService: StoresService;
@@ -33,8 +32,8 @@ describe('StoresService', () => {
           provide: MenusService,
           useValue: {
             getMenus: jest.fn(),
-          }
-        }
+          },
+        },
       ],
     })
       .overrideProvider(PrismaService)
@@ -497,9 +496,9 @@ describe('StoresService', () => {
     });
 
     it('should exec find func', async () => {
-      const sampleStoreDto = createSampleStoreDto({status: 'OPEN' as StoreStatus});
-      const sampleMenuDto = createSampleMenuDto()
-      const sampleStoreMenuDto = createSampleStoreMenuDto()
+      const sampleStoreDto = createSampleStoreDto({ status: 'OPEN' as StoreStatus });
+      const sampleMenuDto = createSampleMenuDto();
+      const sampleStoreMenuDto = createSampleStoreMenuDto();
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
       mockFindOne.mockResolvedValue(sampleStoreDto);
 
@@ -512,7 +511,7 @@ describe('StoresService', () => {
       const result = await storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1);
       expect(result).toEqual(sampleStoreMenuDto);
 
-      expect(mockFindOne).toHaveBeenCalledWith({storeId: 1, userId: 1}, 'OWNER' as ViewType);
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 }, 'OWNER' as ViewType);
       expect(mockGetMenus).toHaveBeenCalledWith(1, 'OWNER' as ViewType, 1);
     });
   });

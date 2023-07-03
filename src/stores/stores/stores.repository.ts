@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Store, StoreStatus } from '@prisma/client';
+import { Store } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
+import { ACTIVATE_STORE_STATUES, OPENED_MENU_STATUES, OPENED_STORE_STATUES } from 'src/constants/stores';
 
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
-import { SearchDto } from '../dto/store-search.dto';
-import { storeToDtoMap } from '../mapper/stores.mapper';
-import { ACTIVATE_STORE_STATUES, OPENED_MENU_STATUES, OPENED_STORE_STATUES } from 'src/constants/stores';
-import { StoreMenuSearchDtoMap } from '../mapper/store-menu.mapper';
 import { StoreMenuDto } from '../dto/store-menu.dto';
+import { SearchDto } from '../dto/store-search.dto';
+import { StoreMenuSearchDtoMap } from '../mapper/store-menu.mapper';
+import { storeToDtoMap } from '../mapper/stores.mapper';
 
 @Injectable()
 export class StoresRepository {
@@ -83,7 +83,7 @@ export class StoresRepository {
         ],
         status: {
           in: OPENED_STORE_STATUES,
-        }
+        },
       },
       orderBy: {
         storeId: 'asc',
@@ -95,13 +95,13 @@ export class StoresRepository {
           where: {
             status: {
               in: OPENED_MENU_STATUES,
-            }
+            },
           },
           orderBy: {
             sort: 'asc',
           },
         },
-      }
+      },
     });
     return stores.map(StoreMenuSearchDtoMap);
   }

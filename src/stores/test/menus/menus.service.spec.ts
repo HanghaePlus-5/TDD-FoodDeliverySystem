@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
-import { EnvService } from 'src/config/env';
 import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
@@ -19,7 +18,6 @@ describe('MenusService', () => {
   let menusService: MenusService;
   let menusRepository: MenusRepository;
   let storesService: StoresService;
-  let envService: EnvService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,7 +27,6 @@ describe('MenusService', () => {
         StoresService,
         MenusRepository,
         StoresRepository,
-        EnvService,
         PrismaService,
       ],
     })
@@ -40,7 +37,6 @@ describe('MenusService', () => {
     menusService = module.get<MenusService>(MenusService);
     menusRepository = module.get<MenusRepository>(MenusRepository);
     storesService = module.get<StoresService>(StoresService);
-    envService = module.get<EnvService>(EnvService);
   });
 
   it('should be defined', () => {
@@ -316,7 +312,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -326,7 +322,7 @@ describe('MenusService', () => {
     });
 
     it('should exec checkStoreStatusGroup', async () => {
-      const sampleStoreDto = createSampleStoreDto({status: 'TERMINATED'});
+      const sampleStoreDto = createSampleStoreDto({ status: 'TERMINATED' });
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned',
@@ -340,7 +336,7 @@ describe('MenusService', () => {
       mockCheckStoreStatusGroup.mockResolvedValue(false);
 
       await expect(
-        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
@@ -370,7 +366,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(null);
 
       await expect(
-        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Menu not found.');
 
       expect(mockFindOne).toBeCalledWith({
@@ -407,7 +403,7 @@ describe('MenusService', () => {
       mockCheckMenuStatusChangeCondition.mockReturnValue(false);
 
       await expect(
-        menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'}),
+        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Menu status change condition is not met.');
 
       expect(mockCheckMenuStatusChangeCondition).toBeCalledWith(
@@ -449,7 +445,7 @@ describe('MenusService', () => {
       );
       mockUpdate.mockResolvedValue(sampleMenuDto);
 
-      const result = await menusService.changeMenuStatus(1, {storeId: 1, menuId: 1, status: 'OPEN'});
+      const result = await menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' });
       expect(result).toBe(sampleMenuDto);
 
       expect(mockUpdate).toBeCalledWith({
@@ -458,7 +454,7 @@ describe('MenusService', () => {
         status: 'OPEN',
       });
     });
-  })
+  });
 
   describe('checkMenuStatusChangeCondition', () => {
     it('should return false if [REGISTERED -> CLOSED]', () => {

@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { MenusRepository } from './menus.repository';
+import { MenuDto } from '../dto';
+import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { MenuUpdateDto } from '../dto/menu-update.dto';
-import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 import { StoresService } from '../stores/stores.service';
-import { MenuDto } from '../dto';
 
 @Injectable()
 export class MenusService {
@@ -138,7 +138,7 @@ export class MenusService {
       if (!userId) {
         throw new Error('User not found.');
       }
-      
+
       const isStoreOwned = await this.storesService.checkStoreOwned({
         userId,
         storeId,
