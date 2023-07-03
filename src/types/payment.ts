@@ -1,4 +1,5 @@
 import { PaymentCreateDto } from 'src/payment/dto/payment-create.dto';
+import { Order } from "@prisma/client";
 
 export const PaymentStatus = {
   completed: 'completed',

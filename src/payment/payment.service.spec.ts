@@ -14,14 +14,9 @@ import { PaymentStatus, UserType } from 'src/types';
 describe('PaymentService', () => {
   let service: PaymentService;
   let testPrisma: PrismaService;
-  // data
-  let order;
-  let user;
-  let store;
-  let menu;
-  let orderItem;
-  let orderDto;
+
   let paymentProcessArgs: PaymentProcessArgs;
+  let cancelOrderId : number
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -33,7 +28,7 @@ describe('PaymentService', () => {
 
     const random = Math.floor(Math.random() * 1000) + 1;
 
-    user = await testPrisma.user.create({
+    let user = await testPrisma.user.create({
       data: {
         email: `michael${random}@gmail.com`,
         name: 'michael',
@@ -42,7 +37,7 @@ describe('PaymentService', () => {
       },
     });
 
-    store = await testPrisma.store.create({
+    let store = await testPrisma.store.create({
       data: {
         name: `Sample Store${random}`,
         type: StoreType.KOREAN,
@@ -57,49 +52,28 @@ describe('PaymentService', () => {
       },
     });
 
-    menu = await testPrisma.menu.create({
-      data: {
-        storeId: store.storeId,
-      },
-    });
-
-    order = await testPrisma.order.create({
+    let order = await testPrisma.order.create({
       data: {
         userId: user.userId,
         storeId: store.storeId,
       },
     });
 
-    orderItem = await testPrisma.orderItem.createMany({
-      data: [
-        {
-          orderId: order.orderId,
-          quantity: 1,
-          menuId: menu.menuId,
-        },
-      ],
-    });
-    orderDto = {
-      ...order,
-      user,
-    };
-
     paymentProcessArgs = {
       paymentCreateDto: mockingPaymentInfo(),
       order,
       user,
     };
+
+    cancelOrderId = order.orderId;
   });
   afterAll(async () => {
-    const deleteOrderItem = testPrisma.orderItem.deleteMany();
-    await testPrisma.$transaction([deleteOrderItem]);
     const deleteUser = testPrisma.user.deleteMany();
     const deleteMenu = testPrisma.menu.deleteMany();
     await testPrisma.$transaction([deleteMenu]);
     const deleteStore = testPrisma.store.deleteMany();
     const deleteOrder = testPrisma.order.deleteMany();
     await testPrisma.$transaction([
-      deleteOrderItem,
       deleteOrder,
       deleteUser,
       deleteStore,
@@ -174,7 +148,7 @@ describe('PaymentService', () => {
             paymentStatus: PaymentStatus.canceled,
           }),
         });
-        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow();
+        await expect(service.cancelPayment(cancelOrderId)).rejects.toThrow();
       });
     });
 
@@ -184,10 +158,10 @@ describe('PaymentService', () => {
           data: {
             ...mockingPaymentInfo(),
             paymentGatewayId: '123456',
-            orderId: orderDto.orderId,
+            orderId: cancelOrderId,
           },
         });
-        await expect(service.cancelPayment(orderDto.orderId)).rejects.toThrow(
+        await expect(service.cancelPayment(cancelOrderId)).rejects.toThrow(
           NotAcceptableException,
         );
       });
@@ -196,7 +170,7 @@ describe('PaymentService', () => {
     describe('update payment status', () => {
       it('payment data is successfully updated', async () => {
         await service.makePayment(paymentProcessArgs);
-        const result = await service.cancelPayment(order.orderId);
+        const result = await service.cancelPayment(cancelOrderId);
         expect(is<Payment>(result)).toBe(true);
         expect(result.paymentStatus).toBe(PaymentStatus.canceled);
       });
