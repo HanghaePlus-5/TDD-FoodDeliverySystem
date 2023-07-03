@@ -7,7 +7,6 @@ import { PrismaService } from 'src/prisma';
 import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
-import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import {
@@ -24,9 +23,11 @@ describe('MenusService', () => {
       imports: [ConfigModule.forRoot()],
       providers: [
         MenusService,
-        StoresService,
+        {
+          provide: StoresService,
+          useValue: mockDeep<StoresService>(),
+        },
         MenusRepository,
-        StoresRepository,
         PrismaService,
       ],
     })
