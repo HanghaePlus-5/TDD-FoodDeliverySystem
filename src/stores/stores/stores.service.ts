@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 import { EnvService } from 'src/config/env';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { StoresRepository } from './stores.repository';
 import {
@@ -11,6 +12,7 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
+import { StoreSearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
 
 @Injectable()
@@ -35,7 +37,12 @@ export class StoresService {
       throw new Error('Invalid business number.');
     }
 
-    return await this.storesRepository.create(storeOptionalDto);
+    try {
+      const store = await this.storesRepository.create(1, dto);
+      return store;
+    } catch (error) {
+      throw new Error('Store creation failed.');
+    }
   }
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {
@@ -46,7 +53,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -69,7 +76,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -81,6 +88,18 @@ export class StoresService {
     }
 
     return await this.storesRepository.update(dto);
+  }
+
+  async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
+    return await this.storesRepository.findAllByUserId(userId);
+  }
+
+  async getStoreByStoreId(storeId: number): Promise<StoreDto | null> {
+    return await this.storesRepository.findOne({ storeId });
+  }
+
+  async getStoresBySearch(dto: StoreSearchDto): Promise<StoreDto[]> {
+    return await this.storesRepository.findManyBySearch(dto);
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
@@ -138,13 +157,7 @@ export class StoresService {
     return true;
   }
 
-  public async checkBusinessNumberCaller(
-    BusinessNumber: string,
-  ): Promise<boolean> {
-    return await this.checkBusinessNumber(BusinessNumber);
-  }
-
-  private async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
+  async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
     const modifiedBusinessNumber = BusinessNumber.replace(/-/g, '');
     const data = {
       b_no: [`${modifiedBusinessNumber}`],
@@ -174,14 +187,7 @@ export class StoresService {
     return true;
   }
 
-  public async checkStoreStatusChangeConditionCaller(
-    fromStatus: StoreStatus,
-    toStatus: StoreStatus,
-  ): Promise<boolean> {
-    return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
-  }
-
-  private async checkStoreStatusChangeCondition(
+  async checkStoreStatusChangeCondition(
     fromStatus: StoreStatus,
     toStatus: StoreStatus,
   ): Promise<boolean> {

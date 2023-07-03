@@ -11,7 +11,13 @@ import { StoresService } from './stores/stores.service';
 @Module({
   imports: [],
   controllers: [StoresController, MenusController],
-  providers: [StoresService, MenusService, PrismaService, StoresRepository],
+  providers: [
+    StoresService,
+    MenusService,
+    PrismaService,
+    StoresRepository,
+    StoresRepository,
+  ],
   exports: [StoresService, MenusService],
 })
 export class StoresModule {}
