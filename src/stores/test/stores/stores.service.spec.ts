@@ -11,10 +11,12 @@ import { StoresService } from 'src/stores/stores/stores.service';
 
 import { createSampleCreateStoreDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto } from '../utils/testUtils';
 import { StoreMenuDto } from 'src/stores/dto/store-menu.dto';
+import { MenusService } from 'src/stores/menus/menus.service';
 
 describe('StoresService', () => {
   let storesService: StoresService;
   let storesReposiroty: StoresRepository;
+  let menusService: MenusService;
   let envService: EnvService;
 
   const MIN_COOKING_TIME = 5;
@@ -31,6 +33,7 @@ describe('StoresService', () => {
 
     storesService = module.get<StoresService>(StoresService);
     storesReposiroty = module.get<StoresRepository>(StoresRepository);
+    menusService = module.get<MenusService>(MenusService);
     envService = module.get<EnvService>(EnvService);
   });
 

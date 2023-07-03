@@ -15,6 +15,7 @@ import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
 import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
 import { StoreMenuDto } from '../dto/store-menu.dto';
+import { MenusService } from '../menus/menus.service';
 
 @Injectable()
 export class StoresService {
@@ -24,6 +25,7 @@ export class StoresService {
   constructor(
     private readonly env: EnvService,
     private readonly storesRepository: StoresRepository,
+    private readonly menusService: MenusService,
   ) {}
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
