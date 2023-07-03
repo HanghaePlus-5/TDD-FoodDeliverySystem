@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma';
 import { StoreCreateDto, StoreDto, StoreOptionalDto } from '../dto';
 import { SearchDto } from '../dto/store-search.dto';
 import { storeToDtoMap } from '../mapper/stores.mapper';
-import { OPENED_MENU_STATUES, OPENED_STORE_STATUES } from 'src/constants/stores';
+import { ACTIVATE_STORE_STATUES, OPENED_MENU_STATUES, OPENED_STORE_STATUES } from 'src/constants/stores';
 import { StoreMenuSearchDtoMap } from '../mapper/store-menu.mapper';
 import { StoreMenuDto } from '../dto/store-menu.dto';
 
@@ -45,9 +45,10 @@ export class StoresRepository {
     return storeToDtoMap(store);
   }
 
-  async findOne(dto: StoreOptionalDto): Promise<StoreDto | null> {
+  async findOne(dto: StoreOptionalDto, viewType: ViewType): Promise<StoreDto | null> {
     const store = await this.prisma.store.findFirst({
       where: {
+        status: viewType === 'OWNER' ? { in: ACTIVATE_STORE_STATUES } : { in: OPENED_STORE_STATUES },
         ...dto,
       },
     });

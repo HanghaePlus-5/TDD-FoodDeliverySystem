@@ -315,7 +315,7 @@ describe('StoresService', () => {
       });
       expect(result).toBe(sampleStoreDto);
 
-      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 }, 'OWNER');
     });
   });
 
