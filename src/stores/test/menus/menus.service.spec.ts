@@ -495,7 +495,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.getMenus(1, 1, 'OWNER' as ViewType),
+        menusService.getMenus(1, 'OWNER' as ViewType, 1),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -519,7 +519,7 @@ describe('MenusService', () => {
       );
       mockFindAllByStoreId.mockResolvedValue([sampleMenuDto]);
 
-      const result = await menusService.getMenus(1, 1, 'OWNER' as ViewType);
+      const result = await menusService.getMenus(1, 'OWNER' as ViewType, 1);
       expect(result).toEqual([sampleMenuDto]);
 
       expect(mockFindAllByStoreId).toBeCalledWith(1, 'OWNER' as ViewType);
