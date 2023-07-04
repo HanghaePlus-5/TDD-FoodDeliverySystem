@@ -8,14 +8,13 @@ export const OrderStatus = {
     CANCEL_REQUESTED: 'CANCEL_REQUESTED',
     CANCELED: 'CANCELED',
   } as const;
-  
+
 declare global {
     type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
     interface Order {
         orderId: number;
         userId: number;
         storeId: number;
-        paymentId: number;
         createdAt: Date;
         updatedAt:Date;
         status: OrderStatus;
