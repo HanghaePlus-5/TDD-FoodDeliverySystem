@@ -1,47 +1,46 @@
-import {
-  BadRequestException,
-  HttpStatus, Injectable,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaymentStatus } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
 import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
 
-import { PaymentCreateDto } from './dto/payment-create.dto';
-import { validatePaymentStatus, validateCardHolder, validateCardNumber } from './func';
-import { Prisma } from '@prisma/client';
+import {
+  validateCardHolder,
+  validateCardNumber,
+  validatePaymentStatus,
+} from './func';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly pgService: PaymentGatewayService,
-  ) { }
-  // payment request
-  async makePayment(paymentForm: PaymentCreateDto, orderDto: any) {
-    validateCardHolder(paymentForm.cardHolderName, orderDto.customerName)
-    validateCardNumber(paymentForm.cardNumber)
-
-    const response = await this.pgService.sendPaymentRequestToPG(paymentForm);
-    if (response.status === HttpStatus.ACCEPTED) {
-      const data: Prisma.PaymentCreateInput = {
-        ...paymentForm,
-        order: orderDto
-      }
-      const payment = await this.prisma.payment.create({ data });
-      return payment;
-    }
+  ) {}
+  async makePayment(args: PaymentProcessArgs): Promise<Payment> {
+    const { paymentCreateDto, user, order } = args;
+    console.log('user', user);
+    validateCardHolder(paymentCreateDto.cardHolderName, user.name);
+    validateCardNumber(paymentCreateDto.cardNumber);
+    const response = await this.pgService.sendPaymentRequestToPG(paymentCreateDto);
+    const data = {
+      ...paymentCreateDto,
+      paymentGatewayId: response.data.paymentGatewayId,
+      orderId: order.orderId,
+    };
+    const payment = await this.prisma.payment.create({ data });
+    return payment;
   }
-
-  // cancel request
-  async cancelPayment(paymentId: number) {
-    const payment = await this.prisma.payment.findUnique({ where: { paymentId } });
-    if (!payment) throw new BadRequestException('payment not exist');
-    validatePaymentStatus(payment.paymentStatus)
-    const response = await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
-    if (response.status === HttpStatus.ACCEPTED) {
-      // payment status update
-      return payment;
-    }
-
+  async cancelPayment(orderId: number): Promise<Payment> {
+    const payment = await this.prisma.payment.findUnique({
+      where: { orderId },
+    });
+    if (!payment) throw new NotFoundException('payment not exist');
+    validatePaymentStatus(payment.paymentStatus);
+    await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
+    const updatedPayment = await this.prisma.payment.update({
+      where: { orderId },
+      data: { paymentStatus: PaymentStatus.canceled, updatedAt: new Date() },
+    });
+    return updatedPayment;
   }
 }
