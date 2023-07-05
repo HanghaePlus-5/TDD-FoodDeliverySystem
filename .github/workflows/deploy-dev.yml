@@ -1,0 +1,27 @@
+name : FoodDeliverySystem develop 배포
+
+on :
+  pull_request :
+    branches :
+      - develop
+    types: [opened]
+  
+  jobs :
+    checkout :
+      runs-on : ubuntu-latest
+      steps :
+        - name : demo
+          run : echo "hello world"
+        - name : checkout
+          run : |
+            git checkout develop
+            git pull origin develop
+            git branch
+            git log -1
+            git status
+            git diff --name-only HEAD^
+            git diff --name-only HEAD^ | grep -E '.*\.ts$'
+        
+
+
+
