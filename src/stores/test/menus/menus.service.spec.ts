@@ -7,26 +7,24 @@ import { PrismaService } from 'src/prisma';
 import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
-import { StoresService } from 'src/stores/stores/stores.service';
+import { StoresRepository } from 'src/stores/stores/stores.repository';
 
 import {
 createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
 } from '../utils/testUtils';
+import * as validationModule from '../../utils/validation'
 
 describe('MenusService', () => {
   let menusService: MenusService;
   let menusRepository: MenusRepository;
-  let storesService: StoresService;
+  let storesRepository: StoresRepository
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
       providers: [
         MenusService,
-        {
-          provide: StoresService,
-          useValue: mockDeep<StoresService>(),
-        },
+        StoresRepository,
         MenusRepository,
         PrismaService,
       ],
@@ -37,7 +35,7 @@ describe('MenusService', () => {
 
     menusService = module.get<MenusService>(MenusService);
     menusRepository = module.get<MenusRepository>(MenusRepository);
-    storesService = module.get<StoresService>(StoresService);
+    storesRepository = module.get<StoresRepository>(StoresRepository);
   });
 
   it('should be defined', () => {
@@ -48,8 +46,8 @@ describe('MenusService', () => {
     it('should exec checkStoreOwned', async () => {
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(null);
 
@@ -60,23 +58,22 @@ describe('MenusService', () => {
       expect(mockCheckStoreOwned).toBeCalledWith({
         storeId: 1,
         userId: 1,
-      });
+      }, 'OWNER');
     });
 
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
-      );
-      mockCheckStoreStatusGroup.mockResolvedValue(false);
+      ).mockReturnValue(false);
 
       await expect(
         menusService.createMenu(1, sampleCreateMenuDto),
@@ -93,16 +90,16 @@ describe('MenusService', () => {
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -125,16 +122,16 @@ describe('MenusService', () => {
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -159,8 +156,8 @@ describe('MenusService', () => {
     it('should exec checkStoreOwned', async () => {
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(null);
 
@@ -171,23 +168,23 @@ describe('MenusService', () => {
       expect(mockCheckStoreOwned).toBeCalledWith({
         storeId: 1,
         userId: 1,
-      });
+      }, 'OWNER');
     });
 
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(false);
+      mockCheckStoreStatusGroup.mockReturnValue(false);
 
       await expect(
         menusService.updateMenu(1, sampleCreateMenuUpdateDto),
@@ -203,16 +200,16 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -238,16 +235,16 @@ describe('MenusService', () => {
       const sampleMenuDto = createSampleMenuDto({});
       const sampleMenuDto2 = createSampleMenuDto({ menuId: 2 });
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(menusRepository, 'findOne');
       mockFindOne.mockImplementation(async (dto, statusValues) => {
@@ -274,16 +271,16 @@ describe('MenusService', () => {
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({ name: undefined });
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -307,8 +304,8 @@ describe('MenusService', () => {
   describe('changeMenuStatus', () => {
     it('should exec checkStoreOwned', async () => {
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(null);
 
@@ -319,22 +316,22 @@ describe('MenusService', () => {
       expect(mockCheckStoreOwned).toBeCalledWith({
         storeId: 1,
         userId: 1,
-      });
+      }, 'OWNER');
     });
 
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({ status: 'TERMINATED' });
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(false);
+      mockCheckStoreStatusGroup.mockReturnValue(false);
 
       await expect(
         menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
@@ -349,17 +346,16 @@ describe('MenusService', () => {
     it('should throw error if menu is not found', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
-
+      mockCheckStoreStatusGroup.mockReturnValue(true);
       const mockFindOne = jest.spyOn(
         menusRepository,
         'findOne',
@@ -380,16 +376,16 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -417,16 +413,16 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
       const mockCheckStoreStatusGroup = jest.spyOn(
-        storesService,
+        validationModule,
         'checkStoreStatusGroup',
       );
-      mockCheckStoreStatusGroup.mockResolvedValue(true);
+      mockCheckStoreStatusGroup.mockReturnValue(true);
 
       const mockFindOne = jest.spyOn(
         menusRepository,
@@ -486,8 +482,8 @@ describe('MenusService', () => {
   describe('getMenus', () => {
     it('should exec checkStoreOwned if viewtype is OWNER', async () => {
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(null);
 
@@ -498,15 +494,15 @@ describe('MenusService', () => {
       expect(mockCheckStoreOwned).toBeCalledWith({
         storeId: 1,
         userId: 1,
-      });
+      }, 'OWNER' as ViewType);
     });
 
     it('should get menus', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
       const mockCheckStoreOwned = jest.spyOn(
-        storesService,
-        'checkStoreOwned',
+        storesRepository,
+        'findOne',
       );
       mockCheckStoreOwned.mockResolvedValue(sampleStoreDto);
 
