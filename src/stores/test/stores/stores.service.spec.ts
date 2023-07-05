@@ -11,7 +11,7 @@ import { StoresService } from 'src/stores/stores/stores.service';
 
 import {
  createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto,
-} from '../utils/testUtils';
+} from '../testUtils';
 
 describe('StoresService', () => {
   let storesService: StoresService;

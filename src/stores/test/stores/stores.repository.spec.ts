@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'src/prisma';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 
-import { createSampleStoreDto } from '../utils/testUtils';
+import { createSampleStoreDto } from '../testUtils';
 
 describe('StoresRepository', () => {
   let repository: StoresRepository;
