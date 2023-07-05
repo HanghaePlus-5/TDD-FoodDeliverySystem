@@ -8,7 +8,7 @@ import { MenuDto } from '../dto';
 import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 import { MenuCreateDto } from '../dto/menu-create.dto';
 import { MenuUpdateDto } from '../dto/menu-update.dto';
-import { checkStoreStatusGroup } from '../utils/validation';
+import { checkMenuStatusChangeCondition, checkStoreStatusGroup } from '../utils/validation';
 
 @Injectable()
 export class MenusService {
@@ -118,7 +118,7 @@ export class MenusService {
       throw new Error('Menu not found.');
     }
 
-    const isMenuStatusChangeCondition = await this.checkMenuStatusChangeCondition(
+    const isMenuStatusChangeCondition = checkMenuStatusChangeCondition(
       isMenu.status,
       dto.status,
     );
@@ -155,22 +155,5 @@ export class MenusService {
     } catch (error) {
       throw new Error('Menu retrieval failed.');
     }
-  }
-
-  checkMenuStatusChangeCondition(
-    fromStatus: MenuStatus,
-    toStatus: MenuStatus,
-  ): boolean {
-    if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
-      return true;
-    }
-    if (fromStatus === 'OPEN' && toStatus === 'CLOSED') {
-      return true;
-    }
-    if (fromStatus === ('REGISTERED' || 'OPEN' || 'CLOSED')
-      && toStatus === 'DELETED') {
-      return true;
-    }
-    return false;
   }
 }

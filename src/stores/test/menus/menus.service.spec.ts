@@ -11,7 +11,7 @@ import { StoresRepository } from 'src/stores/stores/stores.repository';
 
 import {
 createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
-} from '../utils/testUtils';
+} from '../testUtils';
 import * as validationModule from '../../utils/validation'
 
 describe('MenusService', () => {
@@ -394,7 +394,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(sampleMenuDto);
 
       const mockCheckMenuStatusChangeCondition = jest.spyOn(
-        menusService,
+        validationModule,
         'checkMenuStatusChangeCondition',
       );
       mockCheckMenuStatusChangeCondition.mockReturnValue(false);
@@ -431,7 +431,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(sampleMenuDto);
 
       const mockCheckMenuStatusChangeCondition = jest.spyOn(
-        menusService,
+        validationModule,
         'checkMenuStatusChangeCondition',
       );
       mockCheckMenuStatusChangeCondition.mockReturnValue(true);
@@ -450,32 +450,6 @@ describe('MenusService', () => {
         storeId: 1,
         status: 'OPEN',
       });
-    });
-  });
-
-  describe('checkMenuStatusChangeCondition', () => {
-    it('should return false if [REGISTERED -> CLOSED]', () => {
-      const result = menusService.checkMenuStatusChangeCondition(
-        'REGISTERED' as MenuStatus,
-        'CLOSED' as MenuStatus,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return false if [OPEN -> REGISTERED]', () => {
-      const result = menusService.checkMenuStatusChangeCondition(
-        'OPEN' as MenuStatus,
-        'REGISTERED' as MenuStatus,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return true if [REGISTERED -> OPEN]', () => {
-      const result = menusService.checkMenuStatusChangeCondition(
-        'REGISTERED' as MenuStatus,
-        'OPEN' as MenuStatus,
-      );
-      expect(result).toBe(true);
     });
   });
 
