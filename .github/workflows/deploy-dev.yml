@@ -1,0 +1,14 @@
+name : FoodDeliverySystem develop 배포
+
+on :
+  pull_request :
+    branches :
+      - develop
+    types: [opened, reopened, synchronize]
+  
+jobs :
+  checkout :
+    runs-on : ubuntu-latest
+    steps :
+      - name : demo
+        run : echo "hello world"
