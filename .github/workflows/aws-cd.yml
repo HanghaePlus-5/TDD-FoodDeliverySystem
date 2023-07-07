@@ -34,8 +34,8 @@ jobs:
 
       - name: Build, tag, and push
         env:
-          ECR_REGISTRY: ${{ secrets.DEV_AWS_ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ secrets.DEV_AWS_ECR_REPOSITORY }}
+          ECR_REGISTRY: ${{ secrets.PROD_AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.PROD_AWS_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
           REGION: ${{ secrets.AWS_REGION }}
         run: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: Restart ECS Service
         env:
-          CLUSTER_NAME: ${{ secrets.DEV_AWS_CLUSTER_NAME }}
-          SERVICE_NAME: ${{ secrets.DEV_AWS_SERVICE_NAME }}
+          CLUSTER_NAME: ${{ secrets.PROD_AWS_CLUSTER_NAME }}
+          SERVICE_NAME: ${{ secrets.PROD_AWS_SERVICE_NAME }}
         run: |
           aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
