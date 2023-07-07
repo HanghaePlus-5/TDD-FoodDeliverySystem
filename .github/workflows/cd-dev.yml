@@ -1,17 +1,10 @@
-name: 'AWS Deploy'
+name: CD - Deploy AWS ECS(Dev)
 
 on:
   # enable manual workflow testing in the web or github API
   workflow_dispatch:
-  # pull_request:
-  #   types:
-  #     - closed
-  #   branches:
-  #     - 'feature/'
   push:
-    branches:
-      - main
-  # pull_request:
+    branches: ["develop"]
 
 # concurrency will check if any dulpicated task is running and cancel the task 
 concurrency:

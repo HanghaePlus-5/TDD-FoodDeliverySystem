@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: ["develop","main"]
+
+jobs:
+  Lint:
+    name: check-lint
+
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm lint
+
+      - name: Notify Slack if error exists
+        if: ${{ failure() }}
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#ci'
+
+      - name: Block merge if error exists
+        if: ${{ failure() }}
+        run: |
+          echo "Lint error found!!"
+          echo "Please fix them before merging."
+          exit 1
+
+  Test:
+    name: check-test
+    # needs: Lint
+
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+      API_VERSION: ${{ secrets.API_VERSION }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+      MIN_COOKING_TIME: ${{ secrets.MIN_COOKING_TIME }}
+      MAX_COOKING_TIME: ${{ secrets.MAX_COOKING_TIME }}
+      BUSINESS_NUMBER_CHECK_API_KEY: ${{ secrets.BUSINESS_NUMBER_CHECK_API_KEY }}
+
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup datatabase with docker compose
+        run: |
+          docker-compose up -d
+          
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          npm install -g dotenv-cli
+          pnpm install --frozen-lockfile
+          npx prisma migrate
+          npx prisma generate
+
+      - name: Run test
+        run: pnpm test:report
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: JEST Tests
+          path: reports/jest-junit.xml
+          reporter: jest-junit
+
+      - name: Notify slack if fails
+        if: ${{ failure() }}
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#ci'
+
+  Analysis:
+    name: Static Analysis
+    # needs: [Lint, Test]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args:
+            -Dsonar.projectKey=tdd-delivery_tdd-delivery
+            -Dsonar.organization=tdd-delivery

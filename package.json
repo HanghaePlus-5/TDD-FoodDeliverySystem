@@ -18,7 +18,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:migrate": "dotenv -e \".env.test\" -- npx prisma migrate deploy",
-    "test:report": "pnpm test:migrate && jest --ci --reporters=default --reporters=jest-Junit",
+    "test:report": "pnpm test:migrate && jest --ci --reporters=default --reporters=jest-junit",
     "prepare": "ts-patch install"
   },
   "dependencies": {
@@ -93,6 +93,10 @@
     "moduleNameMapper": {
       "src/(.*)$": "<rootDir>/../src/$1"
     },
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
