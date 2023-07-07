@@ -8,8 +8,6 @@ import { PrismaService } from 'src/prisma';
 import { OrderCreateDto } from './dto/order-create.dto';
 import { OrderItemCreateDto, OrderItemCreatePrismaDto } from './dto/orderItem-create.dto';
 
-OrderStatus;
-
 @Injectable()
 export class OrdersService {
     constructor(
@@ -23,13 +21,13 @@ export class OrdersService {
         const orderTotalPrice = 0;
 
         if (orderCreateDto.orderItem) {
-            for (const orderItem of orderCreateDto.orderItem) {
-            this.isValidMenu(orderItem.menuId);
-            this.hasEnoughStock(orderItem);
-            }
-        } else {
-            new Error();
-        }
+            orderCreateDto.orderItem.forEach((orderItem) => {
+              this.isValidMenu(orderItem.menuId);
+              this.hasEnoughStock(orderItem);
+            });
+          } else {
+            throw new Error('Order items not provided');
+          }
 
         this.isValidStore(orderCreateDto.storeId);
         this.hasOngoingOrder(orderCreateDto.user.userId);
@@ -40,14 +38,14 @@ export class OrdersService {
         const savedOrder = await this.saveOrder(order);
         const { orderId } = savedOrder;
 
-        for (const orderItem of orderCreateDto.orderItem) {
-            const orderItemData : OrderItemCreatePrismaDto = {
-                orderId,
-                menuId: orderItem.menuId,
-                quantity: orderItem.quantity,
+        orderCreateDto.orderItem.forEach((orderItem) => {
+            const orderItemData: OrderItemCreatePrismaDto = {
+              orderId,
+              menuId: orderItem.menuId,
+              quantity: orderItem.quantity,
             };
             orderItemList.push(orderItemData);
-            }
+          });
 
         const savedOrderItem = await this.saveOrderItemList(orderItemList);
         const processedOrder = { ...savedOrder, orderId } as Order;
@@ -137,5 +135,6 @@ export class OrdersService {
     }
 
     callPaymentMethod(order: Order) {
+        return true;
     }
 }

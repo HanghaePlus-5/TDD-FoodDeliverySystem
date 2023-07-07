@@ -17,6 +17,7 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+/reports
 
 # IDEs and editors
 /.idea
@@ -35,4 +36,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Environment Variables
-.env
+.env*
+
+# Prisma Migration
+/prisma/migrations

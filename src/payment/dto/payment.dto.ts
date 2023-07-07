@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 export interface PaymentDto {
     /**
      * Payment PK
@@ -36,4 +34,27 @@ export interface PaymentDto {
      * CardIssuer
      */
     cardIssuer: string;
+
+    /**
+     * PaymentGatewayId
+     */
+    paymentGatewayId: string;
+
+    /**
+     * PaymentStatus
+     * @type 'PAYMENT_COMPLETED' | 'PAYMENT_CANCELED'
+     */
+    paymentStatus: PaymentStatus;
+    /**
+     * OrderId
+     */
+    orderId: number;
+    /**
+     * CreatedAt
+     */
+    createdAt: Date;
+    /**
+     * OrderId
+     */
+    updatedAt: Date;
 }

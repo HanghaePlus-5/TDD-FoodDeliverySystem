@@ -1,62 +1,46 @@
-import {
-  BadRequestException, HttpCode, HttpException, HttpStatus, Injectable,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaymentStatus } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma';
-import { PaymentDto } from 'src/payment/dto/payment.dto';
+import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
+
+import {
+  validateCardHolder,
+  validateCardNumber,
+  validatePaymentStatus,
+} from './func';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly pgService: PaymentGatewayService,
   ) {}
-
-  // payment request
-  makePayment(paymentInfo : PaymentDto, customerName:string) {
-    if (!this.validatePaymentInfo(paymentInfo, customerName)) throw new BadRequestException();
-
-    try {
-      this.sendPaymentRequestToPG(paymentInfo);
-    // create payment data
-    // return PaymentDto or Success
-    } catch (error) {
-      throw new Error(error);
-    }
+  async makePayment(args: PaymentProcessArgs): Promise<Payment> {
+    const { paymentCreateDto, user, order } = args;
+    console.log('user', user);
+    validateCardHolder(paymentCreateDto.cardHolderName, user.name);
+    validateCardNumber(paymentCreateDto.cardNumber);
+    const response = await this.pgService.sendPaymentRequestToPG(paymentCreateDto);
+    const data = {
+      ...paymentCreateDto,
+      paymentGatewayId: response.data.paymentGatewayId,
+      orderId: order.orderId,
+    };
+    const payment = await this.prisma.payment.create({ data });
+    return payment;
   }
-  sendPaymentRequestToPG(paymentInfo : PaymentDto) {
-    if (paymentInfo.cardNumber === '1111-1111-1111-1111') throw new BadRequestException();
-    return HttpStatus.ACCEPTED;
-  }
-  validatePaymentInfo(paymentInfo : PaymentDto, customerName : string) {
-    return this.validateCardHolder(paymentInfo.cardHolderName, customerName)
-            && this.validateCardNumber(paymentInfo.cardNumber);
-  }
-  validateCardHolder(cardHolderName : string, customerName : string) {
-    return cardHolderName === customerName;
-  }
-  validateCardNumber(cardNumber:string) {
-    cardNumber = cardNumber.replace(/[-\s]/g, '');
-    return cardNumber.length === 16;
-  }
-
-  // cancel request
-  cancelPayment() {
-
-  }
-  sendCancelRequestToPG() {
-
-  }
-  validateCancelRequest() {
-
-  }
-
-  isExistingOrder() {
-
-  }
-  isOrderStatusAccepted() {
-
-  }
-  isPaymentStatusCompleted() {
-
+  async cancelPayment(orderId: number): Promise<Payment> {
+    const payment = await this.prisma.payment.findUnique({
+      where: { orderId },
+    });
+    if (!payment) throw new NotFoundException('payment not exist');
+    validatePaymentStatus(payment.paymentStatus);
+    await this.pgService.sendCancelRequestToPG(payment.paymentGatewayId);
+    const updatedPayment = await this.prisma.payment.update({
+      where: { orderId },
+      data: { paymentStatus: PaymentStatus.canceled, updatedAt: new Date() },
+    });
+    return updatedPayment;
   }
 }

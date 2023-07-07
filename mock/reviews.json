@@ -1,0 +1,47 @@
+[
+  {
+    "reviewId": 1,
+    "userId": 1,
+    "orderId": 1,
+    "content": "This is Review",
+    "score": 5,
+    "createdAt": "2021-05-01T00:00:00.000Z",
+    "updatedAt": "2021-05-01T00:00:00.000Z"
+  },
+  {
+    "reviewId": 2,
+    "userId": 2,
+    "orderId": 1,
+    "content": "This is Review",
+    "score": 8,
+    "createdAt": "2021-05-01T00:00:00.000Z",
+    "updatedAt": "2021-05-01T00:00:00.000Z"
+  },
+  {
+    "reviewId": 3,
+    "userId": 1,
+    "orderId": 2,
+    "content": "This is Review",
+    "score": 3,
+    "createdAt": "2021-05-01T00:00:00.000Z",
+    "updatedAt": "2021-05-01T00:00:00.000Z"
+  },
+  {
+    "reviewId": 4,
+    "userId": 3,
+    "orderId": 2,
+    "content": "This is Review",
+    "score": 9,
+    "createdAt": "2021-05-01T00:00:00.000Z",
+    "updatedAt": "2021-05-01T00:00:00.000Z"
+  },
+  {
+    "reviewId": 5,
+    "userId": 4,
+    "orderId": 2,
+    "content": "This is Review",
+    "score": 8,
+    "createdAt": "2021-05-01T00:00:00.000Z",
+    "updatedAt": "2021-05-01T00:00:00.000Z"
+  }
+]

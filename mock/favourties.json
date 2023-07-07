@@ -1,0 +1,27 @@
+[
+  {
+    "favouriteId": 1,
+    "userId": 1,
+    "storeId": 1
+  },
+  {
+    "favouriteId": 2,
+    "userId": 1,
+    "storeId": 2
+  },
+  {
+    "favouriteId": 3,
+    "userId": 2,
+    "storeId": 1
+  },
+  {
+    "favouriteId": 4,
+    "userId": 3,
+    "storeId": 1
+  },
+  {
+    "favouriteId": 5,
+    "userId": 3,
+    "storeId": 2
+  }
+]

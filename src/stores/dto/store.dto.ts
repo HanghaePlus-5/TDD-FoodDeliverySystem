@@ -15,6 +15,17 @@ export interface StoreDto {
   origin: string;
   description: string;
   registrationDate: Date;
+  userId: number;
 }
 
-export type StoreDuplicationDto = Partial<Pick<StoreDto, 'name' | 'businessNumber'>>;
+export type StoreOptionalDto = Partial<StoreDto>
+
+export interface StoreOwnedDto {
+  storeId: number;
+  userId: number;
+}
+
+export interface StoreStatusDto {
+  storeId: number;
+  status: StoreStatus;
+}
