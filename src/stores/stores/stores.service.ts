@@ -15,7 +15,7 @@ import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
 import { StoreMenuDto } from '../dto/store-menu.dto';
 import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
-import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
+import { storeMenuDtoMap } from '../mapper/store-menu.mapper';
 import { MenusService } from '../menus/menus.service';
 
 @Injectable()
@@ -72,7 +72,8 @@ export class StoresService {
       throw new Error('Validation failed.');
     }
 
-    return await this.storesRepository.update(storeOptionalDto);
+    const result = await this.storesRepository.update(storeOptionalDto);
+    return result;
   }
 
   async changeStoreStatus(userId: number, dto: StoreChangeStatusDto): Promise<StoreDto> {
@@ -94,11 +95,13 @@ export class StoresService {
       throw new Error('Store status change condition not met.');
     }
 
-    return await this.storesRepository.update(dto);
+    const result = await this.storesRepository.update(dto);
+    return result;
   }
 
   async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
-    return await this.storesRepository.findAllByUserId(userId);
+    const result = await this.storesRepository.findAllByUserId(userId);
+    return result;
   }
 
   async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
@@ -113,15 +116,18 @@ export class StoresService {
       throw new Error('Store not found.');
     }
     const menu = await this.menusService.getMenus(storeId, viewType, userId);
-    return StoreMenuDtoMap(store, menu);
+    const result = storeMenuDtoMap(store, menu);
+    return result;
   }
 
   async getStoresBySearch(dto: SearchDto): Promise<StoreMenuDto[]> {
-    return await this.storesRepository.findManyBySearch(dto);
+    const result = await this.storesRepository.findManyBySearch(dto);
+    return result;
   }
 
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
-    return await this.storesRepository.findOne(dto, 'OWNER');
+    const result = await this.storesRepository.findOne(dto, 'OWNER');
+    return result;
   }
 
   async checkStoreStatusGroup(
@@ -132,7 +138,8 @@ export class StoresService {
   }
 
   public async checkValidationCaller(dto: StoreOptionalDto): Promise<boolean> {
-    return await this.checkValidation(dto);
+    const result = await this.checkValidation(dto);
+    return result;
   }
 
   private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
@@ -175,9 +182,10 @@ export class StoresService {
     return true;
   }
 
-  async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
-    const modifiedBusinessNumber = BusinessNumber.replace(/-/g, '');
+  async checkBusinessNumber(businessNumber: string): Promise<boolean> {
+    const modifiedBusinessNumber = businessNumber.replace(/-/g, '');
     const data = {
+    // eslint-disable-next-line
       b_no: [`${modifiedBusinessNumber}`],
     };
 
@@ -190,7 +198,9 @@ export class StoresService {
         data,
         {
           headers: {
+            // eslint-disable-next-line
             'Content-Type': 'application/json',
+            // eslint-disable-next-line
             Accept: 'application/json',
           },
         },
