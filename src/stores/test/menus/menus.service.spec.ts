@@ -9,15 +9,15 @@ import { MenusRepository } from 'src/stores/menus/menus.repository';
 import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 
+import * as validationModule from '../../utils/validation';
 import {
 createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
 } from '../testUtils';
-import * as validationModule from '../../utils/validation'
 
 describe('MenusService', () => {
   let menusService: MenusService;
   let menusRepository: MenusRepository;
-  let storesRepository: StoresRepository
+  let storesRepository: StoresRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

@@ -2,7 +2,7 @@ import { Menu, Store } from '@prisma/client';
 
 import { MenuViewDto, StoreMenuDto } from '../dto/store-menu.dto';
 
-export function StoreMenuDtoMap(store: Store, menu: Menu[]): StoreMenuDto {
+export function storeMenuDtoMap(store: Store, menu: Menu[]): StoreMenuDto {
   return {
     storeId: store.storeId,
     name: store.name,
@@ -19,11 +19,11 @@ export function StoreMenuDtoMap(store: Store, menu: Menu[]): StoreMenuDto {
     averageScore: store.averageScore,
     origin: store.origin ? store.origin : '',
     description: store.description ? store.description : '',
-    menus: menu ? menu.map(MenuToViewDtoMap) : [],
+    menus: menu ? menu.map(menuToViewDtoMap) : [],
   };
 }
 
-export function StoreMenuSearchDtoMap(store: (Store & {menu: Menu[];})): StoreMenuDto {
+export function storeMenuSearchDtoMap(store: (Store & {menu: Menu[];})): StoreMenuDto {
   return {
     storeId: store.storeId,
     name: store.name,
@@ -40,11 +40,11 @@ export function StoreMenuSearchDtoMap(store: (Store & {menu: Menu[];})): StoreMe
     averageScore: store.averageScore,
     origin: store.origin ? store.origin : '',
     description: store.description ? store.description : '',
-    menus: store.menu.map(MenuToViewDtoMap),
+    menus: store.menu.map(menuToViewDtoMap),
   };
 }
 
-export function MenuToViewDtoMap(menu: Menu): MenuViewDto {
+export function menuToViewDtoMap(menu: Menu): MenuViewDto {
   return {
     menuId: menu.menuId,
     name: menu.name,

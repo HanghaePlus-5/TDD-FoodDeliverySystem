@@ -1,7 +1,7 @@
-import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { Injectable } from '@nestjs/common';
 
 import { ACTIVATE_MENU_STATUES, ACTIVATE_STORE_STATUES } from 'src/constants/stores';
+import { StoresRepository } from 'src/stores/stores/stores.repository';
 
 import { MenusRepository } from './menus.repository';
 import { MenuDto } from '../dto';
