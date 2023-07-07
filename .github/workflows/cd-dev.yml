@@ -1,0 +1,46 @@
+name: CD - Deploy AWS ECS(Dev)
+
+on:
+  # enable manual workflow testing in the web or github API
+  workflow_dispatch:
+  push:
+    branches: ["develop"]
+
+# concurrency will check if any dulpicated task is running and cancel the task 
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  aws-deployment:
+    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build, tag, and push
+        env:
+          ECR_REGISTRY: ${{ secrets.DEV_AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.DEV_AWS_ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+          REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+          docker build -t $ECR_REPOSITORY:latest -t $ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker image push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
+
+      - name: Restart ECS Service
+        env:
+          CLUSTER_NAME: ${{ secrets.DEV_AWS_CLUSTER_NAME }}
+          SERVICE_NAME: ${{ secrets.DEV_AWS_SERVICE_NAME }}
+        run: |
+          aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment

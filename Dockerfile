@@ -28,7 +28,7 @@ FROM base AS deploy
 WORKDIR /home/app
 COPY --from=build /home/app/dist ./dist
 COPY --from=build /home/app/node_modules ./node_modules
-COPY --from=build /home/app/.env ./.env
-COPY --from=build /home/app/.env.test ./.env.test
+# COPY --from=build /home/app/.env ./.env
+# COPY --from=build /home/app/.env.test ./.env.test
 
 CMD ["node", "dist/main.js"]

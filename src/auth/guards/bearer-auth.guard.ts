@@ -30,10 +30,13 @@ export class BearerAuthGuard extends PassportGuard('jwt') {
       throw new UnauthorizedException();
     }
 
-    super.canActivate(context);
+    const passportResult = await super.canActivate(context);
+    if (!passportResult || !passportResult.valueOf()) {
+      throw new UnauthorizedException();
+    }
 
     const req: Express.Request = context.switchToHttp().getRequest();
-    req['payload'] = userPayload;
+    req.payload = userPayload;
     return true;
   }
 

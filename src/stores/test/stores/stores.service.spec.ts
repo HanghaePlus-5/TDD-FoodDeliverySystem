@@ -4,17 +4,19 @@ import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 
 import { PrismaService } from 'src/prisma';
-import { EnvService } from 'src/config/env';
 import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
+import { MenusService } from 'src/stores/menus/menus.service';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto } from '../utils/testUtils';
+import {
+ createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto,
+} from '../testUtils';
 
 describe('StoresService', () => {
   let storesService: StoresService;
   let storesReposiroty: StoresRepository;
-  let envService: EnvService;
+  let menusService: MenusService;
 
   const MIN_COOKING_TIME = 5;
   const MAX_COOKING_TIME = 120;
@@ -22,7 +24,17 @@ describe('StoresService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
-      providers: [StoresService, StoresRepository, EnvService, PrismaService],
+      providers: [
+        PrismaService,
+        StoresService,
+        StoresRepository,
+        {
+          provide: MenusService,
+          useValue: {
+            getMenus: jest.fn(),
+          },
+        },
+      ],
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
@@ -30,7 +42,7 @@ describe('StoresService', () => {
 
     storesService = module.get<StoresService>(StoresService);
     storesReposiroty = module.get<StoresRepository>(StoresRepository);
-    envService = module.get<EnvService>(EnvService);
+    menusService = module.get<MenusService>(MenusService);
   });
 
   it('should be defined', () => {
@@ -302,7 +314,7 @@ describe('StoresService', () => {
       });
       expect(result).toBe(sampleStoreDto);
 
-      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 });
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 }, 'OWNER');
     });
   });
 
@@ -385,7 +397,7 @@ describe('StoresService', () => {
         storesService,
         'checkStoreStatusChangeCondition' as any,
       );
-      checkStoreStatusChangeCondition.mockResolvedValue(false);
+      checkStoreStatusChangeCondition.mockReturnValue(false);
 
       await expect(
         storesService.changeStoreStatus(1, {
@@ -418,7 +430,7 @@ describe('StoresService', () => {
         storesService,
         'checkStoreStatusChangeCondition' as any,
       );
-      checkStoreStatusChangeCondition.mockResolvedValue(true);
+      checkStoreStatusChangeCondition.mockReturnValue(true);
 
       const mockSave = jest.spyOn(storesReposiroty, 'update');
       mockSave.mockResolvedValue(sampleStoreDto);
@@ -434,16 +446,16 @@ describe('StoresService', () => {
   });
 
   describe('checkStoreStatusChangeCondition', () => {
-    it('shoud return false if status is not allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeCondition(
+    it('shoud return false if status is not allowed', () => {
+      const result = storesService.checkStoreStatusChangeCondition(
         'REGISTERED' as StoreStatus,
         'CLOSED' as StoreStatus,
       );
       expect(result).toBe(false);
     });
 
-    it('shoud return true if status is allowed', async () => {
-      const result = await storesService.checkStoreStatusChangeCondition(
+    it('shoud return true if status is allowed', () => {
+      const result = storesService.checkStoreStatusChangeCondition(
         'OPEN' as StoreStatus,
         'CLOSED' as StoreStatus,
       );
@@ -468,33 +480,70 @@ describe('StoresService', () => {
   });
 
   describe('getStoreByStoreId', () => {
-    it('should exec findOne', async () => {
-      const sampleStoreDto = createSampleStoreDto();
+    it('should throw error if viewType OWNER and userId not included', async () => {
+      await expect(
+        storesService.getStoreByStoreId(1, 'OWNER' as ViewType),
+      ).rejects.toThrowError('UserId is required at OWNER ViewType.');
+    });
+
+    it('should throw error if store not found', async () => {
+      const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      mockFindOne.mockResolvedValue(null);
+
+      await expect(
+        storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1),
+      ).rejects.toThrowError('Store not found.');
+    });
+
+    it('should exec find func', async () => {
+      const sampleStoreDto = createSampleStoreDto({ status: 'OPEN' as StoreStatus });
+      const sampleMenuDto = createSampleMenuDto();
+      const sampleStoreMenuDto = createSampleStoreMenuDto();
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
       mockFindOne.mockResolvedValue(sampleStoreDto);
 
-      const result = await storesService.getStoreByStoreId(1);
-      expect(result).toEqual(sampleStoreDto);
+      const mockGetMenus = jest.spyOn(
+        menusService,
+        'getMenus' as any,
+      );
+      mockGetMenus.mockResolvedValue([sampleMenuDto]);
 
-      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
+      const result = await storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1);
+      expect(result).toEqual(sampleStoreMenuDto);
+
+      expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 }, 'OWNER' as ViewType);
+      expect(mockGetMenus).toHaveBeenCalledWith(1, 'OWNER' as ViewType, 1);
     });
   });
 
+  // describe('getStoreByStoreId', () => {
+  //   it('should exec findOne', async () => {
+  //     const sampleStoreDto = createSampleStoreDto();
+  //     const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+  //     mockFindOne.mockResolvedValue(sampleStoreDto);
+
+  //     const result = await storesService.getStoreByStoreId(1);
+  //     expect(result).toEqual(sampleStoreDto);
+
+  //     expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
+  //   });
+  // });
+
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
-      const sampleStoreDto = createSampleStoreDto();
+      const sampleStoreMenuDto = createSampleStoreMenuDto();
       const mockFindManyBySearch = jest.spyOn(
         storesReposiroty,
         'findManyBySearch' as any,
       );
-      mockFindManyBySearch.mockResolvedValue([sampleStoreDto]);
+      mockFindManyBySearch.mockResolvedValue([sampleStoreMenuDto]);
 
       const result = await storesService.getStoresBySearch({
         keyword: '커피',
         page: 1,
         limit: 10,
       });
-      expect(result).toEqual([sampleStoreDto]);
+      expect(result).toEqual([sampleStoreMenuDto]);
 
       expect(mockFindManyBySearch).toHaveBeenCalledWith({
         keyword: '커피',
