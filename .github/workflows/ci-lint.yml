@@ -3,7 +3,7 @@ name: Server CI - run e2e test
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-    branches: ["develop"]
+    branches: ["none"]
 
 jobs:
   lint:

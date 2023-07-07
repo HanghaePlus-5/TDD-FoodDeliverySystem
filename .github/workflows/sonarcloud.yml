@@ -3,7 +3,7 @@ name: SonarCloud analysis
 on:
   pull_request:
     types : [opened, reopened, synchronize]
-    branches: [ "main", "dev" ]
+    branches: [ "none" ]
   workflow_dispatch:
 
 permissions:

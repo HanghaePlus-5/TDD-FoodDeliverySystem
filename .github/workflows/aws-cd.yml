@@ -9,9 +9,10 @@ on:
   #   branches:
   #     - 'feature/'
   push:
-    branches:
-      - main
+    branches: ["develop"]
   # pull_request:
+  #   types: [opened, reopened, synchronize]
+  #   branches: ["develop"]
 
 # concurrency will check if any dulpicated task is running and cancel the task 
 concurrency:

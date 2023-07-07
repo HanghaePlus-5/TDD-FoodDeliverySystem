@@ -3,7 +3,7 @@ name : FoodDeliverySystem develop 배포
 on :
   pull_request :
     branches :
-      - develop
+      - none
     types: [opened, reopened, synchronize]
   
 jobs :
@@ -12,7 +12,7 @@ jobs :
     steps :
       - uses : actions/checkout@v2
       - run : npm install -g pnpm
-      - run : pnpm i
+      - run : pnpm install --frozen-lockfile
       - run : pnpm test:report
 
       - name : Test Report
