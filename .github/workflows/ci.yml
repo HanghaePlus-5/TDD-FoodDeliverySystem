@@ -47,7 +47,7 @@ jobs:
 
   Test:
     name: check-test
-    # needs: Lint
+    needs: Lint
 
     permissions: write-all
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
 
   Analysis:
     name: Static Analysis
-    # needs: [Lint, Test]
+    needs: [Lint, Test]
 
     runs-on: ubuntu-latest
 
