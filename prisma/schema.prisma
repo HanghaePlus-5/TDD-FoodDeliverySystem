@@ -32,7 +32,7 @@ model Store {
   storeId          Int         @id @default(autoincrement())
   name             String      @unique
   type             StoreType
-  status           StoreStatus
+  status           StoreStatus @default(REGISTERED)
   businessNumber   String      @unique
   phoneNumber      String
   postalNumber     String
@@ -48,8 +48,8 @@ model Store {
   menu             Menu[]
   orders           Order[]
   favourite        Favourite[]
-  User             User?       @relation(fields: [userId], references: [userId])
-  userId           Int?
+  User             User        @relation(fields: [userId], references: [userId])
+  userId           Int
 
   @@index([name, type])
 }
@@ -72,9 +72,23 @@ enum StoreStatus {
 
 model Menu {
   menuId    Int     @id @default(autoincrement())
+  name      String
+  sort      Int?
+  status    MenuStatus @default(REGISTERED)
+  price     Int
+  inventory Int
+  description String?
+  registrationDate DateTime  @default(now())
   storeId   Int
   store     Store   @relation(fields: [storeId], references: [storeId])
   orderItem OrderItem[]
+}
+
+enum MenuStatus {
+  REGISTERED // 등록
+  OPEN // 판매중
+  CLOSED // 판매중지
+  DELETED // 삭제
 }
 
 model Order {
@@ -121,6 +135,7 @@ model Payment {
   cardNumber String
   paymentGatewayId String
   paymentStatus PaymentStatus
+  cardIssuer String
   orderId   Int   @unique    
   order     Order @relation(fields: [orderId], references: [orderId])
 }

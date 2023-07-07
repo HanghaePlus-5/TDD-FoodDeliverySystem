@@ -45,4 +45,16 @@ export interface PaymentDto {
      * @type 'PAYMENT_COMPLETED' | 'PAYMENT_CANCELED'
      */
     paymentStatus: PaymentStatus;
+    /**
+     * OrderId
+     */
+    orderId: number;
+    /**
+     * CreatedAt
+     */
+    createdAt: Date;
+    /**
+     * OrderId
+     */
+    updatedAt: Date;
 }

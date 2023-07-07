@@ -1,18 +1,14 @@
 import { StoreDto } from './store.dto';
 
-export type StoreUpdateDto = Pick<StoreDto, 'storeId' > &
-  Partial<
-    Pick<
-      StoreDto,
-      | 'name'
-      | 'type'
-      | 'phoneNumber'
-      | 'postalNumber'
-      | 'address'
-      | 'openingTime'
-      | 'closingTime'
-      | 'cookingTime'
-      | 'origin'
-      | 'description'
-    >
-  >;
+export interface StoreUpdateDto extends Pick<StoreDto, 'storeId'> {
+  name?: string;
+  type?: StoreType;
+  phoneNumber?: string;
+  postalNumber?: string;
+  address?: string;
+  openingTime?: number;
+  closingTime?: number;
+  cookingTime?: number;
+  origin?: string;
+  description?: string;
+}

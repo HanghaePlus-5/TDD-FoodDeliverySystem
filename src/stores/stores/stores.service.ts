@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
-import { EnvService } from 'src/config/env';
+import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
 import { StoresRepository } from './stores.repository';
 import {
@@ -11,17 +12,25 @@ import {
   StoreOwnedDto,
 } from '../dto';
 import { StoreChangeStatusDto } from '../dto/store-change-status.dto';
+import { StoreMenuDto } from '../dto/store-menu.dto';
+import { SearchDto } from '../dto/store-search.dto';
 import { StoreUpdateDto } from '../dto/store-update.dto';
+import { StoreMenuDtoMap } from '../mapper/store-menu.mapper';
+import { MenusService } from '../menus/menus.service';
 
 @Injectable()
 export class StoresService {
-  private readonly MIN_COOKING_TIME = this.env.get<number>('MIN_COOKING_TIME');
-  private readonly MAX_COOKING_TIME = this.env.get<number>('MAX_COOKING_TIME');
+  private MIN_COOKING_TIME;
+  private MAX_COOKING_TIME;
 
   constructor(
-    private readonly env: EnvService,
+    private readonly configService: ConfigService,
     private readonly storesRepository: StoresRepository,
-  ) {}
+    private readonly menusService: MenusService,
+  ) {
+    this.MIN_COOKING_TIME = this.configService.get<number>('MIN_COOKING_TIME');
+    this.MAX_COOKING_TIME = this.configService.get<number>('MAX_COOKING_TIME');
+  }
 
   async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
     const storeOptionalDto = { ...dto, userId };
@@ -35,7 +44,12 @@ export class StoresService {
       throw new Error('Invalid business number.');
     }
 
-    return await this.storesRepository.create(storeOptionalDto);
+    try {
+      const store = await this.storesRepository.create(1, dto);
+      return store;
+    } catch (error) {
+      throw new Error('Store creation failed.');
+    }
   }
 
   async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {
@@ -46,7 +60,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -61,7 +75,7 @@ export class StoresService {
     return await this.storesRepository.update(storeOptionalDto);
   }
 
-  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto) {
+  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto): Promise<StoreDto> {
     const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
     const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {
@@ -69,7 +83,7 @@ export class StoresService {
     }
     const isStoreStatusGroup = await this.checkStoreStatusGroup(
       isStore.status,
-      ['REGISTERED', 'OPEN', 'CLOSED'],
+      ACTIVATE_STORE_STATUES,
     );
     if (!isStoreStatusGroup) {
       throw new Error('Store status is not allowed.');
@@ -83,8 +97,31 @@ export class StoresService {
     return await this.storesRepository.update(dto);
   }
 
+  async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
+    return await this.storesRepository.findAllByUserId(userId);
+  }
+
+  async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
+    if (viewType === 'OWNER') {
+      if (!userId) {
+        throw new Error('UserId is required at OWNER ViewType.');
+      }
+    }
+
+    const store = await this.storesRepository.findOne({ storeId, userId }, viewType);
+    if (!store) {
+      throw new Error('Store not found.');
+    }
+    const menu = await this.menusService.getMenus(storeId, viewType, userId);
+    return StoreMenuDtoMap(store, menu);
+  }
+
+  async getStoresBySearch(dto: SearchDto): Promise<StoreMenuDto[]> {
+    return await this.storesRepository.findManyBySearch(dto);
+  }
+
   async checkStoreOwned(dto: StoreOwnedDto): Promise<StoreDto | null> {
-    return await this.storesRepository.findOne(dto);
+    return await this.storesRepository.findOne(dto, 'OWNER');
   }
 
   async checkStoreStatusGroup(
@@ -138,20 +175,14 @@ export class StoresService {
     return true;
   }
 
-  public async checkBusinessNumberCaller(
-    BusinessNumber: string,
-  ): Promise<boolean> {
-    return await this.checkBusinessNumber(BusinessNumber);
-  }
-
-  private async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
+  async checkBusinessNumber(BusinessNumber: string): Promise<boolean> {
     const modifiedBusinessNumber = BusinessNumber.replace(/-/g, '');
     const data = {
       b_no: [`${modifiedBusinessNumber}`],
     };
 
     try {
-      const BUSINESS_NUMBER_CHECK_API_KEY = this.env.get<string>(
+      const BUSINESS_NUMBER_CHECK_API_KEY = this.configService.get<string>(
         'BUSINESS_NUMBER_CHECK_API_KEY',
       );
       const response = await axios.post(
@@ -174,17 +205,10 @@ export class StoresService {
     return true;
   }
 
-  public async checkStoreStatusChangeConditionCaller(
+  checkStoreStatusChangeCondition(
     fromStatus: StoreStatus,
     toStatus: StoreStatus,
-  ): Promise<boolean> {
-    return await this.checkStoreStatusChangeCondition(fromStatus, toStatus);
-  }
-
-  private async checkStoreStatusChangeCondition(
-    fromStatus: StoreStatus,
-    toStatus: StoreStatus,
-  ): Promise<boolean> {
+  ): boolean {
     if (fromStatus === ('REGISTERED' || 'CLOSED') && toStatus === 'OPEN') {
       return true;
     }
