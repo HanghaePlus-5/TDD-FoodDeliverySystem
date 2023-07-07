@@ -34,7 +34,7 @@ jobs:
 
       - name: Build, tag, and push
         env:
-          ECR_REGISTRY: ${{ secrets.DEV_AWS_ECR_REGISTRY }}
+          ECR_REGISTRY: ${{ secrets.PROD_AWS_ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ secrets.DEV_AWS_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
           REGION: ${{ secrets.AWS_REGION }}
