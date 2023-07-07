@@ -12,7 +12,6 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-
     steps:
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
