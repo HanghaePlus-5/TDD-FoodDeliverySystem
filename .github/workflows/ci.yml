@@ -89,9 +89,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install -g pnpm
-          npm install -g dotenv-cli
           pnpm install --frozen-lockfile
-          npx prisma migrate
           npx prisma generate
 
       - name: Run test
