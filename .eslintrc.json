@@ -13,8 +13,14 @@
     "sourceType": "module"
   },
   "root": true,
-  "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended"],
-  "plugins": ["import", "@typescript-eslint"],
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "import",
+    "@typescript-eslint"
+  ],
   "rules": {
     "arrow-body-style": "off",
     "class-methods-use-this": "off",

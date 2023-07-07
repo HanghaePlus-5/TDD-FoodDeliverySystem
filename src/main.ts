@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
-  app.use(cookieParser())
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,10 +20,11 @@ async function bootstrap() {
     }),
   );
 
+  // eslint-disable-next-line
   const docs = require('../../swagger.json');
   docs.servers = [
-    { url: 'http://localhost:3000' }
-  ]
+    { url: 'http://localhost:3000' },
+  ];
   SwaggerModule.setup('swagger', app, docs);
 
   await app.listen(3000);

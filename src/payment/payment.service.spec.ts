@@ -16,7 +16,7 @@ describe('PaymentService', () => {
   let testPrisma: PrismaService;
 
   let paymentProcessArgs: PaymentProcessArgs;
-  let cancelOrderId : number
+  let cancelOrderId : number;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +28,7 @@ describe('PaymentService', () => {
 
     const random = Math.floor(Math.random() * 1000) + 1;
 
-    let user = await testPrisma.user.create({
+    const user = await testPrisma.user.create({
       data: {
         email: `michael${random}@gmail.com`,
         name: 'michael',
@@ -37,7 +37,7 @@ describe('PaymentService', () => {
       },
     });
 
-    let store = await testPrisma.store.create({
+    const store = await testPrisma.store.create({
       data: {
         name: `Sample Store${random}`,
         type: StoreType.KOREAN,
@@ -52,7 +52,7 @@ describe('PaymentService', () => {
       },
     });
 
-    let order = await testPrisma.order.create({
+    const order = await testPrisma.order.create({
       data: {
         userId: user.userId,
         storeId: store.storeId,
