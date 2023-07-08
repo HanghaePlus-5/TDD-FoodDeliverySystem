@@ -11,6 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
+      # 슬랙 알림을 위한 슬랙웹훅 URL - https://github.com/integrations/slack
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
@@ -22,14 +23,19 @@ jobs:
         with:
           node-version: '18'
 
+      # pnpm 설치 및 의존성 설치
+      # 이때, frozen-lockfile 옵션을 사용하여 lockfile을 사용하도록 설정
+      # npm을 사용할 때 "npm ci"와 같은 효과
       - name: Install dependencies
         run: |
           npm install -g pnpm
           pnpm install --frozen-lockfile
 
+      # lint 실행
       - name: Run lint
         run: pnpm lint
 
+      # lint 에러 발생 시 결과를 슬랙으로 전송
       - name: Notify Slack if error exists
         if: ${{ failure() }}
         uses: act10ns/slack@v1
@@ -38,6 +44,7 @@ jobs:
           steps: ${{ toJson(steps) }}
           channel: '#ci'
 
+      # lint 에러 발생 시 깃헙액션 인스턴스를 종료
       - name: Block merge if error exists
         if: ${{ failure() }}
         run: |
@@ -47,10 +54,13 @@ jobs:
 
   Test:
     name: check-test
+    # Test는 Lint를 통과한 이후에만 실행이 되도록 의존성 설정
     needs: Lint
 
     permissions: write-all
     runs-on: ubuntu-latest
+    # 테스트는 앞선 lint 검사와 다르게 서버를 실제로 실행시키므로,
+    # 필요한 환경변수를 잘 체크해서 포함시키기
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
@@ -70,16 +80,16 @@ jobs:
         with:
           node-version: '18'
 
+      # docker-compose를 사용하여 테스트에 필요한 데이터베이스를 구성
+      # Github Action 인스턴스에는 docker가 기본적으로 설치되어 있기 때문에 별도 설치 불필요
       - name: Setup datatabase with docker compose
         run: |
           docker-compose up -d
-          
+
       - name: Install dependencies
         run: |
           npm install -g pnpm
-          npm install -g dotenv-cli
           pnpm install --frozen-lockfile
-          npx prisma migrate
           npx prisma generate
 
       - name: Run test
@@ -103,6 +113,7 @@ jobs:
 
   Analysis:
     name: Static Analysis
+    # Lint와 Test가 모두 통과한 이후에만 실행되도록 의존성 설정
     needs: [Lint, Test]
 
     runs-on: ubuntu-latest
