@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { is } from 'typia';
 
 import { ACTIVATE_STORE_STATUES } from 'src/constants/stores';
 
@@ -143,39 +144,14 @@ export class StoresService {
   }
 
   private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
-    if (
-      !dto.name
-      || !dto.businessNumber
-      || !dto.phoneNumber
-      || !dto.postalNumber
-      || !dto.address
-      || !dto.openingTime
-      || !dto.closingTime
-      || !dto.cookingTime
-      || !dto.userId
-    ) {
+    if (!is<StoreOptionalDto>(dto)) {
       return false;
     }
-
-    if (/[a-zA-Z!@#$%^&*(),.?":{}|<>]/.test(dto.name)) {
-      return false;
-    }
+      dto.cookingTime = Number(dto.cookingTime);
 
     if (
-      dto.name.length === 0
-      || dto.businessNumber.length !== 12
-      || dto.phoneNumber.length < 11
-      || dto.phoneNumber.length > 13
-      || dto.postalNumber.length !== 5
-      || dto.address.length === 0
-      || dto.openingTime > 23
-      || dto.openingTime < 0
-      || dto.closingTime > 23
-      || dto.closingTime < 0
-      || dto.cookingTime < this.MIN_COOKING_TIME
-      || dto.cookingTime > this.MAX_COOKING_TIME
-      || dto.userId < 1
-    ) {
+      dto.cookingTime < this.MIN_COOKING_TIME || dto.cookingTime > this.MAX_COOKING_TIME
+      ) {
       return false;
     }
 

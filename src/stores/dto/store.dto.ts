@@ -1,5 +1,3 @@
-
-
 export interface StoreDto {
   /**
    * @type int
@@ -8,7 +6,7 @@ export interface StoreDto {
 
   /**
    * @type string
-   * @minLength 2
+   * @pattern ^[^a-zA-Z!@#$%^&*(),.?":{}|<>]+$
    */
   name: string;
 
