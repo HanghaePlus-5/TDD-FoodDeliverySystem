@@ -144,6 +144,7 @@ export class StoresService {
   }
 
   private async checkValidation(dto: StoreOptionalDto): Promise<boolean> {
+    /* eslint-disable */
     if (!is<StoreOptionalDto>(dto)) {
       return false;
     }
@@ -156,6 +157,7 @@ export class StoresService {
     }
 
     return true;
+    /* eslint-disable */
   }
 
   async checkBusinessNumber(businessNumber: string): Promise<boolean> {

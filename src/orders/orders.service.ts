@@ -129,7 +129,11 @@ export class OrdersService {
         try {
             // User type will be verified using payload
         } catch (error) {
-            throw new Error(error);
+            if (error instanceof Error) {
+                throw error;
+            } else {
+                throw new Error();
+            }
         }
         return 'CUSTOMER';
     }

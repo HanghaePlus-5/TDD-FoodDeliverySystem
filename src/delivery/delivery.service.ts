@@ -15,9 +15,9 @@ export class DeliveryService {
             throw new BadRequestException('this order is not confirmed');
         }
     }
-    async checkDeliveryTime(orderId: number) {
 
-    }
+    // async checkDeliveryTime(orderId: number) {}
+
     private isOrderStatusConfirmed(order : Order) {
         return order.status === OrderStatus.ORDER_CONFIRMED;
     }
