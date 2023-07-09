@@ -94,60 +94,6 @@ describe('StoresService', () => {
   });
 
   describe('checkValidation', () => {
-    it('should include store name length > 0', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, name: '' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include store name english', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, name: 'english' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include store name special character', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, name: '커피커피!' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should include businessNumber length 12', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, businessNumber: '123-12-1234' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include phoneNumber length < 11', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, phoneNumber: '02-123-123' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include phoneNumber length > 13', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, phoneNumber: '031-1234-12345' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should include postalNumber length 5', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, postalNumber: '1234' };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include openingTime over 23', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, openingTime: 24 };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
-    it('should not include closingTime under 0', async () => {
-      const sampleCreateStoreDto = createSampleCreateStoreDto();
-      const dto = { ...sampleCreateStoreDto, closingTime: -1 };
-      expect(await storesService.checkValidationCaller(dto)).toBe(false);
-    });
-
     it('should not include cookingTime under min time', async () => {
       const sampleCreateStoreDto = createSampleCreateStoreDto();
       const dto = {

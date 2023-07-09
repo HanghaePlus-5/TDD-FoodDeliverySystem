@@ -23,7 +23,7 @@ export class StoresRepository {
           userId,
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === 'P2002') {
         throw new Error('already exists');
       }
