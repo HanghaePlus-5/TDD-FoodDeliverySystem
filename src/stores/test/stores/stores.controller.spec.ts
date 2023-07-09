@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { StoresController } from 'src/stores/stores/stores.controller';
 import { StoresService } from 'src/stores/stores/stores.service';
+
 import { createSampleCreateStoreDto, createSampleStoreDto } from '../testUtils';
 
 describe('StoresController', () => {
@@ -16,8 +17,8 @@ describe('StoresController', () => {
           provide: StoresService,
           useValue: {
             createStore: jest.fn(),
-          }
-        }
+          },
+        },
       ],
     }).compile();
 
@@ -41,5 +42,5 @@ describe('StoresController', () => {
       await expect(controller.createStore(req, sampleCreateStoreDto)).resolves.toEqual(sampleStoreDto);
       expect(mockCreateStore).toBeCalledWith(1, sampleCreateStoreDto);
     });
-  })
+  });
 });

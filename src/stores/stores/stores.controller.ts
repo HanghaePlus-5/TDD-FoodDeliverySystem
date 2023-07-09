@@ -1,6 +1,7 @@
 import { Controller, Request, UseGuards } from '@nestjs/common';
-import { StoresService } from './stores.service';
 import { TypedBody, TypedRoute } from '@nestia/core';
+
+import { StoresService } from './stores.service';
 import { StoreCreateDto, StoreDto } from '../dto';
 
 @Controller('stores')
