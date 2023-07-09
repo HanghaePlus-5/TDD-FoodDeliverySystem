@@ -9,8 +9,8 @@ export function validateCardHolder(cardHolderName: string, customerName: string)
     }
 }
 export function validateCardNumber(cardNumber: string) {
-    cardNumber = cardNumber.replace(/[-\s]/g, '');
-    if (cardNumber.length !== 16) {
+    const cardNumberFormatted = cardNumber.replace(/[-\s]/g, '');
+    if (cardNumberFormatted.length !== 16) {
         throw new BadRequestException('card number is not valid');
     }
 }
