@@ -122,9 +122,16 @@ jobs:
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }} 
+          # 토큰 발행 : SonarCloud -> Account -> Security -> generate 토큰 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args:
-            -Dsonar.projectKey=tdd-delivery_tdd-delivery
+            # SonarCloud -> 프로젝트 -> information 탭에서 복사
+            -Dsonar.projectKey=tdd-delivery_tdd-delivery 
             -Dsonar.organization=tdd-delivery
+
+      # SonarCloud에서 Slack으로 알림 보내기
+      # SonarCloud webhook 페이로드와 Slack에서 수용 하는 데이터 형식이 달라서, 데이터 변환을 위해 서버리스 함수를 사용했습니다.
+      # SonarCloud -> 프로젝트 -> Administration -> webhook -> create 버튼 클릭
+      # AWS API Gateway와 Lambda를 이용해서 webhook URL에 엔드포인트를 추가.
