@@ -5,10 +5,12 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
+import { healthCheckMiddleware } from './common/middlewares';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(healthCheckMiddleware);
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(cookieParser());
 
