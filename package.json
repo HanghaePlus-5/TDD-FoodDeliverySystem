@@ -39,11 +39,14 @@
     "cookie-parser": "^1.4.6",
     "jest-mock-extended": "^3.0.4",
     "module-alias": "^2.2.3",
+    "nest-winston": "^1.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typia": "^4.1.0"
+    "typia": "^4.1.0",
+    "winston": "^3.10.0",
+    "winston-cloudwatch": "^6.1.1"
   },
   "devDependencies": {
     "@nestia/e2e": "^0.3.4",
