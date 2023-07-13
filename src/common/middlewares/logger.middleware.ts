@@ -13,7 +13,6 @@ export default function logger(
   next: NextFunction,
 ) {
   const { method, originalUrl, body, query, params } = req;
-  console.log(req.ip)
   const ip = req.ip.replace(/^::ffff:/, '');
   const start = Date.now();
 
