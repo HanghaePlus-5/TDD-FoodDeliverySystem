@@ -5,8 +5,8 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
-import { healthCheckMiddleware } from './common/middlewares';
 import HttpExceptionFilter from './common/filters/http-exception.filter';
+import { healthCheckMiddleware } from './common/middlewares';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,7 +32,7 @@ async function bootstrap() {
     ];
     SwaggerModule.setup('swagger', app, docs);
   }
-  
+
   await app.listen(3000);
 }
 bootstrap();

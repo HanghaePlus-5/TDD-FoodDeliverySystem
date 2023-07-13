@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { AuthModule } from './auth/auth.module';
+import logger from './common/middlewares/logger.middleware';
 import { CustomConfigModule } from './config/config.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ExampleModule } from './examples/example.module';
@@ -11,7 +12,6 @@ import { PaymentModule } from './payment/payment.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
-import logger from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [

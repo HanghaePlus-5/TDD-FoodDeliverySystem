@@ -1,19 +1,21 @@
 import * as winston from 'winston';
-import * as winstonCloudWatch from 'winston-cloudwatch';
+import * as WinstonCloudWatch from 'winston-cloudwatch';
 import { LogObject } from 'winston-cloudwatch';
 
 import { EnvService } from 'src/config/env';
 
 const { createLogger, transports } = winston;
-const { combine, timestamp, colorize, printf, simple } = winston.format;
+const {
+ combine, timestamp, colorize, printf, simple,
+} = winston.format;
 
 const logFormat = printf(
   (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-)
+);
 
 export default class Logger {
   private logger: winston.Logger;
-  
+
   constructor(private readonly env: EnvService) {
     const logGroupName = this.env.get<string>('AWS_CLOUDWATCH_LOG_GROUP_NAME');
     const logStreamName = this.env.get<string>('AWS_CLOUDWATCH_LOG_STREAM_NAME');
@@ -28,16 +30,16 @@ export default class Logger {
         }),
         logFormat,
         ),
-      })
-    
-    if(this.env.get<string>('NODE_ENV') === 'production' && (this.logger.level = 'debug'))  {
+      });
+
+    if (this.env.get<string>('NODE_ENV') === 'production' && (this.logger.level === 'debug')) {
       return;
     }
     this.logger.add(
       new transports.Console({
-        format: combine(colorize(), simple())
-      })
-    )
+        format: combine(colorize(), simple()),
+      }),
+    );
 
     const config = {
       logGroupName,
@@ -59,8 +61,8 @@ export default class Logger {
         region: awsRegion,
       },
     };
-    const cloudWatchHelper = new winstonCloudWatch(config);
-    this.logger.add(cloudWatchHelper);    
+    const cloudWatchHelper = new WinstonCloudWatch(config);
+    this.logger.add(cloudWatchHelper);
   }
 
   public info(msg: string) {

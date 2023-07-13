@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
+
 import { EnvService } from 'src/config/env';
 import Logger from 'src/lib/winston/logger';
 
@@ -12,7 +13,7 @@ export default function logger(
   res: Response,
   next: NextFunction,
 ) {
-  const { method, originalUrl, body, query, params } = req;
+  const { method, originalUrl, body } = req;
   const ip = req.ip.replace(/^::ffff:/, '');
   const start = Date.now();
 
@@ -23,14 +24,17 @@ export default function logger(
   );
 
   const oldSend = res.send.bind(res);
+  // eslint-disable-next-line no-param-reassign
   res.send = <T>(data: T): Response<T> => {
+    const responseData = oldSend.call(res, data);
+
     loggerInstance.info(
       `Response : ${method} ${originalUrl} ${ip} ${res.statusCode} ${Date.now() - start}ms
       Headers: ${JSON.stringify(res.getHeaders())}
       Body: ${JSON.stringify(data)}`,
-    )
-    return oldSend(data);
-  }
+    );
+    return responseData;
+  };
 
   next();
 }

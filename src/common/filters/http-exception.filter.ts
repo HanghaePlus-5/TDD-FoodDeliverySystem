@@ -1,6 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import {
+ ArgumentsHost, Catch, ExceptionFilter, HttpException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+
 import { EnvService } from 'src/config/env';
 import Logger from 'src/lib/winston/logger';
 
