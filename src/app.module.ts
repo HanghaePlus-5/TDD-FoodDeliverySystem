@@ -24,7 +24,7 @@ import { UsersModule } from './users/users.module';
     FavouritesModule,
     PaymentModule,
     DeliveryModule,
-    PaymentGatewayModule
+    PaymentGatewayModule,
   ],
   controllers: [],
   providers: [],
