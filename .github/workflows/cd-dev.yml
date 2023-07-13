@@ -1,4 +1,4 @@
-name: CD - Deploy AWS ECS(Prod)
+name: CD - Deploy AWS ECS(DEV)
 
 on:
   # enable manual workflow testing in the web or github API
