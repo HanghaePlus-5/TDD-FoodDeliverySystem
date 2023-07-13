@@ -41,7 +41,7 @@ jobs:
           BUSINESS_NUMBER_CHECK_API_KEY: ${{ secrets.BUSINESS_NUMBER_CHECK_API_KEY }}
         run: |
           aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-          docker build -t $ECR_REPOSITORY:latest -t $ECR_REPOSITORY:$IMAGE_TAG —build-arg “API_VERSION=v1” —build-arg “DATABASE_URL=mysql://root:qwe123123@localhost:3306/plus” —build-arg “JWT_SECRET=hanghaeplus” —build-arg “JWT_EXPIRES_IN=15m” —build-arg “MIN_COOKING_TIME=5” —build-arg “MAX_COOKING_TIME=120” —build-arg “BUSINESS_NUMBER_CHECK_API_KEY=ewDYVB78eQND%2BoRHWGkxLhuyKOJ88j%2FsKLujI%2B3%2FODh4Gc7zVTOpd7IwkWcjROXU5f%2BDouaeB6sH4lxyARgQGg%3D%3D” .
+          docker build -t $ECR_REPOSITORY:latest -t $ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker image push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
