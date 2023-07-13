@@ -4,7 +4,7 @@ on:
   # enable manual workflow testing in the web or github API
   workflow_dispatch:
   push:
-    branches: ["develop", "main"]
+    branches: develop
 
 # concurrency will check if any dulpicated task is running and cancel the task 
 concurrency:
