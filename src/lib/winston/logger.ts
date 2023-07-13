@@ -29,6 +29,15 @@ export default class Logger {
         logFormat,
         ),
       })
+    
+    if(this.env.get<string>('NODE_ENV') === 'production' && (this.logger.level = 'debug'))  {
+      return;
+    }
+    this.logger.add(
+      new transports.Console({
+        format: combine(colorize(), simple())
+      })
+    )
 
     const config = {
       logGroupName,
@@ -50,11 +59,6 @@ export default class Logger {
         region: awsRegion,
       },
     };
-    this.logger.add(
-      new transports.Console({
-        format: combine(colorize(), simple())
-      })
-    )
     const cloudWatchHelper = new winstonCloudWatch(config);
     this.logger.add(cloudWatchHelper);    
   }
@@ -65,5 +69,9 @@ export default class Logger {
 
   public error(errmsg: string) {
     this.logger.error(errmsg);
+  }
+
+  public debug(msg: string) {
+    this.logger.debug(msg);
   }
 }
