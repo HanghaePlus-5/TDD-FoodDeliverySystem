@@ -1,5 +1,6 @@
 import * as winston from 'winston';
-import winstonCloudwatch, { LogObject } from 'winston-cloudwatch';
+import * as winstonCloudWatch from 'winston-cloudwatch';
+import { LogObject } from 'winston-cloudwatch';
 
 import { EnvService } from 'src/config/env';
 
@@ -54,8 +55,8 @@ export default class Logger {
         format: combine(colorize(), simple())
       })
     )
-    // const cloudWatchHelper = new winstonCloudwatch(config);
-    // this.logger.add(cloudWatchHelper);    
+    const cloudWatchHelper = new winstonCloudWatch(config);
+    this.logger.add(cloudWatchHelper);    
   }
 
   public info(msg: string) {
