@@ -24,13 +24,15 @@ async function bootstrap() {
     }),
   );
 
-  // eslint-disable-next-line
-  const docs = require('../../swagger.json');
-  docs.servers = [
-    { url: 'http://localhost:3000' },
-  ];
-  SwaggerModule.setup('swagger', app, docs);
-
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line
+    const docs = require('../../swagger.json');
+    docs.servers = [
+      { url: 'http://localhost:3000' },
+    ];
+    SwaggerModule.setup('swagger', app, docs);
+  }
+  
   await app.listen(3000);
 }
 bootstrap();

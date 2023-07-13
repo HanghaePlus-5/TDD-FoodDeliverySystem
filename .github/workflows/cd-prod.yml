@@ -1,4 +1,4 @@
-name: CD - Deploy AWS ECS(DEV)
+name: CD - Deploy AWS ECS(Prod)
 
 on:
   # enable manual workflow testing in the web or github API
@@ -7,9 +7,9 @@ on:
     types:
       - closed
     branches:
-      - develop
+      - main
 #   push:
-#     branches: develop
+#     branches: main
 
 # concurrency will check if any dulpicated task is running and cancel the task 
 concurrency:
@@ -33,12 +33,12 @@ jobs:
 
       - name: Build, tag, and push
         env:
-          ECR_REGISTRY: ${{ secrets.DEV_AWS_ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ secrets.DEV_AWS_ECR_REPOSITORY }}
+          ECR_REGISTRY: ${{ secrets.PROD_AWS_ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.PROD_AWS_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
           REGION: ${{ secrets.AWS_REGION }}
 
-          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
           API_VERSION: ${{ secrets.API_VERSION }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
@@ -54,7 +54,7 @@ jobs:
 
       - name: Restart ECS Service
         env:
-          CLUSTER_NAME: ${{ secrets.DEV_AWS_CLUSTER_NAME }}
-          SERVICE_NAME: ${{ secrets.DEV_AWS_SERVICE_NAME }}
+          CLUSTER_NAME: ${{ secrets.PROD_AWS_CLUSTER_NAME }}
+          SERVICE_NAME: ${{ secrets.PROD_AWS_SERVICE_NAME }}
         run: |
           aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment

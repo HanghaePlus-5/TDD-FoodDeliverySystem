@@ -25,7 +25,7 @@ import logger from './common/middlewares/logger.middleware';
     FavouritesModule,
     PaymentModule,
     DeliveryModule,
-    PaymentGatewayModule
+    PaymentGatewayModule,
   ],
   controllers: [],
   providers: [],

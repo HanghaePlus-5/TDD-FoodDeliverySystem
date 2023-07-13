@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "npx nestia swagger && nest start --watch",
     "start:debug": "npx nestia swagger && nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --quiet --fix -c \".eslintrc.json\"",
     "test": "pnpm test:migrate && jest",
     "test:watch": "jest --watch",
