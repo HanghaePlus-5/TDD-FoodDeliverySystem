@@ -3,8 +3,13 @@ name: CD - Deploy AWS ECS(Prod)
 on:
   # enable manual workflow testing in the web or github API
   workflow_dispatch:
-  push:
-    branches: main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+#   push:
+#     branches: main
 
 # concurrency will check if any dulpicated task is running and cancel the task 
 concurrency:
@@ -13,6 +18,7 @@ concurrency:
 
 jobs:
   aws-deployment:
+    if: github.event.pull_request.merged == true
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
       - name: Checkout
