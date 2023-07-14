@@ -69,8 +69,6 @@ describe('PaymentService', () => {
   });
   afterAll(async () => {
     const deleteUser = testPrisma.user.deleteMany();
-    const deleteMenu = testPrisma.menu.deleteMany();
-    await testPrisma.$transaction([deleteMenu]);
     const deleteStore = testPrisma.store.deleteMany();
     const deleteOrder = testPrisma.order.deleteMany();
     await testPrisma.$transaction([
