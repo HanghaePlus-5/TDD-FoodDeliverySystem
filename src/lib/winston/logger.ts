@@ -1,6 +1,5 @@
+import { CloudWatchLogsClient, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import * as winston from 'winston';
-import * as WinstonCloudWatch from 'winston-cloudwatch';
-import { LogObject } from 'winston-cloudwatch';
 
 import { EnvService } from 'src/config/env';
 
@@ -15,10 +14,13 @@ const logFormat = printf(
 
 export default class Logger {
   private logger: winston.Logger;
+  private cloudWatchClient: CloudWatchLogsClient;
+  logGroupName: string;
+  logStreamName: string;
 
   constructor(private readonly env: EnvService) {
-    const logGroupName = this.env.get<string>('AWS_CLOUDWATCH_LOG_GROUP_NAME');
-    const logStreamName = this.env.get<string>('AWS_CLOUDWATCH_LOG_STREAM_NAME');
+    this.logGroupName = this.env.get<string>('AWS_CLOUDWATCH_LOG_GROUP_NAME');
+    this.logStreamName = this.env.get<string>('AWS_CLOUDWATCH_LOG_STREAM_NAME');
     const awsAccessKeyId = this.env.get<string>('AWS_ACCESS_KEY_ID');
     const awsSecretKey = this.env.get<string>('AWS_SECRET_ACCESS_KEY');
     const awsRegion = this.env.get<string>('AWS_REGION');
@@ -30,50 +32,51 @@ export default class Logger {
         }),
         logFormat,
         ),
+        silent: process.env.NODE_ENV === 'production',
       });
 
-    if (this.env.get<string>('NODE_ENV') === 'production' && (this.logger.level === 'debug')) {
-      return;
-    }
+    this.cloudWatchClient = new CloudWatchLogsClient({
+      credentials: {
+        accessKeyId: awsAccessKeyId,
+        secretAccessKey: awsSecretKey,
+      },
+      region: awsRegion,
+    });
+
     this.logger.add(
       new transports.Console({
         format: combine(colorize(), simple()),
       }),
     );
-
-    const config = {
-      logGroupName,
-      logStreamName,
-      awsAccessKeyId,
-      awsSecretKey,
-      awsRegion,
-      messageFormatter: (logObject: LogObject) => {
-        const { level, message, additionalInfo } = logObject;
-        return `[${level}] : ${message} \nAdditional Info: ${JSON.stringify(
-          additionalInfo,
-        )}`;
-      },
-      awsOptions: {
-        credentials: {
-          accessKeyId: awsAccessKeyId,
-          secretAccessKey: awsSecretKey,
-        },
-        region: awsRegion,
-      },
-    };
-    const cloudWatchHelper = new WinstonCloudWatch(config);
-    this.logger.add(cloudWatchHelper);
   }
 
   public info(msg: string) {
     this.logger.info(msg);
+    this.sendLogToCloudWatch('INFO', msg);
   }
 
   public error(errmsg: string) {
     this.logger.error(errmsg);
+    this.sendLogToCloudWatch('ERROR', errmsg);
   }
 
   public debug(msg: string) {
     this.logger.debug(msg);
+  }
+
+  private sendLogToCloudWatch(level: string, msg: string) {
+    const logEvents = [
+      {
+        timestamp: new Date().getTime(),
+        message: `[${level}] : ${msg}`,
+      },
+    ];
+    const command = new PutLogEventsCommand({
+      logGroupName: this.logGroupName,
+      logStreamName: this.logStreamName,
+      logEvents,
+    });
+
+    this.cloudWatchClient.send(command);
   }
 }
