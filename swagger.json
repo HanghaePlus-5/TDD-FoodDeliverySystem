@@ -141,6 +141,27 @@
         "x-nestia-jsDocTags": []
       }
     },
+    "/orders": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "orders.findAll",
+        "x-nestia-jsDocTags": []
+      }
+    },
     "/users/signup": {
       "post": {
         "tags": [],

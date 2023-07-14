@@ -1,6 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
+
 import { PrismaService } from 'src/prisma';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 
@@ -27,5 +28,5 @@ describe('MenusRepository', () => {
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
-  })
+  });
 });
