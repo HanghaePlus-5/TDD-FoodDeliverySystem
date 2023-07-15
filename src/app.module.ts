@@ -30,10 +30,4 @@ import { UsersModule } from './users/users.module';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(logger)
-      .forRoutes('*');
-  }
-}
+export class AppModule {}

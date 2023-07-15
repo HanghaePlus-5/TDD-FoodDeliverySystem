@@ -3,16 +3,24 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
 
 import { AppModule } from './app.module';
 import HttpExceptionFilter from './common/filters/http-exception.filter';
 import { healthCheckMiddleware } from './common/middlewares';
+import logger from './common/middlewares/logger.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(healthCheckMiddleware);
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'secret',
+    resave: false,
+    saveUninitialized: true,
+  }));
+  app.use(logger);
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(cookieParser());
 
