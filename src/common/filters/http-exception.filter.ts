@@ -18,8 +18,11 @@ export default class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
+    const session = request.sessionID;
 
-    this.loggerInstance.error(JSON.stringify(exception));
+    const errMsg = `Session : ${session} ${exception}`;
+
+    this.loggerInstance.error(JSON.stringify(errMsg));
     response.status(status).json({
       statusCode: status,
       message: exception.message,

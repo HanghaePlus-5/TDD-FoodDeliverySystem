@@ -14,11 +14,13 @@ export default function logger(
   next: NextFunction,
 ) {
   const { method, originalUrl, body } = req;
-  const ip = req.ip.replace(/^::ffff:/, '');
+  const session = req.sessionID;
+
   const start = Date.now();
 
   loggerInstance.info(
-    `Request : ${method} ${originalUrl} ${ip}
+    `Session : ${session}
+    Request : ${method} ${originalUrl}
     Headers : ${JSON.stringify(req.headers)}
     Body : ${JSON.stringify(body)}`,
   );
@@ -29,7 +31,8 @@ export default function logger(
     const responseData = oldSend.call(res, data);
 
     loggerInstance.info(
-      `Response : ${method} ${originalUrl} ${ip} ${res.statusCode} ${Date.now() - start}ms
+      `Session : ${session}
+      Response : ${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms
       Headers: ${JSON.stringify(res.getHeaders())}
       Body: ${JSON.stringify(data)}`,
     );
