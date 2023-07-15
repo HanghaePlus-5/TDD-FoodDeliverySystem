@@ -5,11 +5,13 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
+import HttpExceptionFilter from './common/filters/http-exception.filter';
 import { healthCheckMiddleware } from './common/middlewares';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.use(healthCheckMiddleware);
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(cookieParser());
@@ -23,7 +25,6 @@ async function bootstrap() {
   );
 
   if (process.env.NODE_ENV === 'development') {
-    
     // eslint-disable-next-line
     const docs = require('../../swagger.json');
     docs.servers = [
@@ -31,7 +32,7 @@ async function bootstrap() {
     ];
     SwaggerModule.setup('swagger', app, docs);
   }
-  
+
   await app.listen(3000);
 }
 bootstrap();

@@ -22,6 +22,7 @@
     "prepare": "ts-patch install"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.370.0",
     "@nestia/core": "^1.4.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.0.0",
@@ -39,11 +40,13 @@
     "cookie-parser": "^1.4.6",
     "jest-mock-extended": "^3.0.4",
     "module-alias": "^2.2.3",
+    "nest-winston": "^1.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typia": "^4.1.0"
+    "typia": "^4.1.0",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "@nestia/e2e": "^0.3.4",
@@ -116,5 +119,13 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "pnpm": {
+    "overrides": {
+      "@nestjs/core@<9.0.5": ">=9.0.5",
+      "webpack@>=5.0.0 <5.76.0": ">=5.76.0",
+      "semver@>=6.0.0 <6.3.1": ">=6.3.1",
+      "semver@>=7.0.0 <7.5.2": ">=7.5.2"
+    }
   }
 }

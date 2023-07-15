@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class OrdersController {
     @Get()
     findAll(): string {
-        return 'hello'
+        return 'hello';
     }
 }
