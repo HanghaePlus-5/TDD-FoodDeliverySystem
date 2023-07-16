@@ -18,24 +18,24 @@ export default function logger(
 
   const start = Date.now();
 
-  loggerInstance.info(
-    `Session : ${session}
-    Request : ${method} ${originalUrl}
-    Headers : ${JSON.stringify(req.headers)}
-    Body : ${JSON.stringify(body)}`,
-  );
+  loggerInstance.info({
+    Session: session,
+    Request: `${method} ${originalUrl}`,
+    Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+    Body: JSON.stringify(body),
+  })
 
   const oldSend = res.send.bind(res);
   // eslint-disable-next-line no-param-reassign
   res.send = <T>(data: T): Response<T> => {
     const responseData = oldSend.call(res, data);
 
-    loggerInstance.info(
-      `Session : ${session}
-      Response : ${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms
-      Headers: ${JSON.stringify(res.getHeaders())}
-      Body: ${JSON.stringify(data)}`,
-    );
+    loggerInstance.info({
+      Session: session,
+      Response: `${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms`,
+      Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+      Body: JSON.stringify(data),
+    })
     return responseData;
   };
 

@@ -50,14 +50,16 @@ export default class Logger {
     );
   }
 
-  public info(msg: string) {
-    this.logger.info(msg);
-    this.sendLogToCloudWatch('INFO', msg);
+  public info(msg: RequestApiLog | ResponseApiLog) {
+    const maskedMsg = this.makeLogMessage(msg);
+    this.logger.info(maskedMsg);
+    this.sendLogToCloudWatch('INFO', maskedMsg);
   }
 
-  public error(errmsg: string) {
-    this.logger.error(errmsg);
-    this.sendLogToCloudWatch('ERROR', errmsg);
+  public error(errmsg: ErrorApiLog) {
+    const stringifiedMsg = JSON.stringify(errmsg);
+    this.logger.error(stringifiedMsg);
+    this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
   public debug(msg: string) {
@@ -78,5 +80,39 @@ export default class Logger {
     });
 
     this.cloudWatchClient.send(command);
+  }
+
+  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | ErrorApiLog): string {
+    if ('Headers' in msgs) {
+      const Headers = this.filterSensitiveHeaders(msgs.Headers);
+      msgs.Headers = Headers;
+    }
+    if ('Body' in msgs) {
+      const Body = this.filterSensitiveBody(msgs.Body);
+      msgs.Body = Body;
+    }
+    return JSON.stringify(msgs);
+  }
+
+  private filterSensitiveHeaders(headers: string[]): string[] {
+    const sensitiveHeaders = ["authorization", "cookie", "host"];
+    const regex = new RegExp(sensitiveHeaders.join("|"), "gi");
+  
+    return headers.map((header) => {
+      if (regex.test(header)) {
+        return '*** Sensitive Data ***';
+      }
+      return header;
+    });
+  }
+
+  private filterSensitiveBody(body: string): string {
+    const sensitiveWords = ["password", "email", "card"];
+    const regex = new RegExp(sensitiveWords.join("|"), "gi");
+  
+    if (regex.test(body)) {
+      return '*** Sensitive Data ***';
+    }
+    return body;
   }
 }
