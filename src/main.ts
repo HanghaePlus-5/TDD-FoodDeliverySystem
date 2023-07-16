@@ -14,13 +14,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.use(healthCheckMiddleware);
   app.use(session({
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: true,
   }));
   app.use(logger);
+  app.use(healthCheckMiddleware);
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(cookieParser());
 
