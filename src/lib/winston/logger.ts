@@ -50,7 +50,7 @@ export default class Logger {
     );
   }
 
-  public info(msg: RequestApiLog | ResponseApiLog) {
+  public info(msg: RequestApiLog | ResponseApiLog | CustomApiLog) {
     const maskedMsg = this.makeLogMessage(msg);
     this.logger.info(maskedMsg);
     this.sendLogToCloudWatch('INFO', maskedMsg);
@@ -62,7 +62,7 @@ export default class Logger {
     this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
-  public debug(msg: string) {
+  public debug(msg: CustomApiLog) {
     this.logger.debug(msg);
   }
 
@@ -82,7 +82,7 @@ export default class Logger {
     this.cloudWatchClient.send(command);
   }
 
-  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | ErrorApiLog): string {
+  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomApiLog): string {
     const modifiedMsgs = { ...msgs }; // Create a copy of the msgs object
 
     if ('Headers' in modifiedMsgs) {
@@ -91,6 +91,10 @@ export default class Logger {
 
     if ('Body' in modifiedMsgs) {
       modifiedMsgs.Body = this.filterSensitiveBody(modifiedMsgs.Body);
+    }
+
+    if ('Request' in modifiedMsgs) {
+      modifiedMsgs.Request = this.filterSensitiveBody(modifiedMsgs.Request);
     }
 
     return JSON.stringify(modifiedMsgs);

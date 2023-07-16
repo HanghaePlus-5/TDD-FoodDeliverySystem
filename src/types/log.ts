@@ -18,3 +18,8 @@ interface ErrorApiLog {
   Message: string;
   Stack: string;
 }
+
+interface CustomApiLog {
+  Request: string;
+  Message: string;
+}
