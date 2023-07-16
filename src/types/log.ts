@@ -1,3 +1,4 @@
+/* eslint-disable */
 interface RequestApiLog {
   Session: string;
   Request: string;

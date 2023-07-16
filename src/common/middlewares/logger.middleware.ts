@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
 
@@ -23,10 +24,10 @@ export default function logger(
     Request: `${method} ${originalUrl}`,
     Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
     Body: JSON.stringify(body),
-  })
+  });
 
   const oldSend = res.send.bind(res);
-  // eslint-disable-next-line no-param-reassign
+  // eslint-disable-next-line
   res.send = <T>(data: T): Response<T> => {
     const responseData = oldSend.call(res, data);
 
@@ -35,7 +36,8 @@ export default function logger(
       Response: `${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms`,
       Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
       Body: JSON.stringify(data),
-    })
+    });
+
     return responseData;
   };
 

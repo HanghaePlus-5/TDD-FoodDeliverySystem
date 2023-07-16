@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
  ArgumentsHost, Catch, ExceptionFilter, HttpException,
 } from '@nestjs/common';
@@ -21,10 +22,11 @@ export default class HttpExceptionFilter implements ExceptionFilter {
     const session = req.sessionID;
 
     this.loggerInstance.error({
-      Session : session,
-      Message : exception.message,
-      Stack : exception.stack || '',
+      Session: session,
+      Message: exception.message,
+      Stack: exception.stack || '',
     });
+
     response.status(status).json({
       statusCode: status,
       message: exception.message,

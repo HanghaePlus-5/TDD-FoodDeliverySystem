@@ -83,21 +83,23 @@ export default class Logger {
   }
 
   private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | ErrorApiLog): string {
-    if ('Headers' in msgs) {
-      const Headers = this.filterSensitiveHeaders(msgs.Headers);
-      msgs.Headers = Headers;
+    const modifiedMsgs = { ...msgs }; // Create a copy of the msgs object
+
+    if ('Headers' in modifiedMsgs) {
+      modifiedMsgs.Headers = this.filterSensitiveHeaders(modifiedMsgs.Headers);
     }
-    if ('Body' in msgs) {
-      const Body = this.filterSensitiveBody(msgs.Body);
-      msgs.Body = Body;
+
+    if ('Body' in modifiedMsgs) {
+      modifiedMsgs.Body = this.filterSensitiveBody(modifiedMsgs.Body);
     }
-    return JSON.stringify(msgs);
+
+    return JSON.stringify(modifiedMsgs);
   }
 
   private filterSensitiveHeaders(headers: string[]): string[] {
-    const sensitiveHeaders = ["authorization", "cookie", "host"];
-    const regex = new RegExp(sensitiveHeaders.join("|"), "gi");
-  
+    const sensitiveHeaders = ['authorization', 'cookie', 'host'];
+    const regex = new RegExp(sensitiveHeaders.join('|'), 'gi');
+
     return headers.map((header) => {
       if (regex.test(header)) {
         return '*** Sensitive Data ***';
@@ -107,9 +109,9 @@ export default class Logger {
   }
 
   private filterSensitiveBody(body: string): string {
-    const sensitiveWords = ["password", "email", "card"];
-    const regex = new RegExp(sensitiveWords.join("|"), "gi");
-  
+    const sensitiveWords = ['password', 'email', 'card'];
+    const regex = new RegExp(sensitiveWords.join('|'), 'gi');
+
     if (regex.test(body)) {
       return '*** Sensitive Data ***';
     }
