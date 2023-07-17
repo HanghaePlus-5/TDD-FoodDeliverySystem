@@ -128,3 +128,21 @@ export function createSampleStoreMenuDto(dto?: Partial<StoreMenuDto>): StoreMenu
     ...dto,
   };
 }
+
+export function createSampleUserPayloadBusiness(dto?: Partial<UserPayload>): UserPayload {
+  return {
+    userId: 1,
+    name: '홍길동',
+    type: 'BUSINESS',
+    ...dto,
+  };
+}
+
+export function createSampleUserPayloadCustomer(dto?: Partial<UserPayload>): UserPayload {
+  return {
+    userId: 2,
+    name: '캔디',
+    type: 'CUSTOMER',
+    ...dto,
+  };
+}

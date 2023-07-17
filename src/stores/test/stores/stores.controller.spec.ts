@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { StoresController } from 'src/stores/stores/stores.controller';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto } from '../testUtils';
+import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUserPayloadBusiness } from '../testUtils';
 
 describe('StoresController', () => {
   let controller: StoresController;
@@ -34,13 +34,12 @@ describe('StoresController', () => {
     it('should return a store', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleCreateStoreDto = createSampleCreateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
       const mockCreateStore = jest.spyOn(service, 'createStore').mockResolvedValue(sampleStoreDto);
-      const req: Express.Request = {
-        payload: { userId: 1 },
-      } as Express.Request;
+      const req: Express.Request = { payload: sampleUserPayloadBusiness } as Express.Request;
 
       await expect(controller.createStore(req, sampleCreateStoreDto)).resolves.toEqual(sampleStoreDto);
-      expect(mockCreateStore).toBeCalledWith(1, sampleCreateStoreDto);
+      expect(mockCreateStore).toBeCalledWith(req.payload, sampleCreateStoreDto);
     });
   });
 });
