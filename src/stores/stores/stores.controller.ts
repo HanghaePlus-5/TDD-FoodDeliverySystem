@@ -16,7 +16,7 @@ export class StoresController {
     @Request() req: Express.Request,
     @TypedBody() form: StoreCreateDto,
   ): Promise<StoreDto> {
-    const store = await this.storesService.createStore(req.payload.userId, form);
+    const store = await this.storesService.createStore(req.payload, form);
 
     return store;
   }
