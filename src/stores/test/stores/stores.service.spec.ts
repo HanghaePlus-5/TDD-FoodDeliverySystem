@@ -490,19 +490,6 @@ describe('StoresService', () => {
     });
   });
 
-  // describe('getStoreByStoreId', () => {
-  //   it('should exec findOne', async () => {
-  //     const sampleStoreDto = createSampleStoreDto();
-  //     const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
-  //     mockFindOne.mockResolvedValue(sampleStoreDto);
-
-  //     const result = await storesService.getStoreByStoreId(1);
-  //     expect(result).toEqual(sampleStoreDto);
-
-  //     expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1 });
-  //   });
-  // });
-
   describe('getStoresBySearch', () => {
     it('should exec findManyBySearch', async () => {
       const sampleStoreMenuDto = createSampleStoreMenuDto();
