@@ -1,6 +1,8 @@
 import { Controller, Request, UseGuards } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 
+import { ResponseForm, createResponse } from 'src/utils/createResponse';
+
 import { StoresService } from './stores.service';
 import { StoreCreateDto, StoreDto } from '../dto';
 
@@ -15,9 +17,9 @@ export class StoresController {
   async createStore(
     @Request() req: Express.Request,
     @TypedBody() form: StoreCreateDto,
-  ): Promise<StoreDto> {
+  ): Promise<ResponseForm<StoreDto>> {
     const store = await this.storesService.createStore(req.payload, form);
 
-    return store;
+    return createResponse<StoreDto>(store);
   }
 }

@@ -4,6 +4,8 @@ import { StoresController } from 'src/stores/stores/stores.controller';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUserPayloadBusiness } from '../testUtils';
+import { createResponse } from 'src/utils/createResponse';
+import { StoreDto } from 'src/stores/dto';
 
 describe('StoresController', () => {
   let controller: StoresController;
@@ -38,7 +40,7 @@ describe('StoresController', () => {
       const mockCreateStore = jest.spyOn(service, 'createStore').mockResolvedValue(sampleStoreDto);
       const req: Express.Request = { payload: sampleUserPayloadBusiness } as Express.Request;
 
-      await expect(controller.createStore(req, sampleCreateStoreDto)).resolves.toEqual(sampleStoreDto);
+      await expect(controller.createStore(req, sampleCreateStoreDto)).resolves.toEqual(createResponse<StoreDto>(sampleStoreDto));
       expect(mockCreateStore).toBeCalledWith(req.payload, sampleCreateStoreDto);
     });
   });
