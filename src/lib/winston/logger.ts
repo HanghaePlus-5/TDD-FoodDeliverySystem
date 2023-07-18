@@ -50,17 +50,19 @@ export default class Logger {
     );
   }
 
-  public info(msg: string) {
-    this.logger.info(msg);
-    this.sendLogToCloudWatch('INFO', msg);
+  public info(msg: RequestApiLog | ResponseApiLog | CustomApiLog) {
+    const maskedMsg = this.makeLogMessage(msg);
+    this.logger.info(maskedMsg);
+    this.sendLogToCloudWatch('INFO', maskedMsg);
   }
 
-  public error(errmsg: string) {
-    this.logger.error(errmsg);
-    this.sendLogToCloudWatch('ERROR', errmsg);
+  public error(errmsg: ErrorApiLog) {
+    const stringifiedMsg = JSON.stringify(errmsg);
+    this.logger.error(stringifiedMsg);
+    this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
-  public debug(msg: string) {
+  public debug(msg: CustomApiLog) {
     this.logger.debug(msg);
   }
 
@@ -78,5 +80,45 @@ export default class Logger {
     });
 
     this.cloudWatchClient.send(command);
+  }
+
+  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomApiLog): string {
+    const modifiedMsgs = { ...msgs }; // Create a copy of the msgs object
+
+    if ('Headers' in modifiedMsgs) {
+      modifiedMsgs.Headers = this.filterSensitiveHeaders(modifiedMsgs.Headers);
+    }
+
+    if ('Body' in modifiedMsgs) {
+      modifiedMsgs.Body = this.filterSensitiveBody(modifiedMsgs.Body);
+    }
+
+    if ('Request' in modifiedMsgs) {
+      modifiedMsgs.Request = this.filterSensitiveBody(modifiedMsgs.Request);
+    }
+
+    return JSON.stringify(modifiedMsgs);
+  }
+
+  private filterSensitiveHeaders(headers: string[]): string[] {
+    const sensitiveHeaders = ['authorization', 'cookie', 'host'];
+    const regex = new RegExp(sensitiveHeaders.join('|'), 'gi');
+
+    return headers.map((header) => {
+      if (regex.test(header)) {
+        return '*** Sensitive Data ***';
+      }
+      return header;
+    });
+  }
+
+  private filterSensitiveBody(body: string): string {
+    const sensitiveWords = ['password', 'email', 'card'];
+    const regex = new RegExp(sensitiveWords.join('|'), 'gi');
+
+    if (regex.test(body)) {
+      return '*** Sensitive Data ***';
+    }
+    return body;
   }
 }

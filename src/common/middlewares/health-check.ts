@@ -4,6 +4,7 @@ import { AppModule } from 'src/app.module';
 
 export const healthCheckMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (req.url === '/') {
+    // eslint-disable-next-line
     if (!Boolean(AppModule)) {
       res.status(500).send('AppModule not found');
     } else {
