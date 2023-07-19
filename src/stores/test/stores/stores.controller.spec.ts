@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { StoresController } from 'src/stores/stores/stores.controller';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUserPayloadBusiness } from '../testUtils';
+import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto, createSampleUserPayloadBusiness } from '../testUtils';
 import { createResponse } from 'src/utils/createResponse';
 import { StoreDto } from 'src/stores/dto';
 
@@ -19,6 +19,7 @@ describe('StoresController', () => {
           provide: StoresService,
           useValue: {
             createStore: jest.fn(),
+            updateStore: jest.fn(),
           },
         },
       ],
@@ -42,6 +43,19 @@ describe('StoresController', () => {
 
       await expect(controller.createStore(req, sampleCreateStoreDto)).resolves.toEqual(createResponse<StoreDto>(sampleStoreDto));
       expect(mockCreateStore).toBeCalledWith(req.payload, sampleCreateStoreDto);
+    });
+  });
+
+  describe('updateStore', () => {
+    it('should return a store', async () => {
+      const sampleStoreDto = createSampleStoreDto();
+      const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+      const mockUpdateStore = jest.spyOn(service, 'updateStore').mockResolvedValue(sampleStoreDto);
+      const req: Express.Request = { payload: sampleUserPayloadBusiness } as Express.Request;
+
+      await expect(controller.updateStore(req, sampleUpdateStoreDto)).resolves.toEqual(createResponse<StoreDto>(sampleStoreDto));
+      expect(mockUpdateStore).toBeCalledWith(req.payload, sampleUpdateStoreDto);
     });
   });
 });
