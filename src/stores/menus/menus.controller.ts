@@ -8,7 +8,8 @@ import { BearerAuthGuard } from 'src/auth/guards';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { MenusService } from './menus.service';
-import { MenuCreateDto, MenuDto } from '../dto';
+import { MenuCreateDto, MenuDto, MenuUpdateDto } from '../dto';
+import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
 
 @Controller('menus')
 export class MenusController {
@@ -30,4 +31,36 @@ export class MenusController {
 
     return createResponse<MenuDto>(menu);
   }
+
+  @TypedRoute.Patch('/')
+  @UseGuards(BearerAuthGuard)
+  async updateMenu(
+    @Request() req: Express.Request,
+    @TypedBody() form: MenuUpdateDto,
+  ): Promise<ResponseForm<MenuDto>> {
+    if (!is<MenuUpdateDto>(form)) {
+      throw new BadRequestException();
+    }
+
+    const menu = await this.menusService.updateMenu(req.payload, form);
+
+    return createResponse<MenuDto>(menu);
+  }
+
+  @TypedRoute.Post('/status')
+  @UseGuards(BearerAuthGuard)
+  async changeMenuStatus(
+    @Request() req: Express.Request,
+    @TypedBody() form: MenuChangeStatusDto,
+  ): Promise<ResponseForm<MenuDto>> {
+    if (!is<MenuChangeStatusDto>(form)) {
+      throw new BadRequestException();
+    }
+
+    const menu = await this.menusService.changeMenuStatus(req.payload, form);
+
+    return createResponse<MenuDto>(menu);
+  }
+
+  // TODO : getMenus -> when UserPayload is added at middleware
 }
