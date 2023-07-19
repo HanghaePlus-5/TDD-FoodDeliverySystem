@@ -4,7 +4,7 @@ import { TypedBody, TypedRoute } from '@nestia/core';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { StoresService } from './stores.service';
-import { StoreCreateDto, StoreDto, StoreUpdateDto } from '../dto';
+import { StoreChangeStatusDto, StoreCreateDto, StoreDto, StoreUpdateDto } from '../dto';
 import { is } from 'typia';
 
 @Controller('stores')
@@ -39,6 +39,21 @@ export class StoresController {
     }
 
     const store = await this.storesService.updateStore(req.payload, form);
+
+    return createResponse<StoreDto>(store);
+  }
+
+  @TypedRoute.Post('/status')
+  @UseGuards()
+  async changeStoreStatus(
+    @Request() req: Express.Request,
+    @TypedBody() form: StoreChangeStatusDto,
+  ): Promise<ResponseForm<StoreDto>> {
+    if (!is<StoreChangeStatusDto>(form)) {
+      throw new BadRequestException();
+    }
+
+    const store = await this.storesService.changeStoreStatus(req.payload, form);
 
     return createResponse<StoreDto>(store);
   }

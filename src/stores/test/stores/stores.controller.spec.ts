@@ -20,8 +20,9 @@ describe('StoresController', () => {
           useValue: {
             createStore: jest.fn(),
             updateStore: jest.fn(),
+            changeStoreStatus: jest.fn(),
           },
-        },
+        }
       ],
     }).compile();
 
@@ -56,6 +57,19 @@ describe('StoresController', () => {
 
       await expect(controller.updateStore(req, sampleUpdateStoreDto)).resolves.toEqual(createResponse<StoreDto>(sampleStoreDto));
       expect(mockUpdateStore).toBeCalledWith(req.payload, sampleUpdateStoreDto);
+    });
+  });
+
+  describe('changeStoreStatus', () => {
+    it('should return a store', async () => {
+      const sampleStoreDto = createSampleStoreDto();
+      const sampleStoreChangeStatusDto = { storeId: sampleStoreDto.storeId, status: sampleStoreDto.status };
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+      const mockChangeStoreStatus = jest.spyOn(service, 'changeStoreStatus').mockResolvedValue(sampleStoreDto);
+      const req: Express.Request = { payload: sampleUserPayloadBusiness } as Express.Request;
+
+      await expect(controller.changeStoreStatus(req, sampleStoreChangeStatusDto)).resolves.toEqual(createResponse<StoreDto>(sampleStoreDto));
+      expect(mockChangeStoreStatus).toBeCalledWith(req.payload, sampleStoreChangeStatusDto);
     });
   });
 });
