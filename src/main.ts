@@ -24,7 +24,6 @@ async function bootstrap() {
   app.use(JwtMiddleware);
   app.use(logger);
   app.use(healthCheckMiddleware);
-
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
