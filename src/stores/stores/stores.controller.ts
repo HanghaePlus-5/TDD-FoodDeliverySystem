@@ -1,10 +1,11 @@
-import { Controller, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Request, UseGuards } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { StoresService } from './stores.service';
 import { StoreCreateDto, StoreDto } from '../dto';
+import { is } from 'typia';
 
 @Controller('stores')
 export class StoresController {
@@ -18,6 +19,10 @@ export class StoresController {
     @Request() req: Express.Request,
     @TypedBody() form: StoreCreateDto,
   ): Promise<ResponseForm<StoreDto>> {
+    if (!is<StoreCreateDto>(form)) {
+      throw new BadRequestException();
+    }
+
     const store = await this.storesService.createStore(req.payload, form);
 
     return createResponse<StoreDto>(store);
