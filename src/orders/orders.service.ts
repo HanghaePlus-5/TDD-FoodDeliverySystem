@@ -54,7 +54,7 @@ export class OrdersService {
 
         // 주문번호, 주문상태
         const result = processedOrder;
-        return true;
+        return processedOrder;
     }
     async isValidMenu(menuId: number) {
         const menu = await this.prisma.menu.findUnique({
