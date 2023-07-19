@@ -9,21 +9,24 @@ import { AppModule } from './app.module';
 import HttpExceptionFilter from './common/filters/http-exception.filter';
 import { healthCheckMiddleware } from './common/middlewares';
 import logger from './common/middlewares/logger.middleware';
+import { JwtMiddleware } from './auth/middlewares';
+import { JwtAuthService } from './auth/services';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(session({
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: true,
   }));
+  app.use(cookieParser());
+  app.use(JwtMiddleware);
   app.use(logger);
   app.use(healthCheckMiddleware);
-  app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
-  app.use(cookieParser());
-
+  
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // dto에서 정의되지 않은 값은 제거
