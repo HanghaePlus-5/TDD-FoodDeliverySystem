@@ -1,16 +1,21 @@
 import {
  BadRequestException, Controller, Request, UseGuards,
 } from '@nestjs/common';
-import { TypedBody, TypedRoute } from '@nestia/core';
+import {
+ TypedBody, TypedQuery, TypedRoute,
+} from '@nestia/core';
 import { is } from 'typia';
 
+import { IgnoreAuth } from 'src/auth/decorators';
 import { BearerAuthGuard } from 'src/auth/guards';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { StoresService } from './stores.service';
 import {
+  SearchDto,
  StoreChangeStatusDto, StoreCreateDto, StoreDto, StoreUpdateDto,
 } from '../dto';
+import { StoreMenuDto } from '../dto/store-menu.dto';
 
 @Controller('stores')
 export class StoresController {
@@ -71,5 +76,17 @@ export class StoresController {
     const stores = await this.storesService.getStoresByBusinessUser(req.payload);
 
     return createResponse<StoreDto[]>(stores);
+  }
+
+  // TODO : getStoreByStoreId -> when UserPayload is added at middleware
+
+  @TypedRoute.Get('/search')
+  @IgnoreAuth()
+  async searchStores(
+    @TypedQuery() searchDto: SearchDto,
+  ): Promise<ResponseForm<StoreMenuDto[]>> {
+    const stores = await this.storesService.getStoresBySearch(searchDto);
+
+    return createResponse<StoreMenuDto[]>(stores);
   }
 }
