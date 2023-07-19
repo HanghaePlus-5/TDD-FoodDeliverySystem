@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { createResponse } from 'src/utils/createResponse';
+import { StoreDto } from 'src/stores/dto';
 import { StoresController } from 'src/stores/stores/stores.controller';
 import { StoresService } from 'src/stores/stores/stores.service';
 
-import { createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto, createSampleUserPayloadBusiness } from '../testUtils';
-import { createResponse } from 'src/utils/createResponse';
-import { StoreDto } from 'src/stores/dto';
+import {
+ createSampleCreateStoreDto, createSampleStoreDto, createSampleUpdateStoreDto, createSampleUserPayloadBusiness,
+} from '../testUtils';
 
 describe('StoresController', () => {
   let controller: StoresController;
@@ -22,7 +24,7 @@ describe('StoresController', () => {
             updateStore: jest.fn(),
             changeStoreStatus: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 

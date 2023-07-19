@@ -1,11 +1,16 @@
-import { BadRequestException, Controller, Request, UseGuards } from '@nestjs/common';
+import {
+ BadRequestException, Controller, Request, UseGuards,
+} from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
+import { is } from 'typia';
 
+import { BearerAuthGuard } from 'src/auth/guards';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { StoresService } from './stores.service';
-import { StoreChangeStatusDto, StoreCreateDto, StoreDto, StoreUpdateDto } from '../dto';
-import { is } from 'typia';
+import {
+ StoreChangeStatusDto, StoreCreateDto, StoreDto, StoreUpdateDto,
+} from '../dto';
 
 @Controller('stores')
 export class StoresController {
@@ -14,7 +19,7 @@ export class StoresController {
   ) {}
 
   @TypedRoute.Post('/')
-  @UseGuards()
+  @UseGuards(BearerAuthGuard)
   async createStore(
     @Request() req: Express.Request,
     @TypedBody() form: StoreCreateDto,
@@ -29,7 +34,7 @@ export class StoresController {
   }
 
   @TypedRoute.Patch('/')
-  @UseGuards()
+  @UseGuards(BearerAuthGuard)
   async updateStore(
     @Request() req: Express.Request,
     @TypedBody() form: StoreUpdateDto,
@@ -44,7 +49,7 @@ export class StoresController {
   }
 
   @TypedRoute.Post('/status')
-  @UseGuards()
+  @UseGuards(BearerAuthGuard)
   async changeStoreStatus(
     @Request() req: Express.Request,
     @TypedBody() form: StoreChangeStatusDto,
@@ -56,5 +61,15 @@ export class StoresController {
     const store = await this.storesService.changeStoreStatus(req.payload, form);
 
     return createResponse<StoreDto>(store);
+  }
+
+  @TypedRoute.Get('/myBunsiness')
+  @UseGuards(BearerAuthGuard)
+  async getMyBusiness(
+    @Request() req: Express.Request,
+  ): Promise<ResponseForm<StoreDto[]>> {
+    const stores = await this.storesService.getStoresByBusinessUser(req.payload);
+
+    return createResponse<StoreDto[]>(stores);
   }
 }
