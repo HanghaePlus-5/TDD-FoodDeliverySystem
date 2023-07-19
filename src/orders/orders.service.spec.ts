@@ -17,6 +17,7 @@ describe('OrdersService', () => {
   let testPrisma: PrismaService;
   let user1: User;
   let user2: User;
+  let user3: User;
   let store: Store;
   let menu1: Menu;
   let menu2: Menu;
@@ -68,6 +69,17 @@ describe('OrdersService', () => {
 
     });
 
+    user3 = await testPrisma.user.create({
+      data:
+        {
+          email: 'businessUsertoCreateStore@gmail.com',
+          name: 'Business Kim',
+          password: 'qwer123123',
+          type: UserType.BUSINESS,
+        },
+
+    });
+
     store = await testPrisma.store.create({
       data:
       {
@@ -81,78 +93,115 @@ describe('OrdersService', () => {
         openingTime: 1,
         closingTime: 1,
         cookingTime: 1,
+        userId: user3.userId
       },
     });
 
     menu1 = await testPrisma.menu.create({
       data:
         {
+          name: "asd",
+          price: 12,
+          inventory: 11,
           storeId: store.storeId,
         },
     });
     menu2 = await testPrisma.menu.create({
       data:
         {
+          name: "assssd",
+          price: 112,
+          inventory: 121,
           storeId: store.storeId,
         },
     });
     menu3 = await testPrisma.menu.create({
       data:
-        {
+        { 
+          name: "assaasd",
+          price: 1132,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu4 = await testPrisma.menu.create({
       data:
         {
+          name: "a2ssaasd",
+          price: 1032,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu5 = await testPrisma.menu.create({
       data:
         {
+          name: "a2czssaasd",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu6 = await testPrisma.menu.create({
       data:
-        {
+        { 
+          name: "zzzssaasd",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu7 = await testPrisma.menu.create({
       data:
         {
+          name: "1saasd",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu8 = await testPrisma.menu.create({
       data:
         {
+          name: "5d",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu9 = await testPrisma.menu.create({
       data:
         {
+          name: "zzz2d",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu10 = await testPrisma.menu.create({
       data:
         {
+          name: "z1232d",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu11 = await testPrisma.menu.create({
       data:
         {
+          name: "zss32d",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
     menu12 = await testPrisma.menu.create({
       data:
         {
+          name: "zzz32d",
+          price: 152,
+          inventory: 1321,
           storeId: store.storeId,
         },
     });
@@ -232,24 +281,17 @@ describe('OrdersService', () => {
 
   afterAll(async () => {
     const deleteOrderItem = testPrisma.orderItem.deleteMany();
-
-    await testPrisma.$transaction([
-      deleteOrderItem,
-    ]);
-    const deleteUser = testPrisma.user.deleteMany();
-    const deleteMenu = testPrisma.menu.deleteMany();
-    await testPrisma.$transaction([
-      deleteMenu,
-    ]);
-    const deleteStore = testPrisma.store.deleteMany();
-
     const deleteOrder = testPrisma.order.deleteMany();
-
+    const deleteMenu = testPrisma.menu.deleteMany();
+    const deleteStore = testPrisma.store.deleteMany();
+    const deleteUser = testPrisma.user.deleteMany();
+    
     await testPrisma.$transaction([
       deleteOrderItem,
       deleteOrder,
-      deleteUser,
+      deleteMenu,
       deleteStore,
+      deleteUser,
 
     ]);
   });
