@@ -9,7 +9,7 @@ import { EnvService } from 'src/config/env';
 import Logger from 'src/lib/winston/logger';
 
 @Catch(HttpException)
-export default class HttpExceptionFilter implements ExceptionFilter {
+export class HttpExceptionFilter implements ExceptionFilter {
   config = new ConfigService();
   env = new EnvService(this.config);
   loggerInstance = new Logger(this.env);

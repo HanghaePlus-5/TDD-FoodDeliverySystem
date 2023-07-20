@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
  Menu, PrismaClient, Store, StoreStatus, StoreType,
 } from '@prisma/client';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { PrismaService } from 'src/prisma';
 // import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
@@ -39,6 +40,7 @@ describe('OrdersService', () => {
       providers: [
         OrdersService,
         PrismaService,
+        AsyncLocalStorage,
         ],
     })
       .compile();

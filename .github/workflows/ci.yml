@@ -99,7 +99,7 @@ jobs:
           npm install -g pnpm
           pnpm install --frozen-lockfile
           npx prisma generate
-          npx prisma migrate dev -n test
+          npx prisma migrate deploy
 
       # 테스트 실행 및 결과를 reports/jest-junit.xml에 저장
       - name: Run test
