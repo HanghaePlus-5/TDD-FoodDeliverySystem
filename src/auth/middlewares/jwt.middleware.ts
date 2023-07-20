@@ -1,4 +1,3 @@
-import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
 
@@ -11,12 +10,12 @@ const jwt = new JwtService({
 export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
   if (authorization === undefined) {
-    throw new UnauthorizedException();
+    return next();
   }
 
   const [bearer, token] = authorization.split(' ');
   if (bearer !== 'Bearer' || token === undefined) {
-    throw new UnauthorizedException();
+    return next();
   }
 
   const userPayload = jwt.decode(token);
