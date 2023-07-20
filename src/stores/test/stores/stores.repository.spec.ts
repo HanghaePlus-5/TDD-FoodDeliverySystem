@@ -23,7 +23,7 @@ describe('StoresRepository', () => {
   });
 
   afterEach(async () => {
-    const deleteStore = Prisma.store.deleteMany();
+    const deleteStore = Prisma.store.deleteMany({});
     await Prisma.$transaction([deleteStore]);
     await Prisma.$disconnect();
   });
