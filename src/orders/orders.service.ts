@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
  Prisma, Order, OrderItem, UserType, OrderStatus,
 } from '@prisma/client';
@@ -14,23 +14,21 @@ export class OrdersService {
         private readonly prisma: PrismaService,
     ) {}
 
+    // TODO: saveOrder, saveOrderItemList, processPayment 트랜잭션 구성
     async createOrder(orderCreateDto: OrderCreateDto) {
-        this.isUserTypeCustomer(orderCreateDto.user.userId);
-        this.isOrderItemCountInRange(orderCreateDto.orderItem);
-        const orderItemList : OrderItemCreatePrismaDto[] = [];
-        const orderTotalPrice = 0;
+        const hasOngoingOrder = await this.hasOngoingOrder(orderCreateDto.user.userId);
+        if (hasOngoingOrder) {
+            throw new BadRequestException('Ongoing order exists');
+        }
 
-        if (orderCreateDto.orderItem) {
-            orderCreateDto.orderItem.forEach((orderItem) => {
-              this.isValidMenu(orderItem.menuId);
-              this.hasEnoughStock(orderItem);
-            });
-          } else {
-            throw new Error('Order items not provided');
-          }
+        const isOrderValid = await this.checkOrderItems(orderCreateDto.orderItem);
+        if (!isOrderValid) {
+            throw new BadRequestException('Invalid order items');
+        }
 
-        this.isValidStore(orderCreateDto.storeId);
-        this.hasOngoingOrder(orderCreateDto.user.userId);
+        // 요건 findUniqueOrThrow로 DB에서 error throw 하시길래 그대로 살림
+        await this.isValidStore(orderCreateDto.storeId);
+
         const order = {
             userId: orderCreateDto.user.userId,
             storeId: orderCreateDto.storeId,
@@ -38,24 +36,42 @@ export class OrdersService {
         const savedOrder = await this.saveOrder(order);
         const { orderId } = savedOrder;
 
-        orderCreateDto.orderItem.forEach((orderItem) => {
-            const orderItemData: OrderItemCreatePrismaDto = {
-              orderId,
-              menuId: orderItem.menuId,
-              quantity: orderItem.quantity,
-            };
-            orderItemList.push(orderItemData);
-          });
+        // const orderTotalPrice = 0;
+        const orderItemList = orderCreateDto.orderItem.map((orderItem) => ({
+            orderId,
+            menuId: orderItem.menuId,
+            quantity: orderItem.quantity,
+        }));
 
         const savedOrderItem = await this.saveOrderItemList(orderItemList);
-        const processedOrder = { ...savedOrder, orderId } as Order;
+        // 가능하면 as 키워드는 지양하는 것이 좋음
+        // as: 컴파일러가 추론할 수 없는 타입을 개발자가 확정할 때 사용
+        // const processedOrder = { ...savedOrder, orderId } as Order;
+        const processedOrder: Order = { ...savedOrder, orderId };
+
         this.processPayment(processedOrder);
         this.alarmStoreInitially(processedOrder);
 
         // 주문번호, 주문상태
-        const result = processedOrder;
+        return processedOrder;
+    }
+
+    async checkOrderItems(orderItems: OrderItemCreateDto[]) {
+        // 주문 아이템이 1개 이상 10개 이하인지 확인
+        if (!(orderItems.length > 0 && orderItems.length <= 10)) {
+            return false;
+        }
+
+        // 주문 아이템이 모두 유효한지 확인
+        const promises = orderItems.map((orderItem) => this.isValidMenu(orderItem.menuId));
+        const results = await Promise.all(promises);
+        if (results.some((result) => result === false)) {
+            return false;
+        }
+
         return true;
     }
+
     async isValidMenu(menuId: number) {
         const menu = await this.prisma.menu.findUnique({
             where: {
@@ -65,33 +81,30 @@ export class OrdersService {
         return menu !== null;
     }
     async isValidStore(storeId: number) {
-            const store = await this.prisma.store.findUniqueOrThrow({
-                where: {
-                    storeId,
-                    },
-            });
-        return true;
+        await this.prisma.store.findUniqueOrThrow({
+            where: {
+                storeId,
+                },
+        });
     }
 
     alarmStoreInitially(processedOrder: Order) {
         return true;
     }
     async hasOngoingOrder(userId: number) {
-        const validStatuses = ['PAYMENT_PROCESSING',
-         'ORDER_RECEIVED',
-         'ORDER_CONFIRMED',
-         'DELIVERY_STARTED',
-         'CANCEL_REQUESTED'];
+        const validStatuses = [
+            OrderStatus.PAYMENT_PROCESSING,
+            OrderStatus.ORDER_RECEIVED,
+            OrderStatus.ORDER_CONFIRMED,
+            OrderStatus.DELIVERY_STARTED,
+            OrderStatus.CANCEL_REQUESTED,
+        ];
 
         const result = await this.prisma.order.findMany({
             where: {
                 userId,
                 status: {
-                    in: ['PAYMENT_PROCESSING',
-                    'ORDER_RECEIVED',
-                    'ORDER_CONFIRMED',
-                    'DELIVERY_STARTED',
-                    'CANCEL_REQUESTED'],
+                    in: validStatuses,
                 },
             },
         });
@@ -116,26 +129,6 @@ export class OrdersService {
             throw new Error();
         }
         return 'callPaymentMethod has been called';
-    }
-
-    isUserTypeCustomer(userId: number): boolean {
-        if (this.verifyType(userId) === 'BUSINESS') {
-            return false;
-        }
-        return true;
-    }
-
-    verifyType(userId: number): string {
-        try {
-            // User type will be verified using payload
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error;
-            } else {
-                throw new Error();
-            }
-        }
-        return 'CUSTOMER';
     }
 
     callPaymentMethod(order: Order) {

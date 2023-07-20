@@ -10,8 +10,8 @@ describe('bcrypt', () => {
     const HASHED = 'HASHED';
 
     const spyHash = jest.spyOn(bcrypt, 'hash')
-      .mockImplementationOnce(async (plain: string) => Promise.resolve(HASHED))
-      .mockImplementationOnce(async (plain: string) => Promise.reject(new Error()));
+      .mockImplementationOnce(() => Promise.resolve(HASHED))
+      .mockImplementationOnce(() => Promise.reject(new Error()));
 
     it('should return a hashed string.', async () => {
       const result = await bcryptHash(PLAIN);
@@ -31,9 +31,9 @@ describe('bcrypt', () => {
     const HASHED = 'HASHED';
 
     const spyCompare = jest.spyOn(bcrypt, 'compare')
-      .mockImplementationOnce(async (plain: string, hashed: string) => Promise.resolve(true))
-      .mockImplementationOnce(async (plain: string, hashed: string) => Promise.resolve(false))
-      .mockImplementationOnce(async (plain: string, hashed: string) => Promise.reject(new Error()));
+      .mockImplementationOnce(() => Promise.resolve(true))
+      .mockImplementationOnce(() => Promise.resolve(false))
+      .mockImplementationOnce(() => Promise.reject(new Error()))
 
     it('should return true if plain and hashed are matched.', async () => {
       const result = await bcryptCompare(PLAIN, HASHED);

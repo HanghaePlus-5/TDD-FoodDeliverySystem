@@ -160,6 +160,37 @@
         },
         "x-nestia-namespace": "orders.findAll",
         "x-nestia-jsDocTags": []
+      },
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreateDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "orders.create",
+        "x-nestia-jsDocTags": []
       }
     },
     "/users/signup": {
@@ -355,8 +386,8 @@
       "UserType": {
         "type": "string",
         "enum": [
-          "admin",
-          "user"
+          "user",
+          "admin"
         ]
       },
       "Response": {
@@ -427,6 +458,158 @@
         "enum": [
           "CUSTOMER",
           "BUSINESS"
+        ]
+      },
+      "OrderCreateDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/global.User"
+          },
+          "storeId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "orderItem": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemCreateDto"
+            }
+          }
+        },
+        "nullable": false,
+        "required": [
+          "user",
+          "storeId",
+          "orderItem"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "global.User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "name": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/global.UserType"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "userId",
+          "email",
+          "name",
+          "password",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "OrderItemCreateDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "menuId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "quantity",
+          "menuId"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "storeId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "$ref": "#/components/objects/Date"
+          },
+          "updatedAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "$ref": "#/components/objects/Date.Nullable"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "orderId",
+          "userId",
+          "storeId",
+          "createdAt",
+          "updatedAt",
+          "status"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Date": {
+        "type": "object",
+        "properties": {},
+        "nullable": false
+      },
+      "Date.Nullable": {
+        "type": "object",
+        "properties": {},
+        "nullable": true
+      },
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "PAYMENT_PROCESSING",
+          "PAYMENT_FAIL",
+          "ORDER_RECEIVED",
+          "ORDER_CONFIRMED",
+          "DELIVERY_STARTED",
+          "DELIVERED",
+          "CANCEL_REQUESTED",
+          "CANCELED"
         ]
       },
       "UserCreateDto": {
@@ -532,43 +715,6 @@
         "required": [
           "result",
           "data"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "global.User": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
-          "email": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "name": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "password": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/global.UserType"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "userId",
-          "email",
-          "name",
-          "password",
-          "type"
         ],
         "x-typia-jsDocTags": []
       },
