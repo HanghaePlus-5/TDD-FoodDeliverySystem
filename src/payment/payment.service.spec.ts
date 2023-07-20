@@ -23,7 +23,7 @@ describe('PaymentService', () => {
       providers: [
         PaymentService,
         PrismaService,
-        PaymentGatewayService
+        PaymentGatewayService,
       ],
     }).compile();
 

@@ -33,7 +33,7 @@ describe('bcrypt', () => {
     const spyCompare = jest.spyOn(bcrypt, 'compare')
       .mockImplementationOnce(() => Promise.resolve(true))
       .mockImplementationOnce(() => Promise.resolve(false))
-      .mockImplementationOnce(() => Promise.reject(new Error()))
+      .mockImplementationOnce(() => Promise.reject(new Error()));
 
     it('should return true if plain and hashed are matched.', async () => {
       const result = await bcryptCompare(PLAIN, HASHED);
