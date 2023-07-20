@@ -30,4 +30,6 @@ import { UsersModule } from './users/users.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  // 여기에 prisma middleware 추가
+}
