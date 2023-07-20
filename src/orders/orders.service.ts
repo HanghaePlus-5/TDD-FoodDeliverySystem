@@ -19,7 +19,7 @@ export class OrdersService {
         const hasOngoingOrder = await this.hasOngoingOrder(orderCreateDto.user.userId);
         if (hasOngoingOrder) {
             throw new BadRequestException('Ongoing order exists');
-        };
+        }
 
         const isOrderValid = await this.checkOrderItems(orderCreateDto.orderItem);
         if (!isOrderValid) {
