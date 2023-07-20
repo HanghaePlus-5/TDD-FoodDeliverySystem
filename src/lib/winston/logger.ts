@@ -103,6 +103,10 @@ export default class Logger {
       modifiedMsgs.Request = this.filterSensitiveBody(modifiedMsgs.Request);
     }
 
+    if ('Message' in modifiedMsgs) {
+      modifiedMsgs.Message = this.filterSensitiveBody(modifiedMsgs.Message);
+    }
+
     return JSON.stringify(modifiedMsgs);
   }
 
