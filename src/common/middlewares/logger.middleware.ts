@@ -18,12 +18,12 @@ export default function logger(
   const { method, originalUrl, body, payload } = req;
 
   const start = Date.now();
-  const identify = payload.userId || uuidv4();
+  const Identify = payload?.userId || uuidv4();
 
   loggerInstance.info({
-    identify,
+    Identify,
     Request: `${method} ${originalUrl}`,
-    Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+    Headers: res.getHeaders(),
     Body: JSON.stringify(body),
   });
 
@@ -33,9 +33,9 @@ export default function logger(
     const responseData = oldSend.call(res, data);
 
     loggerInstance.info({
-      identify,
+      Identify,
       Response: `${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms`,
-      Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+      Headers: res.getHeaders(),
       Body: JSON.stringify(data),
     });
 

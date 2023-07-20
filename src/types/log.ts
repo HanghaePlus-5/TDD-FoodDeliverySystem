@@ -1,15 +1,15 @@
 /* eslint-disable */
 interface RequestApiLog {
-  identify: string;
+  Identify: string;
   Request: string;
-  Headers: string[];
+  Headers: OutgoingHttpHeaders;
   Body: string;
 }
 
 interface ResponseApiLog {
-  identify: string;
+  Identify: string;
   Response: string;
-  Headers: string[];
+  Headers: OutgoingHttpHeaders;
   Body: string;
 }
 
@@ -25,4 +25,8 @@ interface CustomApiLog {
   // TODO identify: string;
   Request: string;
   Message: string;
+}
+
+interface OutgoingHttpHeaders {
+  [key: string]: string | string[] | number | undefined;
 }

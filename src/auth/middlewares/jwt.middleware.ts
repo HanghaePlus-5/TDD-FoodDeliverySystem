@@ -10,18 +10,16 @@ const jwt = new JwtService({
 
 export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
-  if (authorization === undefined) {
-    throw new UnauthorizedException();
+  if (authorization !== undefined) {
+    const [bearer, token] = authorization.split(' ');
+    if (bearer !== 'Bearer' || token === undefined) {
+      throw new UnauthorizedException();
+    }
+  
+    const userPayload = jwt.decode(token);
+    // eslint-disable-next-line no-param-reassign
+    req.payload = userPayload as UserPayload;
   }
-
-  const [bearer, token] = authorization.split(' ');
-  if (bearer !== 'Bearer' || token === undefined) {
-    throw new UnauthorizedException();
-  }
-
-  const userPayload = jwt.decode(token);
-  // eslint-disable-next-line no-param-reassign
-  req.payload = userPayload as UserPayload;
-
+  
   next();
 };
