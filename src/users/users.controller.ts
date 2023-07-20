@@ -6,10 +6,12 @@ import {
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { Response } from 'express';
+import { AsyncLocalStorage } from 'async_hooks';
 import { is } from 'typia';
 
 import { IgnoreAuth } from 'src/auth/decorators';
 import { JwtAuthService } from 'src/auth/services';
+import { AsyncStore } from 'src/lib/als/als.middleware';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { UserCreateDto } from './dto';
@@ -21,6 +23,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwt: JwtAuthService,
+    private readonly als: AsyncLocalStorage<AsyncStore>,
   ) {}
 
   @IgnoreAuth()
@@ -57,5 +60,12 @@ export class UsersController {
     res.cookie('accessToken', accessToken, { maxAge: 1000 * 60 * 60 });
 
     return createResponse<User>(user);
+  }
+
+  @TypedRoute.Get('/me')
+  async findMe() {
+    const store = this.als.getStore();
+    console.log('store: ', store);
+    return this.usersService.findUserById({ userId: store?.user.userId });
   }
 }

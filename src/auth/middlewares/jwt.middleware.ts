@@ -22,5 +22,5 @@ export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) =
   // eslint-disable-next-line no-param-reassign
   req.payload = userPayload as UserPayload;
 
-  next();
+  return next();
 };

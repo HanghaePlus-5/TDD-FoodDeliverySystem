@@ -9,11 +9,11 @@ const config = new ConfigService();
 const env = new EnvService(config);
 const loggerInstance = new Logger(env);
 
-export default function logger(
+export const logger = (
   req: Request,
   res: Response,
   next: NextFunction,
-) {
+) => {
   const { method, originalUrl, body } = req;
   const session = req.sessionID;
 
@@ -42,4 +42,4 @@ export default function logger(
   };
 
   next();
-}
+};

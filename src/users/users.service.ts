@@ -10,6 +10,12 @@ export class UsersService {
     private readonly prisma: PrismaService,
   ) {}
 
+  async findUserById(
+    where: Prisma.UserWhereUniqueInput,
+  ): Promise<User|null> {
+    return this.prisma.user.findUnique({ where });
+  }
+
   async findUserByEmail(
     where: Prisma.UserWhereUniqueInput,
   ): Promise<User|null> {
