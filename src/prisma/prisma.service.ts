@@ -27,6 +27,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       console.log('prisma middleware', store, params);
       return next(params);
     });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.$on('query', async (e) => {
       const store = this.als.getStore();
       console.log('prisma query', store, e);

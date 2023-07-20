@@ -1,6 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { PrismaService } from 'src/prisma';
 import { StoresRepository } from 'src/stores/stores/stores.repository';
@@ -14,7 +15,11 @@ describe('StoresRepository', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
-      providers: [StoresRepository, PrismaService],
+      providers: [
+        StoresRepository,
+        PrismaService,
+        AsyncLocalStorage,
+      ],
     }).compile();
     repository = module.get<StoresRepository>(StoresRepository);
     Prisma = module.get(PrismaService);

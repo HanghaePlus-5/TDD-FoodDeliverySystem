@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { PrismaService } from 'src/prisma';
 
@@ -14,6 +15,7 @@ describe('OrdersController', () => {
       providers: [
         OrdersService,
         PrismaService,
+        AsyncLocalStorage,
       ],
     }).compile();
 

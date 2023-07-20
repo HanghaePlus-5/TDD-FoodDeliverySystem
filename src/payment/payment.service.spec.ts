@@ -1,6 +1,7 @@
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { StoreStatus, StoreType } from '@prisma/client';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { is } from 'typia';
 
 import { PrismaService } from 'src/prisma';
@@ -24,6 +25,7 @@ describe('PaymentService', () => {
         PaymentService,
         PrismaService,
         PaymentGatewayService,
+        AsyncLocalStorage,
       ],
     }).compile();
 
