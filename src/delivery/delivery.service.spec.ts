@@ -37,6 +37,7 @@ describe.skip('DeliveryService', () => {
     const store = await testPrisma.store.create({
       data: {
         name: `Sample Store${random}`,
+        userId: user.userId,
         type: StoreType.KOREAN,
         status: StoreStatus.OPEN,
         businessNumber: `1234567890${random}`,

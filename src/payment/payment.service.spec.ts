@@ -20,14 +20,17 @@ describe('PaymentService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PaymentService, PrismaService, PaymentGatewayService],
+      providers: [
+        PaymentService,
+        PrismaService,
+        PaymentGatewayService
+      ],
     }).compile();
 
     service = module.get<PaymentService>(PaymentService);
     testPrisma = module.get(PrismaService);
 
     const random = Math.floor(Math.random() * 1000) + 1;
-
     const user = await testPrisma.user.create({
       data: {
         email: `michael${random}@gmail.com`,
@@ -40,6 +43,7 @@ describe('PaymentService', () => {
     const store = await testPrisma.store.create({
       data: {
         name: `Sample Store${random}`,
+        userId: user.userId,
         type: StoreType.KOREAN,
         status: StoreStatus.OPEN,
         businessNumber: `1234567890${random}`,
@@ -67,16 +71,13 @@ describe('PaymentService', () => {
 
     cancelOrderId = order.orderId;
   });
+
   afterAll(async () => {
-    const deleteUser = testPrisma.user.deleteMany();
-    const deleteStore = testPrisma.store.deleteMany();
-    const deleteOrder = testPrisma.order.deleteMany();
-    await testPrisma.$transaction([
-      deleteOrder,
-      deleteUser,
-      deleteStore,
-    ]);
+    await testPrisma.order.deleteMany();
+    await testPrisma.store.deleteMany();
+    await testPrisma.user.deleteMany();
   });
+
   afterEach(async () => {
     const deletePayment = testPrisma.payment.deleteMany();
     await testPrisma.$transaction([deletePayment]);
