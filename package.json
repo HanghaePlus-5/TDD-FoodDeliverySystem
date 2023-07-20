@@ -38,7 +38,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
-    "express-session": "^1.17.3",
     "jest-mock-extended": "^3.0.4",
     "module-alias": "^2.2.3",
     "nest-winston": "^1.9.3",
@@ -47,6 +46,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typia": "^4.1.0",
+    "uuid": "^8.3.2",
     "winston": "^3.10.0"
   },
   "devDependencies": {
