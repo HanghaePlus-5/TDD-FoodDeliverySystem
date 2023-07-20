@@ -56,6 +56,12 @@ export default class Logger {
     this.sendLogToCloudWatch('INFO', maskedMsg);
   }
 
+  public warn(msg: CustomApiLog) {
+    const maskedMsg = this.makeLogMessage(msg);
+    this.logger.warn(maskedMsg);
+    this.sendLogToCloudWatch('WARN', maskedMsg);
+  }
+
   public error(errmsg: ErrorApiLog) {
     const stringifiedMsg = JSON.stringify(errmsg);
     this.logger.error(stringifiedMsg);
