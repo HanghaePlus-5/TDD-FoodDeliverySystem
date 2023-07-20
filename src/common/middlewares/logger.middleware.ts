@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 import { EnvService } from 'src/config/env';
 import Logger from 'src/lib/winston/logger';
@@ -14,13 +15,13 @@ export default function logger(
   res: Response,
   next: NextFunction,
 ) {
-  const { method, originalUrl, body } = req;
-  const session = req.sessionID;
+  const { method, originalUrl, body, payload } = req;
 
   const start = Date.now();
+  const identify = payload.userId || uuidv4();
 
   loggerInstance.info({
-    Session: session,
+    identify,
     Request: `${method} ${originalUrl}`,
     Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
     Body: JSON.stringify(body),
@@ -32,7 +33,7 @@ export default function logger(
     const responseData = oldSend.call(res, data);
 
     loggerInstance.info({
-      Session: session,
+      identify,
       Response: `${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms`,
       Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
       Body: JSON.stringify(data),

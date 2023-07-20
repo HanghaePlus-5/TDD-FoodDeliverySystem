@@ -19,10 +19,10 @@ export default class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    const session = req.sessionID;
 
     this.loggerInstance.error({
-      Session: session,
+      Request: `${req.method} ${req.originalUrl}`,
+      StatusCode: status,
       Message: exception.message,
       Stack: exception.stack || '',
     });

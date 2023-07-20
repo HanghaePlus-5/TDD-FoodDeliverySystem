@@ -3,7 +3,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
 
 import { AppModule } from './app.module';
 import { JwtMiddleware } from './auth/middlewares';
@@ -15,11 +14,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret',
-    resave: false,
-    saveUninitialized: true,
-  }));
   app.use(cookieParser());
   app.use(JwtMiddleware);
   app.use(logger);

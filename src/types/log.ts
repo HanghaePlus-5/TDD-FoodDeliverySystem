@@ -1,25 +1,28 @@
 /* eslint-disable */
 interface RequestApiLog {
-  Session: string;
+  identify: string;
   Request: string;
   Headers: string[];
   Body: string;
 }
 
 interface ResponseApiLog {
-  Session: string;
+  identify: string;
   Response: string;
   Headers: string[];
   Body: string;
 }
 
 interface ErrorApiLog {
-  Session: string;
+  // TODO identify: string;
+  Request: string;
+  StatusCode: number;
   Message: string;
   Stack: string;
 }
 
 interface CustomApiLog {
+  // TODO identify: string;
   Request: string;
   Message: string;
 }
