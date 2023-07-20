@@ -3,6 +3,7 @@ import { BadRequestException, Controller, Get, Req } from '@nestjs/common';
 import { OrderCreateDto } from './dto/order-create.dto';
 import { OrdersService } from './orders.service';
 import { UserTypes } from 'src/auth/decorators';
+import { UserType } from 'src/types';
 
 @Controller('orders')
 export class OrdersController {
@@ -15,7 +16,7 @@ export class OrdersController {
         return 'hello';
     }
 
-    @UserTypes('CUSTOMER')
+    @UserTypes(UserType.CUSTOMER)
     @TypedRoute.Post('/')
     async create(
         @Req() req: Express.Request,

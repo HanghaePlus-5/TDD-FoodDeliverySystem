@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
  Prisma, Order, OrderItem, UserType, OrderStatus,
 } from '@prisma/client';
@@ -14,20 +14,29 @@ export class OrdersService {
         private readonly prisma: PrismaService,
     ) {}
 
+    async checkOrderItems(orderItems: OrderItemCreateDto[]) {
+        // 주문 아이템이 1개 이상 10개 이하인지 확인
+        if (!(orderItems.length > 0 && orderItems.length <= 10)) {
+            return false;
+        }
+
+        // 주문 아이템이 모두 유효한지 확인
+        const promises = orderItems.map((orderItem) => this.isValidMenu(orderItem.menuId));
+        const results = await Promise.all(promises);
+        if (results.some((result) => result === false)) {
+            return false;
+        }
+
+        return true;
+    }
+
     async createOrder(orderCreateDto: OrderCreateDto) {
-        this.isUserTypeCustomer(orderCreateDto.user.userId);
-        this.isOrderItemCountInRange(orderCreateDto.orderItem);
+        const isValidOrder = await this.checkOrderItems(orderCreateDto.orderItem);
+        if (!isValidOrder) {
+            throw new BadRequestException();
+        }
         const orderItemList : OrderItemCreatePrismaDto[] = [];
         const orderTotalPrice = 0;
-
-        if (orderCreateDto.orderItem) {
-            orderCreateDto.orderItem.forEach((orderItem) => {
-              this.isValidMenu(orderItem.menuId);
-              this.hasEnoughStock(orderItem);
-            });
-          } else {
-            throw new Error('Order items not provided');
-          }
 
         this.isValidStore(orderCreateDto.storeId);
         this.hasOngoingOrder(orderCreateDto.user.userId);
@@ -116,26 +125,6 @@ export class OrdersService {
             throw new Error();
         }
         return 'callPaymentMethod has been called';
-    }
-
-    isUserTypeCustomer(userId: number): boolean {
-        if (this.verifyType(userId) === 'BUSINESS') {
-            return false;
-        }
-        return true;
-    }
-
-    verifyType(userId: number): string {
-        try {
-            // User type will be verified using payload
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error;
-            } else {
-                throw new Error();
-            }
-        }
-        return 'CUSTOMER';
     }
 
     callPaymentMethod(order: Order) {
