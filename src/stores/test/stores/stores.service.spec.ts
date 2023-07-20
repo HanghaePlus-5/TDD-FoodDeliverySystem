@@ -10,7 +10,7 @@ import { StoresRepository } from 'src/stores/stores/stores.repository';
 import { StoresService } from 'src/stores/stores/stores.service';
 
 import {
- createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto,
+ createSampleCreateStoreDto, createSampleMenuDto, createSampleStoreDto, createSampleStoreMenuDto, createSampleUpdateStoreDto, createSampleUserPayloadBusiness,
 } from '../testUtils';
 
 describe('StoresService', () => {
@@ -52,6 +52,8 @@ describe('StoresService', () => {
   describe('createStore', () => {
     it('should throw error if validation fails', async () => {
       const sampleCreateStoreDto = createSampleCreateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckValidation = jest.spyOn(
         storesService,
         'checkValidation' as any,
@@ -59,7 +61,7 @@ describe('StoresService', () => {
       mockCheckValidation.mockResolvedValue(false);
 
       await expect(
-        storesService.createStore(1, sampleCreateStoreDto),
+        storesService.createStore(sampleUserPayloadBusiness, sampleCreateStoreDto),
       ).rejects.toThrowError('Validation failed.');
 
       expect(mockCheckValidation).toHaveBeenCalled();
@@ -67,6 +69,8 @@ describe('StoresService', () => {
 
     it('should throw error if store business number check fails', async () => {
       const sampleCreateStoreDto = createSampleCreateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckBusinessNumber = jest.spyOn(
         storesService,
         'checkBusinessNumber' as any,
@@ -74,7 +78,7 @@ describe('StoresService', () => {
       mockCheckBusinessNumber.mockResolvedValue(false);
 
       await expect(
-        storesService.createStore(1, sampleCreateStoreDto),
+        storesService.createStore(sampleUserPayloadBusiness, sampleCreateStoreDto),
       ).rejects.toThrowError('Invalid business number.');
 
       expect(mockCheckBusinessNumber).toHaveBeenCalled();
@@ -83,10 +87,12 @@ describe('StoresService', () => {
     it('should create store and return storeDto', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleCreateStoreDto = createSampleCreateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockcreate = jest.spyOn(storesReposiroty, 'create');
       mockcreate.mockResolvedValue(sampleStoreDto);
 
-      const result = await storesService.createStore(1, sampleCreateStoreDto);
+      const result = await storesService.createStore(sampleUserPayloadBusiness, sampleCreateStoreDto);
       expect(result).toBe(sampleStoreDto);
 
       expect(mockcreate).toHaveBeenCalledWith(1, sampleCreateStoreDto);
@@ -151,6 +157,8 @@ describe('StoresService', () => {
   describe('updateStore', () => {
     it('should throw error if store is not owned', async () => {
       const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -158,7 +166,7 @@ describe('StoresService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        storesService.updateStore(1, sampleUpdateStoreDto),
+        storesService.updateStore(sampleUserPayloadBusiness, sampleUpdateStoreDto),
       ).rejects.toThrowError('Store not owned.');
 
       expect(mockCheckStoreOwned).toHaveBeenCalledWith({
@@ -170,6 +178,8 @@ describe('StoresService', () => {
     it('should throw error if store status is not allowed', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -183,7 +193,7 @@ describe('StoresService', () => {
       mockCheckStoreStatusGroup.mockResolvedValue(false);
 
       await expect(
-        storesService.updateStore(1, sampleUpdateStoreDto),
+        storesService.updateStore(sampleUserPayloadBusiness, sampleUpdateStoreDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', ACTIVATE_STORE_STATUES);
@@ -192,6 +202,8 @@ describe('StoresService', () => {
     it('should throw error if validation fails', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -211,7 +223,7 @@ describe('StoresService', () => {
       mockCheckValidation.mockResolvedValue(false);
 
       await expect(
-        storesService.updateStore(1, sampleUpdateStoreDto),
+        storesService.updateStore(sampleUserPayloadBusiness, sampleUpdateStoreDto),
       ).rejects.toThrowError('Validation failed.');
 
       expect(mockCheckValidation).toHaveBeenCalled();
@@ -220,6 +232,8 @@ describe('StoresService', () => {
     it('should update store and return storeDto', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -241,7 +255,7 @@ describe('StoresService', () => {
       const mockUpdate = jest.spyOn(storesReposiroty, 'update');
       mockUpdate.mockResolvedValue(sampleStoreDto);
 
-      const result = await storesService.updateStore(1, sampleUpdateStoreDto);
+      const result = await storesService.updateStore(sampleUserPayloadBusiness, sampleUpdateStoreDto);
       expect(result).toBe(sampleStoreDto);
 
       expect(mockUpdate).toHaveBeenCalled();
@@ -284,6 +298,8 @@ describe('StoresService', () => {
 
   describe('changeStoreStatus', () => {
     it('should throw error if store is not owned', async () => {
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -291,7 +307,7 @@ describe('StoresService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        storesService.changeStoreStatus(1, {
+        storesService.changeStoreStatus(sampleUserPayloadBusiness, {
           storeId: 1,
           status: 'OPEN' as StoreStatus,
         }),
@@ -306,6 +322,8 @@ describe('StoresService', () => {
     it('should throw error if store status is not allowed', async () => {
       const sampleStoreDto = createSampleStoreDto();
       const sampleUpdateStoreDto = createSampleUpdateStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -319,7 +337,7 @@ describe('StoresService', () => {
       mockCheckStoreStatusGroup.mockResolvedValue(false);
 
       await expect(
-        storesService.updateStore(1, sampleUpdateStoreDto),
+        storesService.updateStore(sampleUserPayloadBusiness, sampleUpdateStoreDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toHaveBeenCalledWith('REGISTERED', ACTIVATE_STORE_STATUES);
@@ -327,6 +345,8 @@ describe('StoresService', () => {
 
     it('should throw error if not meet store status change condition', async () => {
       const sampleStoreDto = createSampleStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -346,7 +366,7 @@ describe('StoresService', () => {
       checkStoreStatusChangeCondition.mockReturnValue(false);
 
       await expect(
-        storesService.changeStoreStatus(1, {
+        storesService.changeStoreStatus(sampleUserPayloadBusiness, {
           storeId: 1,
           status: 'CLOSED' as StoreStatus,
         }),
@@ -360,6 +380,8 @@ describe('StoresService', () => {
 
     it('should change store status and return StoreStatusDto', async () => {
       const sampleStoreDto = createSampleStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesService,
         'checkStoreOwned' as any,
@@ -381,7 +403,7 @@ describe('StoresService', () => {
       const mockSave = jest.spyOn(storesReposiroty, 'update');
       mockSave.mockResolvedValue(sampleStoreDto);
 
-      const result = await storesService.changeStoreStatus(1, {
+      const result = await storesService.changeStoreStatus(sampleUserPayloadBusiness, {
         storeId: 1,
         status: 'CLOSED' as StoreStatus,
       });
@@ -412,13 +434,15 @@ describe('StoresService', () => {
   describe('getStoresByBusinessUser', () => {
     it('should exec findAllByUserId', async () => {
       const sampleStoreDto = createSampleStoreDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockFindAllByUserId = jest.spyOn(
         storesReposiroty,
         'findAllByUserId' as any,
       );
       mockFindAllByUserId.mockResolvedValue([sampleStoreDto]);
 
-      const result = await storesService.getStoresByBusinessUser(1);
+      const result = await storesService.getStoresByBusinessUser(sampleUserPayloadBusiness);
       expect(result).toEqual([sampleStoreDto]);
 
       expect(mockFindAllByUserId).toHaveBeenCalledWith(1);
@@ -434,10 +458,12 @@ describe('StoresService', () => {
 
     it('should throw error if store not found', async () => {
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       mockFindOne.mockResolvedValue(null);
 
       await expect(
-        storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1),
+        storesService.getStoreByStoreId(1, 'OWNER' as ViewType, sampleUserPayloadBusiness),
       ).rejects.toThrowError('Store not found.');
     });
 
@@ -445,6 +471,8 @@ describe('StoresService', () => {
       const sampleStoreDto = createSampleStoreDto({ status: 'OPEN' as StoreStatus });
       const sampleMenuDto = createSampleMenuDto();
       const sampleStoreMenuDto = createSampleStoreMenuDto();
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockFindOne = jest.spyOn(storesReposiroty, 'findOne');
       mockFindOne.mockResolvedValue(sampleStoreDto);
 
@@ -454,11 +482,11 @@ describe('StoresService', () => {
       );
       mockGetMenus.mockResolvedValue([sampleMenuDto]);
 
-      const result = await storesService.getStoreByStoreId(1, 'OWNER' as ViewType, 1);
+      const result = await storesService.getStoreByStoreId(1, 'OWNER' as ViewType, sampleUserPayloadBusiness);
       expect(result).toEqual(sampleStoreMenuDto);
 
       expect(mockFindOne).toHaveBeenCalledWith({ storeId: 1, userId: 1 }, 'OWNER' as ViewType);
-      expect(mockGetMenus).toHaveBeenCalledWith(1, 'OWNER' as ViewType, 1);
+      expect(mockGetMenus).toHaveBeenCalledWith(1, 'OWNER' as ViewType, sampleUserPayloadBusiness);
     });
   });
 

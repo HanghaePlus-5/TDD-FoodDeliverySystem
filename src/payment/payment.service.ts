@@ -18,7 +18,6 @@ export class PaymentService {
   ) {}
   async makePayment(args: PaymentProcessArgs): Promise<Payment> {
     const { paymentCreateDto, user, order } = args;
-    console.log('user', user);
     validateCardHolder(paymentCreateDto.cardHolderName, user.name);
     validateCardNumber(paymentCreateDto.cardNumber);
     const response = await this.pgService.sendPaymentRequestToPG(paymentCreateDto);

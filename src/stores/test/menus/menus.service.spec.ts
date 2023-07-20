@@ -11,7 +11,7 @@ import { StoresRepository } from 'src/stores/stores/stores.repository';
 
 import * as validationModule from '../../utils/validation';
 import {
-createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto,
+createSampleCreateMenuDto, createSampleMenuDto, createSampleStoreDto, createSampleUpdateMenuDto, createSampleUserPayloadBusiness,
 } from '../testUtils';
 
 describe('MenusService', () => {
@@ -45,6 +45,8 @@ describe('MenusService', () => {
   describe('createMenu', () => {
     it('should exec checkStoreOwned', async () => {
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -52,7 +54,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.createMenu(1, sampleCreateMenuDto),
+        menusService.createMenu(sampleUserPayloadBusiness, sampleCreateMenuDto),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -64,6 +66,8 @@ describe('MenusService', () => {
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -76,7 +80,7 @@ describe('MenusService', () => {
       ).mockReturnValue(false);
 
       await expect(
-        menusService.createMenu(1, sampleCreateMenuDto),
+        menusService.createMenu(sampleUserPayloadBusiness, sampleCreateMenuDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
@@ -89,6 +93,8 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -108,7 +114,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(sampleMenuDto);
 
       await expect(
-        menusService.createMenu(1, sampleCreateMenuDto),
+        menusService.createMenu(sampleUserPayloadBusiness, sampleCreateMenuDto),
       ).rejects.toThrowError('Menu name is not unique on ACTIVATE_MENU_STATUES.');
 
       expect(mockFindOne).toBeCalledWith({
@@ -121,6 +127,8 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuDto = createSampleCreateMenuDto({});
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -145,7 +153,7 @@ describe('MenusService', () => {
       );
       mockCreate.mockResolvedValue(sampleMenuDto);
 
-      const result = await menusService.createMenu(1, sampleCreateMenuDto);
+      const result = await menusService.createMenu(sampleUserPayloadBusiness, sampleCreateMenuDto);
       expect(result).toBe(sampleMenuDto);
 
       expect(mockCreate).toBeCalledWith(sampleCreateMenuDto);
@@ -155,6 +163,8 @@ describe('MenusService', () => {
   describe('updateMenu', () => {
     it('should exec checkStoreOwned', async () => {
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -162,7 +172,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+        menusService.updateMenu(sampleUserPayloadBusiness, sampleCreateMenuUpdateDto),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -174,6 +184,8 @@ describe('MenusService', () => {
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -187,7 +199,7 @@ describe('MenusService', () => {
       mockCheckStoreStatusGroup.mockReturnValue(false);
 
       await expect(
-        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+        menusService.updateMenu(sampleUserPayloadBusiness, sampleCreateMenuUpdateDto),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
@@ -199,6 +211,8 @@ describe('MenusService', () => {
     it('should throw error if menu is not found', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -218,7 +232,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(null);
 
       await expect(
-        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+        menusService.updateMenu(sampleUserPayloadBusiness, sampleCreateMenuUpdateDto),
       ).rejects.toThrowError('Menu not found.');
 
       expect(mockFindOne).toBeCalledWith({
@@ -234,6 +248,8 @@ describe('MenusService', () => {
       });
       const sampleMenuDto = createSampleMenuDto({});
       const sampleMenuDto2 = createSampleMenuDto({ menuId: 2 });
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -257,7 +273,7 @@ describe('MenusService', () => {
       });
 
       await expect(
-        menusService.updateMenu(1, sampleCreateMenuUpdateDto),
+        menusService.updateMenu(sampleUserPayloadBusiness, sampleCreateMenuUpdateDto),
       ).rejects.toThrowError('Menu name is not unique on ACTIVATE_MENU_STATUES.');
 
       expect(mockFindOne).toBeCalledWith({
@@ -270,6 +286,8 @@ describe('MenusService', () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleCreateMenuUpdateDto = createSampleUpdateMenuDto({ name: undefined });
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -294,7 +312,7 @@ describe('MenusService', () => {
       );
       mockUpdate.mockResolvedValue(sampleMenuDto);
 
-      const result = await menusService.updateMenu(1, sampleCreateMenuUpdateDto);
+      const result = await menusService.updateMenu(sampleUserPayloadBusiness, sampleCreateMenuUpdateDto);
       expect(result).toBe(sampleMenuDto);
 
       expect(mockUpdate).toBeCalledWith(sampleCreateMenuUpdateDto);
@@ -303,6 +321,8 @@ describe('MenusService', () => {
 
   describe('changeMenuStatus', () => {
     it('should exec checkStoreOwned', async () => {
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -310,7 +330,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
+        menusService.changeMenuStatus(sampleUserPayloadBusiness, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -321,6 +341,8 @@ describe('MenusService', () => {
 
     it('should exec checkStoreStatusGroup', async () => {
       const sampleStoreDto = createSampleStoreDto({ status: 'TERMINATED' });
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -334,7 +356,7 @@ describe('MenusService', () => {
       mockCheckStoreStatusGroup.mockReturnValue(false);
 
       await expect(
-        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
+        menusService.changeMenuStatus(sampleUserPayloadBusiness, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Store status is not allowed.');
 
       expect(mockCheckStoreStatusGroup).toBeCalledWith(
@@ -345,6 +367,8 @@ describe('MenusService', () => {
 
     it('should throw error if menu is not found', async () => {
       const sampleStoreDto = createSampleStoreDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -363,7 +387,7 @@ describe('MenusService', () => {
       mockFindOne.mockResolvedValue(null);
 
       await expect(
-        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
+        menusService.changeMenuStatus(sampleUserPayloadBusiness, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Menu not found.');
 
       expect(mockFindOne).toBeCalledWith({
@@ -375,6 +399,8 @@ describe('MenusService', () => {
     it('should exec checkMenuStatusChangeCondition', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -400,7 +426,7 @@ describe('MenusService', () => {
       mockCheckMenuStatusChangeCondition.mockReturnValue(false);
 
       await expect(
-        menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' }),
+        menusService.changeMenuStatus(sampleUserPayloadBusiness, { storeId: 1, menuId: 1, status: 'OPEN' }),
       ).rejects.toThrowError('Menu status change condition is not met.');
 
       expect(mockCheckMenuStatusChangeCondition).toBeCalledWith(
@@ -412,6 +438,8 @@ describe('MenusService', () => {
     it('should change menu status and return menu dto', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -442,7 +470,7 @@ describe('MenusService', () => {
       );
       mockUpdate.mockResolvedValue(sampleMenuDto);
 
-      const result = await menusService.changeMenuStatus(1, { storeId: 1, menuId: 1, status: 'OPEN' });
+      const result = await menusService.changeMenuStatus(sampleUserPayloadBusiness, { storeId: 1, menuId: 1, status: 'OPEN' });
       expect(result).toBe(sampleMenuDto);
 
       expect(mockUpdate).toBeCalledWith({
@@ -455,6 +483,8 @@ describe('MenusService', () => {
 
   describe('getMenus', () => {
     it('should exec checkStoreOwned if viewtype is OWNER', async () => {
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -462,7 +492,7 @@ describe('MenusService', () => {
       mockCheckStoreOwned.mockResolvedValue(null);
 
       await expect(
-        menusService.getMenus(1, 'OWNER' as ViewType, 1),
+        menusService.getMenus(1, 'OWNER' as ViewType, sampleUserPayloadBusiness),
       ).rejects.toThrowError('User does not own store');
 
       expect(mockCheckStoreOwned).toBeCalledWith({
@@ -474,6 +504,8 @@ describe('MenusService', () => {
     it('should get menus', async () => {
       const sampleStoreDto = createSampleStoreDto({});
       const sampleMenuDto = createSampleMenuDto({});
+      const sampleUserPayloadBusiness = createSampleUserPayloadBusiness();
+
       const mockCheckStoreOwned = jest.spyOn(
         storesRepository,
         'findOne',
@@ -486,7 +518,7 @@ describe('MenusService', () => {
       );
       mockFindAllByStoreId.mockResolvedValue([sampleMenuDto]);
 
-      const result = await menusService.getMenus(1, 'OWNER' as ViewType, 1);
+      const result = await menusService.getMenus(1, 'OWNER' as ViewType, sampleUserPayloadBusiness);
       expect(result).toEqual([sampleMenuDto]);
 
       expect(mockFindAllByStoreId).toBeCalledWith(1, 'OWNER' as ViewType);

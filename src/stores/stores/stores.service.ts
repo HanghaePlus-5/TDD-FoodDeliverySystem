@@ -33,8 +33,8 @@ export class StoresService {
     this.MAX_COOKING_TIME = this.configService.get<number>('MAX_COOKING_TIME');
   }
 
-  async createStore(userId: number, dto: StoreCreateDto): Promise<StoreDto> {
-    const storeOptionalDto = { ...dto, userId };
+  async createStore(user: UserPayload, dto: StoreCreateDto): Promise<StoreDto> {
+    const storeOptionalDto = { ...dto, userId: user.userId };
     const isValidation = await this.checkValidation(storeOptionalDto);
     if (!isValidation) {
       throw new Error('Validation failed.');
@@ -46,15 +46,15 @@ export class StoresService {
     }
 
     try {
-      const store = await this.storesRepository.create(1, dto);
+      const store = await this.storesRepository.create(user.userId, dto);
       return store;
     } catch (error) {
       throw new Error('Store creation failed.');
     }
   }
 
-  async updateStore(userId: number, dto: StoreUpdateDto): Promise<StoreDto> {
-    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+  async updateStore(user: UserPayload, dto: StoreUpdateDto): Promise<StoreDto> {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId: user.userId };
     const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {
       throw new Error('Store not owned.');
@@ -77,8 +77,8 @@ export class StoresService {
     return result;
   }
 
-  async changeStoreStatus(userId: number, dto: StoreChangeStatusDto): Promise<StoreDto> {
-    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId };
+  async changeStoreStatus(user: UserPayload, dto: StoreChangeStatusDto): Promise<StoreDto> {
+    const storeOwnedDto: StoreOwnedDto = { storeId: dto.storeId, userId: user.userId };
     const isStore = await this.checkStoreOwned(storeOwnedDto);
     if (!isStore) {
       throw new Error('Store not owned.');
@@ -100,23 +100,23 @@ export class StoresService {
     return result;
   }
 
-  async getStoresByBusinessUser(userId: number): Promise<StoreDto[]> {
-    const result = await this.storesRepository.findAllByUserId(userId);
+  async getStoresByBusinessUser(user: UserPayload): Promise<StoreDto[]> {
+    const result = await this.storesRepository.findAllByUserId(user.userId);
     return result;
   }
 
-  async getStoreByStoreId(storeId: number, viewType: ViewType, userId?: number): Promise<StoreMenuDto | null> {
+  async getStoreByStoreId(storeId: number, viewType: ViewType, user?: UserPayload): Promise<StoreMenuDto | null> {
     if (viewType === 'OWNER') {
-      if (!userId) {
+      if (!user) {
         throw new Error('UserId is required at OWNER ViewType.');
       }
     }
 
-    const store = await this.storesRepository.findOne({ storeId, userId }, viewType);
+    const store = await this.storesRepository.findOne({ storeId, userId: user?.userId }, viewType);
     if (!store) {
       throw new Error('Store not found.');
     }
-    const menu = await this.menusService.getMenus(storeId, viewType, userId);
+    const menu = await this.menusService.getMenus(storeId, viewType, user);
     const result = storeMenuDtoMap(store, menu);
     return result;
   }

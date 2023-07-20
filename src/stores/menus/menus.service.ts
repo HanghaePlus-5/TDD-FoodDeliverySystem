@@ -17,9 +17,9 @@ export class MenusService {
     private readonly storesRepository: StoresRepository,
   ) {}
 
-  async createMenu(userId: number, dto: MenuCreateDto): Promise<MenuDto> {
+  async createMenu(user: UserPayload, dto: MenuCreateDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesRepository.findOne({
-      userId,
+      userId: user.userId,
       storeId: dto.storeId,
     }, 'OWNER');
     if (!isStoreOwned) {
@@ -50,9 +50,9 @@ export class MenusService {
     }
   }
 
-  async updateMenu(userId: number, dto: MenuUpdateDto): Promise<MenuDto> {
+  async updateMenu(user: UserPayload, dto: MenuUpdateDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesRepository.findOne({
-      userId,
+      userId: user.userId,
       storeId: dto.storeId,
     }, 'OWNER');
     if (!isStoreOwned) {
@@ -93,9 +93,9 @@ export class MenusService {
     }
   }
 
-  async changeMenuStatus(userId: number, dto: MenuChangeStatusDto): Promise<MenuDto> {
+  async changeMenuStatus(user: UserPayload, dto: MenuChangeStatusDto): Promise<MenuDto> {
     const isStoreOwned = await this.storesRepository.findOne({
-      userId,
+      userId: user.userId,
       storeId: dto.storeId,
     }, 'OWNER');
     if (!isStoreOwned) {
@@ -134,14 +134,14 @@ export class MenusService {
     }
   }
 
-  async getMenus(storeId: number, viewType: ViewType, userId?: number): Promise<MenuDto[]> {
+  async getMenus(storeId: number, viewType: ViewType, user?: UserPayload): Promise<MenuDto[]> {
     if (viewType === 'OWNER') {
-      if (!userId) {
+      if (!user) {
         throw new Error('User not found.');
       }
 
       const isStoreOwned = await this.storesRepository.findOne({
-        userId,
+        userId: user.userId,
         storeId,
       }, 'OWNER');
       if (!isStoreOwned) {
