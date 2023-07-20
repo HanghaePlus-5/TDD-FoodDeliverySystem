@@ -6,11 +6,10 @@ import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 
 import { AppModule } from './app.module';
+import { JwtMiddleware } from './auth/middlewares';
 import HttpExceptionFilter from './common/filters/http-exception.filter';
 import { healthCheckMiddleware } from './common/middlewares';
 import logger from './common/middlewares/logger.middleware';
-import { JwtMiddleware } from './auth/middlewares';
-import { JwtAuthService } from './auth/services';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,7 +24,7 @@ async function bootstrap() {
   app.use(JwtMiddleware);
   app.use(logger);
   app.use(healthCheckMiddleware);
-  
+
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({

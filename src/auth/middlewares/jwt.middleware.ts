@@ -1,6 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { NextFunction, Request, Response } from 'express';
+
 import { env } from 'src/config/env';
 
 const jwt = new JwtService({
@@ -19,7 +20,8 @@ export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) =
   }
 
   const userPayload = jwt.decode(token);
+  // eslint-disable-next-line no-param-reassign
   req.payload = userPayload as UserPayload;
-  
+
   next();
-}
+};
