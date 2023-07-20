@@ -12,7 +12,7 @@ import { OrdersService } from './orders.service';
 
 import { UserType } from 'src/types';
 
-describe.skip('OrdersService', () => {
+describe('OrdersService', () => {
   let service: OrdersService;
   let testPrisma: PrismaService;
   let user1: User;
