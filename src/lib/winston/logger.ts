@@ -80,7 +80,7 @@ export default class Logger {
       },
     ];
     const command = new PutLogEventsCommand({
-      logGroupName: this.logGroupName,
+      logGroupName: `${this.logGroupName}-${level}`,
       logStreamName: this.logStreamName,
       logEvents,
     });
