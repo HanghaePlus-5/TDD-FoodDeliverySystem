@@ -14,7 +14,7 @@ interface ResponseApiLog {
 }
 
 interface ErrorApiLog {
-  // TODO identify: string;
+  Identify: string;
   Request: string;
   StatusCode: number;
   Message: string;
