@@ -24,6 +24,7 @@ declare global {
   namespace Express {
     interface Request {
       payload: UserPayload;
+      identify: string;
     }
   }
 }

@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { CloudWatchLogsClient, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import * as winston from 'winston';
 
@@ -12,6 +13,7 @@ const logFormat = printf(
   (info) => `${info.timestamp} ${info.level}: ${info.message}`,
 );
 
+@Injectable()
 export default class Logger {
   private logger: winston.Logger;
   private cloudWatchClient: CloudWatchLogsClient;
@@ -50,10 +52,16 @@ export default class Logger {
     );
   }
 
-  public info(msg: RequestApiLog | ResponseApiLog | CustomApiLog) {
+  public info(msg: RequestApiLog | ResponseApiLog | CustomObjApiLog | CustomMsgApiLog) {
     const maskedMsg = this.makeLogMessage(msg);
     this.logger.info(maskedMsg);
     this.sendLogToCloudWatch('INFO', maskedMsg);
+  }
+
+  public warn(msg: CustomObjApiLog | CustomMsgApiLog) {
+    const maskedMsg = this.makeLogMessage(msg);
+    this.logger.warn(maskedMsg);
+    this.sendLogToCloudWatch('WARN', maskedMsg);
   }
 
   public error(errmsg: ErrorApiLog) {
@@ -62,7 +70,7 @@ export default class Logger {
     this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
-  public debug(msg: CustomApiLog) {
+  public debug(msg: CustomObjApiLog | CustomMsgApiLog) {
     this.logger.debug(msg);
   }
 
@@ -74,7 +82,7 @@ export default class Logger {
       },
     ];
     const command = new PutLogEventsCommand({
-      logGroupName: this.logGroupName,
+      logGroupName: `${this.logGroupName}-${level}`,
       logStreamName: this.logStreamName,
       logEvents,
     });
@@ -82,7 +90,7 @@ export default class Logger {
     this.cloudWatchClient.send(command);
   }
 
-  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomApiLog): string {
+  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomObjApiLog | CustomMsgApiLog): string {
     const modifiedMsgs = { ...msgs }; // Create a copy of the msgs object
 
     if ('Headers' in modifiedMsgs) {
@@ -97,28 +105,55 @@ export default class Logger {
       modifiedMsgs.Request = this.filterSensitiveBody(modifiedMsgs.Request);
     }
 
+    if ('Message' in modifiedMsgs) {
+      modifiedMsgs.Message = this.filterSensitiveBody(modifiedMsgs.Message);
+    }
+
     return JSON.stringify(modifiedMsgs);
   }
 
-  private filterSensitiveHeaders(headers: string[]): string[] {
+  private filterSensitiveHeaders(headers: OutgoingHttpHeaders): OutgoingHttpHeaders {
     const sensitiveHeaders = ['authorization', 'cookie', 'host'];
     const regex = new RegExp(sensitiveHeaders.join('|'), 'gi');
 
-    return headers.map((header) => {
-      if (regex.test(header)) {
-        return '*** Sensitive Data ***';
+    const maskedHeaders: OutgoingHttpHeaders = {};
+
+    Object.entries(headers).forEach(([key, value]) => {
+      if (regex.test(key)) {
+        maskedHeaders[key] = '*** Sensitive Data ***';
+      } else {
+        maskedHeaders[key] = value;
       }
-      return header;
     });
+
+    return maskedHeaders;
   }
 
-  private filterSensitiveBody(body: string): string {
+  private filterSensitiveBody(body: string | KeyValues): string {
     const sensitiveWords = ['password', 'email', 'card'];
     const regex = new RegExp(sensitiveWords.join('|'), 'gi');
 
-    if (regex.test(body)) {
-      return '*** Sensitive Data ***';
+    if (typeof body === 'string') {
+      if (regex.test(body)) {
+        return '*** Sensitive Data ***';
+      }
+      return body;
     }
-    return body;
+
+    if (typeof body === 'object') {
+      const maskedBody: KeyValues = {};
+
+      Object.entries(body).forEach(([key, value]) => {
+        if (regex.test(key)) {
+          maskedBody[key] = '*** Sensitive Data ***';
+        } else {
+          maskedBody[key] = value;
+        }
+      });
+
+      return JSON.stringify(maskedBody);
+    }
+
+    return '';
   }
 }
