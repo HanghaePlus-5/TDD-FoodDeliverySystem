@@ -1,5 +1,7 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 import { env } from 'src/config/env';
 
@@ -9,18 +11,19 @@ const jwt = new JwtService({
 
 export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
-  if (authorization === undefined) {
-    return next();
+  if (authorization !== undefined) {
+    const [bearer, token] = authorization.split(' ');
+    if (bearer !== 'Bearer' || token === undefined) {
+      throw new UnauthorizedException();
+    }
+
+    const userPayload = jwt.decode(token);
+    // eslint-disable-next-line no-param-reassign
+    req.payload = userPayload as UserPayload;
+  } else {
+    // eslint-disable-next-line no-param-reassign
+    req.identify = uuidv4();
   }
 
-  const [bearer, token] = authorization.split(' ');
-  if (bearer !== 'Bearer' || token === undefined) {
-    return next();
-  }
-
-  const userPayload = jwt.decode(token);
-  // eslint-disable-next-line no-param-reassign
-  req.payload = userPayload as UserPayload;
-
-  return next();
+  next();
 };

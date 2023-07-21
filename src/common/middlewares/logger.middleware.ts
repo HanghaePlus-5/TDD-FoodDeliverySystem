@@ -1,28 +1,26 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
-import { EnvService } from 'src/config/env';
 import Logger from 'src/lib/winston/logger';
 
-const config = new ConfigService();
-const env = new EnvService(config);
-const loggerInstance = new Logger(env);
-
-export const logger = (
+export const loggerMiddleware = (
+  loggerInstance: Logger,
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
-  const { method, originalUrl, body } = req;
-  const session = req.sessionID;
+  ) => {
+    const {
+      method, originalUrl, body, payload,
+    } = req;
 
   const start = Date.now();
+  const Identify = payload && payload.userId ? String(payload.userId) : req.identify || uuidv4();
 
   loggerInstance.info({
-    Session: session,
+    Identify,
     Request: `${method} ${originalUrl}`,
-    Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+    Headers: res.getHeaders(),
     Body: JSON.stringify(body),
   });
 
@@ -32,9 +30,9 @@ export const logger = (
     const responseData = oldSend.call(res, data);
 
     loggerInstance.info({
-      Session: session,
+      Identify,
       Response: `${method} ${originalUrl} ${res.statusCode} ${Date.now() - start}ms`,
-      Headers: Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`),
+      Headers: res.getHeaders(),
       Body: JSON.stringify(data),
     });
 

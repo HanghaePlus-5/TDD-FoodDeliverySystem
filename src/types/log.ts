@@ -1,25 +1,43 @@
 /* eslint-disable */
 interface RequestApiLog {
-  Session: string;
+  Identify: string;
   Request: string;
-  Headers: string[];
+  Headers: OutgoingHttpHeaders;
   Body: string;
 }
 
 interface ResponseApiLog {
-  Session: string;
+  Identify: string;
   Response: string;
-  Headers: string[];
+  Headers: OutgoingHttpHeaders;
   Body: string;
 }
 
 interface ErrorApiLog {
-  Session: string;
+  Identify: string;
+  Request: string;
+  StatusCode: number;
   Message: string;
   Stack: string;
 }
 
-interface CustomApiLog {
+interface CustomObjApiLog {
+  // TODO identify: string;
+  Request: string;
+  // TODO Headers
+  Body: KeyValues;
+}
+
+interface CustomMsgApiLog {
+  // TODO identify: string;
   Request: string;
   Message: string;
+}
+
+interface OutgoingHttpHeaders {
+  [key: string]: string | string[] | number | undefined;
+}
+
+interface KeyValues {
+  [key: string]: string;
 }
