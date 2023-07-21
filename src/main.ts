@@ -6,8 +6,8 @@ import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { JwtMiddleware } from './auth/middlewares';
-import { HttpExceptionFilter } from './common/filters';
 import { healthCheckMiddleware, logger } from './common/middlewares';
+import Logger from './lib/winston/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,10 +15,11 @@ async function bootstrap() {
   app.setGlobalPrefix(`/api/${process.env.API_VERSION}`);
   app.use(cookieParser());
   app.use(JwtMiddleware);
-  app.use(logger);
+  const loggerInstance = app.get(Logger); // Get the Logger instance from the DI container
+  app.use((req, res, next) => logger(loggerInstance, req, res, next)); // Pass the Logger instance to the logger middleware
+
   app.use(healthCheckMiddleware);
 
-  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // dto에서 정의되지 않은 값은 제거

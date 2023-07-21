@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { CloudWatchLogsClient, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import * as winston from 'winston';
 
@@ -12,6 +13,7 @@ const logFormat = printf(
   (info) => `${info.timestamp} ${info.level}: ${info.message}`,
 );
 
+@Injectable()
 export default class Logger {
   private logger: winston.Logger;
   private cloudWatchClient: CloudWatchLogsClient;

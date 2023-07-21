@@ -1,12 +1,15 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
+import { HttpExceptionFilter } from './common/filters';
 import { CustomConfigModule } from './config/config.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ExampleModule } from './examples/example.module';
 import { FavouritesModule } from './favourites/favourites.module';
 import { AlsModule, AlsMiddleware } from './lib/als';
 import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.module';
+import Logger from './lib/winston/logger';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -29,7 +32,13 @@ import { UsersModule } from './users/users.module';
     PaymentGatewayModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    Logger,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    }
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
