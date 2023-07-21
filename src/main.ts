@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { JwtMiddleware } from './auth/middlewares';
-import { healthCheckMiddleware, logger } from './common/middlewares';
+import { healthCheckMiddleware, loggerMiddleware } from './common/middlewares';
 import Logger from './lib/winston/logger';
 
 async function bootstrap() {
@@ -16,7 +16,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(JwtMiddleware);
   const loggerInstance = app.get(Logger); // Get the Logger instance from the DI container
-  app.use((req, res, next) => logger(loggerInstance, req, res, next)); // Pass the Logger instance to the logger middleware
+  app.use((req, res, next) => loggerMiddleware(loggerInstance, req, res, next)); // Pass the Logger instance to the logger middleware
 
   app.use(healthCheckMiddleware);
 

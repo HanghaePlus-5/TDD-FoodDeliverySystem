@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Logger from 'src/lib/winston/logger';
 
-export const logger = (
+export const loggerMiddleware = (
   loggerInstance: Logger,
   req: Request,
   res: Response,
