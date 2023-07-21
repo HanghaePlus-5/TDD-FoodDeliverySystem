@@ -4,12 +4,13 @@ import {
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
+import { UserTypes } from 'src/auth/decorators';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { MenusService } from './menus.service';
 import { MenuCreateDto, MenuDto, MenuUpdateDto } from '../dto';
 import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
-import { UserTypes } from 'src/auth/decorators';
+
 import { UserType } from 'src/types';
 
 @Controller('menus')

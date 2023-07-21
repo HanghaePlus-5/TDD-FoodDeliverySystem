@@ -14,9 +14,10 @@ import {
   SearchDto,
  StoreChangeStatusDto, StoreCreateDto, StoreDto, StoreUpdateDto,
 } from '../dto';
-import { StoreMenuDto } from '../dto/store-menu.dto';
-import { UserType } from 'src/types';
 import { StoreGetDto } from '../dto/store-get.dto';
+import { StoreMenuDto } from '../dto/store-menu.dto';
+
+import { UserType } from 'src/types';
 
 @Controller('stores')
 export class StoresController {
@@ -80,8 +81,6 @@ export class StoresController {
 
     return createResponse<StoreMenuDto>(store);
   }
-
-
 
   @TypedRoute.Get('/myBunsiness')
   @UserTypes(UserType.BUSINESS)
