@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { AuthModule } from './auth/auth.module';
-import logger from './common/middlewares/logger.middleware';
 import { CustomConfigModule } from './config/config.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ExampleModule } from './examples/example.module';
 import { FavouritesModule } from './favourites/favourites.module';
+import { AlsModule, AlsMiddleware } from './lib/als';
 import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
@@ -16,6 +16,7 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     AuthModule,
+    AlsModule,
     CustomConfigModule,
     UsersModule,
     OrdersModule,
@@ -30,6 +31,8 @@ import { UsersModule } from './users/users.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {
-  // 여기에 prisma middleware 추가
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AlsMiddleware).forRoutes('*');
+  }
 }

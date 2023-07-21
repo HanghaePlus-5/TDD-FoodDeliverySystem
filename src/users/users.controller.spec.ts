@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import { PrismaClient, UserType } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { is } from 'typia';
 
 import { PrismaService } from 'src/prisma';
@@ -32,6 +33,7 @@ describe('UsersController', () => {
       providers: [
         UsersService,
         PrismaService,
+        AsyncLocalStorage,
       ],
     })
       .overrideProvider(PrismaService)

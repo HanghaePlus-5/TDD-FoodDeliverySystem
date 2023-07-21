@@ -6,9 +6,8 @@ import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { JwtMiddleware } from './auth/middlewares';
-import HttpExceptionFilter from './common/filters/http-exception.filter';
-import { healthCheckMiddleware } from './common/middlewares';
-import logger from './common/middlewares/logger.middleware';
+import { HttpExceptionFilter } from './common/filters';
+import { healthCheckMiddleware, logger } from './common/middlewares';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

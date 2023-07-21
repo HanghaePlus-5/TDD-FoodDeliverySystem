@@ -258,6 +258,27 @@
         "x-nestia-namespace": "users.signin.signin",
         "x-nestia-jsDocTags": []
       }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User.Nullable"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "users.me.findMe",
+        "x-nestia-jsDocTags": []
+      }
     }
   },
   "components": {
@@ -790,6 +811,50 @@
           "password"
         ],
         "x-typia-jsDocTags": []
+      },
+      "User.Nullable": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "name": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/UserType.o1"
+          }
+        },
+        "nullable": true,
+        "required": [
+          "userId",
+          "email",
+          "name",
+          "password",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.o1": {
+        "type": "string",
+        "enum": [
+          "CUSTOMER",
+          "BUSINESS"
+        ]
       }
     },
     "securitySchemes": {

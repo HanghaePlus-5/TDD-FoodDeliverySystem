@@ -10,11 +10,11 @@ const config = new ConfigService();
 const env = new EnvService(config);
 const loggerInstance = new Logger(env);
 
-export default function logger(
+export const logger = (
   req: Request,
   res: Response,
   next: NextFunction,
-) {
+) => {
   const {
  method, originalUrl, body, payload,
 } = req;
@@ -45,4 +45,4 @@ export default function logger(
   };
 
   next();
-}
+};
