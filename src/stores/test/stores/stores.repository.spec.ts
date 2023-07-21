@@ -27,11 +27,11 @@ describe('StoresRepository', () => {
     await Prisma.$connect();
   });
 
-  afterEach(async () => {
-    const deleteStore = Prisma.store.deleteMany({});
-    await Prisma.$transaction([deleteStore]);
-    await Prisma.$disconnect();
-  });
+  // afterEach(async () => {
+  //   const deleteStore = Prisma.store.deleteMany({});
+  //   await Prisma.$transaction([deleteStore]);
+  //   await Prisma.$disconnect();
+  // });
 
   it('should be defined', () => {
     expect(repository).toBeDefined();

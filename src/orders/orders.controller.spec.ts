@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { PrismaService, PrismaService } from 'src/prisma';
+import { PrismaService } from 'src/prisma';
 
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
