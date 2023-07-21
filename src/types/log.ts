@@ -21,7 +21,14 @@ interface ErrorApiLog {
   Stack: string;
 }
 
-interface CustomApiLog {
+interface CustomObjApiLog {
+  // TODO identify: string;
+  Request: string;
+  // TODO Headers
+  Body: KeyValues;
+}
+
+interface CustomMsgApiLog {
   // TODO identify: string;
   Request: string;
   Message: string;
@@ -29,4 +36,8 @@ interface CustomApiLog {
 
 interface OutgoingHttpHeaders {
   [key: string]: string | string[] | number | undefined;
+}
+
+interface KeyValues {
+  [key: string]: string;
 }

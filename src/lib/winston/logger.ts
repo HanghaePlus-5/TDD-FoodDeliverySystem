@@ -50,13 +50,13 @@ export default class Logger {
     );
   }
 
-  public info(msg: RequestApiLog | ResponseApiLog | CustomApiLog) {
+  public info(msg: RequestApiLog | ResponseApiLog | CustomObjApiLog | CustomMsgApiLog) {
     const maskedMsg = this.makeLogMessage(msg);
     this.logger.info(maskedMsg);
     this.sendLogToCloudWatch('INFO', maskedMsg);
   }
 
-  public warn(msg: CustomApiLog) {
+  public warn(msg: CustomObjApiLog | CustomMsgApiLog) {
     const maskedMsg = this.makeLogMessage(msg);
     this.logger.warn(maskedMsg);
     this.sendLogToCloudWatch('WARN', maskedMsg);
@@ -68,7 +68,7 @@ export default class Logger {
     this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
-  public debug(msg: CustomApiLog) {
+  public debug(msg: CustomObjApiLog | CustomMsgApiLog) {
     this.logger.debug(msg);
   }
 
@@ -88,7 +88,7 @@ export default class Logger {
     this.cloudWatchClient.send(command);
   }
 
-  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomApiLog): string {
+  private makeLogMessage(msgs: RequestApiLog | ResponseApiLog | CustomObjApiLog | CustomMsgApiLog): string {
     const modifiedMsgs = { ...msgs }; // Create a copy of the msgs object
 
     if ('Headers' in modifiedMsgs) {
@@ -127,13 +127,31 @@ export default class Logger {
     return maskedHeaders;
   }
 
-  private filterSensitiveBody(body: string): string {
+  private filterSensitiveBody(body: string | KeyValues): string {
     const sensitiveWords = ['password', 'email', 'card'];
     const regex = new RegExp(sensitiveWords.join('|'), 'gi');
-
-    if (regex.test(body)) {
-      return '*** Sensitive Data ***';
+  
+    if (typeof body === 'string') {
+      if (regex.test(body)) {
+        return '*** Sensitive Data ***';
+      }
+      return body;
     }
-    return body;
+  
+    if (typeof body === 'object') {
+      const maskedBody: KeyValues = {};
+  
+      for (const key in body) {
+        if (regex.test(key)) {
+          maskedBody[key] = '*** Sensitive Data ***';
+        } else {
+          maskedBody[key] = body[key];
+        }
+      }
+  
+      return JSON.stringify(maskedBody);
+    }
+  
+    return '';
   }
 }
