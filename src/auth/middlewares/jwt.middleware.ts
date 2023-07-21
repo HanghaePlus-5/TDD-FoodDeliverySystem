@@ -25,5 +25,5 @@ export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) =
     req.identify = uuidv4();
   }
 
-  next();
+  return next();
 };

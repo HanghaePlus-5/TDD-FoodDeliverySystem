@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { JwtMiddleware } from './auth/middlewares';
+import { HttpExceptionFilter } from './common/filters';
 import { healthCheckMiddleware, loggerMiddleware } from './common/middlewares';
 import Logger from './lib/winston/logger';
 

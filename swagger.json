@@ -279,6 +279,27 @@
         "x-nestia-namespace": "users.me.findMe",
         "x-nestia-jsDocTags": []
       }
+    },
+    "/users/cpu": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/__object.o1"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "users.cpu.task",
+        "x-nestia-jsDocTags": []
+      }
     }
   },
   "components": {
@@ -855,6 +876,21 @@
           "CUSTOMER",
           "BUSINESS"
         ]
+      },
+      "__object.o1": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "count"
+        ],
+        "x-typia-jsDocTags": []
       }
     },
     "securitySchemes": {
