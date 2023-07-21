@@ -1,15 +1,16 @@
 import {
- Controller, UseGuards, Request, BadRequestException,
+ Controller, Request, BadRequestException,
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { is } from 'typia';
 
-import { BearerAuthGuard } from 'src/auth/guards';
 import { ResponseForm, createResponse } from 'src/utils/createResponse';
 
 import { MenusService } from './menus.service';
 import { MenuCreateDto, MenuDto, MenuUpdateDto } from '../dto';
 import { MenuChangeStatusDto } from '../dto/menu-change-status.dto';
+import { UserTypes } from 'src/auth/decorators';
+import { UserType } from 'src/types';
 
 @Controller('menus')
 export class MenusController {
@@ -18,7 +19,7 @@ export class MenusController {
   ) {}
 
   @TypedRoute.Post('/')
-  @UseGuards(BearerAuthGuard)
+  @UserTypes(UserType.BUSINESS)
   async createMenu(
     @Request() req: Express.Request,
     @TypedBody() form: MenuCreateDto,
@@ -33,7 +34,7 @@ export class MenusController {
   }
 
   @TypedRoute.Patch('/')
-  @UseGuards(BearerAuthGuard)
+  @UserTypes(UserType.BUSINESS)
   async updateMenu(
     @Request() req: Express.Request,
     @TypedBody() form: MenuUpdateDto,
@@ -48,7 +49,7 @@ export class MenusController {
   }
 
   @TypedRoute.Post('/status')
-  @UseGuards(BearerAuthGuard)
+  @UserTypes(UserType.BUSINESS)
   async changeMenuStatus(
     @Request() req: Express.Request,
     @TypedBody() form: MenuChangeStatusDto,
