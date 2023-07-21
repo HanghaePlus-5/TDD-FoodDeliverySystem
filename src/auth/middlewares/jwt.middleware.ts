@@ -1,9 +1,9 @@
-import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from 'src/config/env';
+import { UnauthorizedException } from '@nestjs/common';
 
 const jwt = new JwtService({
   secret: env().JWT_SECRET,
