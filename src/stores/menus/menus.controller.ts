@@ -62,6 +62,4 @@ export class MenusController {
 
     return createResponse<MenuDto>(menu);
   }
-
-  // TODO : getMenus -> when UserPayload is added at middleware
 }

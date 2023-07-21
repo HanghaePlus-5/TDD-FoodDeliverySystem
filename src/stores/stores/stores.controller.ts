@@ -16,6 +16,7 @@ import {
 } from '../dto';
 import { StoreMenuDto } from '../dto/store-menu.dto';
 import { UserType } from 'src/types';
+import { StoreGetDto } from '../dto/store-get.dto';
 
 @Controller('stores')
 export class StoresController {
@@ -68,6 +69,20 @@ export class StoresController {
     return createResponse<StoreDto>(store);
   }
 
+  @TypedRoute.Get('/')
+  @IgnoreAuth()
+  async getStore(
+    @Request() req: Express.Request,
+    @TypedQuery() storeGetDto: StoreGetDto,
+  ): Promise<ResponseForm<StoreMenuDto>> {
+    const { storeId, viewType } = storeGetDto;
+    const store = await this.storesService.getStoreByStoreId(storeId, viewType, req.payload);
+
+    return createResponse<StoreMenuDto>(store);
+  }
+
+
+
   @TypedRoute.Get('/myBunsiness')
   @UserTypes(UserType.BUSINESS)
   async getMyBusiness(
@@ -77,8 +92,6 @@ export class StoresController {
 
     return createResponse<StoreDto[]>(stores);
   }
-
-  // TODO : getStoreByStoreId -> when UserPayload is added at middleware
 
   @TypedRoute.Get('/search')
   @IgnoreAuth()
