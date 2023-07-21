@@ -15,7 +15,9 @@ export default function logger(
   res: Response,
   next: NextFunction,
 ) {
-  const { method, originalUrl, body, payload } = req;
+  const {
+ method, originalUrl, body, payload,
+} = req;
 
   const start = Date.now();
   const Identify = payload && payload.userId ? String(payload.userId) : req.identify || uuidv4();

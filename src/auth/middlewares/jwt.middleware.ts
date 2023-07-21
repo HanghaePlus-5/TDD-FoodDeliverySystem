@@ -16,11 +16,12 @@ export const JwtMiddleware = (req: Request, res: Response, next: NextFunction) =
     if (bearer !== 'Bearer' || token === undefined) {
       throw new UnauthorizedException();
     }
-  
+
     const userPayload = jwt.decode(token);
     // eslint-disable-next-line no-param-reassign
     req.payload = userPayload as UserPayload;
   } else {
+    // eslint-disable-next-line no-param-reassign
     req.identify = uuidv4();
   }
 

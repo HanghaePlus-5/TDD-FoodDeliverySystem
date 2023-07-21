@@ -16,7 +16,7 @@ describe('MenusController', () => {
           useValue: {
             createMenu: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 

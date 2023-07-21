@@ -113,45 +113,45 @@ export default class Logger {
   private filterSensitiveHeaders(headers: OutgoingHttpHeaders): OutgoingHttpHeaders {
     const sensitiveHeaders = ['authorization', 'cookie', 'host'];
     const regex = new RegExp(sensitiveHeaders.join('|'), 'gi');
-  
+
     const maskedHeaders: OutgoingHttpHeaders = {};
-  
-    for (const [key, value] of Object.entries(headers)) {
+
+    Object.entries(headers).forEach(([key, value]) => {
       if (regex.test(key)) {
         maskedHeaders[key] = '*** Sensitive Data ***';
       } else {
         maskedHeaders[key] = value;
       }
-    }
-  
+    });
+
     return maskedHeaders;
   }
 
   private filterSensitiveBody(body: string | KeyValues): string {
     const sensitiveWords = ['password', 'email', 'card'];
     const regex = new RegExp(sensitiveWords.join('|'), 'gi');
-  
+
     if (typeof body === 'string') {
       if (regex.test(body)) {
         return '*** Sensitive Data ***';
       }
       return body;
     }
-  
+
     if (typeof body === 'object') {
       const maskedBody: KeyValues = {};
-  
-      for (const key in body) {
+
+      Object.entries(body).forEach(([key, value]) => {
         if (regex.test(key)) {
           maskedBody[key] = '*** Sensitive Data ***';
         } else {
-          maskedBody[key] = body[key];
+          maskedBody[key] = value;
         }
-      }
-  
+      });
+
       return JSON.stringify(maskedBody);
     }
-  
+
     return '';
   }
 }
