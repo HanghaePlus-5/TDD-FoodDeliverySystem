@@ -2,6 +2,7 @@ import {
  BadRequestException, Controller, Get, Req, UnauthorizedException,
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
+import { is } from 'typia';
 
 import { UserTypes } from 'src/auth/decorators';
 
@@ -9,7 +10,6 @@ import { OrderCreateDto } from './dto/order-create.dto';
 import { OrdersService } from './orders.service';
 
 import { UserType } from 'src/types';
-import { is } from 'typia';
 
 @Controller('orders')
 export class OrdersController {

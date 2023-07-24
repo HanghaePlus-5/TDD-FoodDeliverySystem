@@ -12,10 +12,10 @@ import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.modu
 import Logger from './lib/winston/logger';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
-import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [

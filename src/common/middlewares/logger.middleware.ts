@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import Logger from 'src/lib/winston/logger';
-import { ServiceUnavailableException } from '@nestjs/common';
 
 export const loggerMiddleware = (
   loggerInstance: Logger,
@@ -39,7 +38,7 @@ export const loggerMiddleware = (
 
   //   return responseData;
   // };
-  
+
   res.on('finish', () => {
     if (Date.now() - start > 1000) {
       loggerInstance.error({
@@ -50,7 +49,7 @@ export const loggerMiddleware = (
         Stack: '',
       });
     }
-  })
+  });
 
   next();
 };

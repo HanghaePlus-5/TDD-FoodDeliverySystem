@@ -1,8 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { StoreStatus, StoreType, UserType } from "src/types";
+/* eslint-disable */
+import { Prisma, PrismaClient } from '@prisma/client';
+
+import { StoreStatus, StoreType, UserType } from 'src/types';
 
 export const init = async (client: PrismaClient) => {
-
   await client.review.deleteMany();
   await client.favourite.deleteMany();
   await client.payment.deleteMany();
@@ -12,11 +13,11 @@ export const init = async (client: PrismaClient) => {
   await client.store.deleteMany();
   await client.user.deleteMany();
 
-  const userCount = await client.user.count()
+  const userCount = await client.user.count();
   if (userCount === 0) {
-    console.log('user is empty... creating users')
+    console.log('user is empty... creating users');
     for (let i = 0; i < 10; i++) {
-      const data = { ... userTemplate }
+      const data = { ...userTemplate };
       data.email = `test${i}@test.com`;
       data.name = `test${i}`;
       data.type = i > 5 ? UserType.BUSINESS : UserType.CUSTOMER;
@@ -25,32 +26,32 @@ export const init = async (client: PrismaClient) => {
     }
   }
 
-  const users = await client.user.findMany()
+  const users = await client.user.findMany();
   console.log('users: ', users);
 
-  const storeCount = await client.store.count()
+  const storeCount = await client.store.count();
   if (storeCount === 0) {
-    console.log('store is empty... creating stores')
+    console.log('store is empty... creating stores');
     for (const user of users) {
       if (user.type === UserType.BUSINESS) {
-        const data = { ...storeTemplate }
+        const data = { ...storeTemplate };
         data.name = `${user.name}'s store`;
         data.userId = user.userId;
         data.businessNumber = `123-456-789${user.userId}`;
         await client.store.create({ data });
       }
-    };
+    }
   }
 
   const stores = await client.store.findMany();
   console.log('stores: ', stores);
 
-  const menuCount = await client.menu.count()
+  const menuCount = await client.menu.count();
   if (menuCount === 0) {
-    console.log('menu is empty... creating menus')
+    console.log('menu is empty... creating menus');
     for (const store of stores) {
       for (let i = 0; i < Math.random() * 10; i++) {
-        const data = { ...menuTemplate }
+        const data = { ...menuTemplate };
         data.name = `${store.name}-${i}`;
         data.price = Math.floor(Math.random() * 100) * 100;
         data.storeId = store.storeId;
@@ -60,9 +61,8 @@ export const init = async (client: PrismaClient) => {
   }
 
   const menus = await client.menu.findMany();
-  console.log('menus: ', menus.map(menu => menu.name));
-}
-
+  console.log('menus: ', menus.map((menu) => menu.name));
+};
 
 /**
  * models
@@ -81,7 +81,7 @@ const userTemplate: Prisma.UserCreateInput = {
   password: 'qwe1234',
   name: '',
   type: UserType.CUSTOMER,
-}
+};
 
 // const storeTemplate: Prisma.StoreCreateInput = {
 const storeTemplate: Prisma.StoreUncheckedCreateInput = {
@@ -96,11 +96,13 @@ const storeTemplate: Prisma.StoreUncheckedCreateInput = {
   type: StoreType.CAFE,
   status: StoreStatus.OPEN,
   userId: 1,
-}
+};
 
 const menuTemplate: Prisma.MenuUncheckedCreateInput = {
   name: '',
   price: 0,
   storeId: 1,
   inventory: 100,
-}
+};
+
+/* eslint-disable */
