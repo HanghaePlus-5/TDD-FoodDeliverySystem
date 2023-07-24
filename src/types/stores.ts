@@ -3,6 +3,16 @@ declare global {
   type StoreStatus = typeof StoreStatus[keyof typeof StoreStatus];
   type MenuStatus = typeof MenuStatus[keyof typeof MenuStatus];
   type ViewType = typeof ViewType[keyof typeof ViewType];
+
+  type StoreMenu = {
+    menuId: number;
+    name: string;
+    sort: number | null;
+    status: MenuStatus;
+    price: number;
+    inventory: number;
+    description: string;
+  }
 }
 
 export const StoreType = {

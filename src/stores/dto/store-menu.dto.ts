@@ -16,6 +16,6 @@ export type StoreMenuDto = {
   averageScore: number;
   origin: string;
   description: string;
-  menus: unknown[];
+  menus: StoreMenu[];
 }
 export type MenuViewDto = Omit<MenuDto, 'registrationDate' | 'storeId'>
