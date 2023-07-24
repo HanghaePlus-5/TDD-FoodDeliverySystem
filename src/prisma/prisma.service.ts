@@ -44,6 +44,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         transaction: params.runInTransaction,
         args: params.args,
         dataPath: params.dataPath,
+        date: store.start,
       };
       // console.log('prisma log', logMessage);
       localLogger(JSON.stringify(logMessage));

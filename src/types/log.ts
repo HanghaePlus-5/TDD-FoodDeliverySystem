@@ -32,6 +32,7 @@ declare global {
     transaction: boolean;
     args: unknown;
     dataPath: string[];
+    date: number;
   }
   
   interface CustomObjApiLog {
