@@ -1,5 +1,6 @@
 export const env = () => ({
   NODE_ENV: process.env.NODE_ENV === 'production' ? 'production' : 'dev',
+  DATABASE_RESET: process.env.DATABASE_RESET || 'false',
 
   /**
    * Prisma

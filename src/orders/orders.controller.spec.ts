@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { PrismaService } from 'src/prisma';
+import { PrismaModule } from 'src/prisma';
 
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
@@ -11,11 +10,10 @@ describe('OrdersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PrismaModule],
       controllers: [OrdersController],
       providers: [
         OrdersService,
-        PrismaService,
-        AsyncLocalStorage,
       ],
     }).compile();
 

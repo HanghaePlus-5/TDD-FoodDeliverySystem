@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
- Menu, PrismaClient, Store, StoreStatus, StoreType,
-} from '@prisma/client';
-import { AsyncLocalStorage } from 'node:async_hooks';
+import { Menu, Store } from '@prisma/client';
 
-import { PrismaService } from 'src/prisma';
+import { PrismaModule, PrismaService } from 'src/prisma';
 // import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { OrderStatus } from 'src/types/orders';
 
@@ -37,10 +34,11 @@ describe('OrdersService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PrismaModule,
+      ],
       providers: [
         OrdersService,
-        PrismaService,
-        AsyncLocalStorage,
         ],
     })
       .compile();

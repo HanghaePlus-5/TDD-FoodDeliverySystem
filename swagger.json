@@ -428,8 +428,8 @@
       "UserType": {
         "type": "string",
         "enum": [
-          "user",
-          "admin"
+          "admin",
+          "user"
         ]
       },
       "Response": {
@@ -505,9 +505,6 @@
       "OrderCreateDto": {
         "type": "object",
         "properties": {
-          "user": {
-            "$ref": "#/components/schemas/global.User"
-          },
           "storeId": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -524,46 +521,8 @@
         },
         "nullable": false,
         "required": [
-          "user",
           "storeId",
           "orderItem"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "global.User": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
-          "email": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "name": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "password": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/global.UserType"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "userId",
-          "email",
-          "name",
-          "password",
-          "type"
         ],
         "x-typia-jsDocTags": []
       },
@@ -614,7 +573,7 @@
           "updatedAt": {
             "x-typia-required": true,
             "x-typia-optional": false,
-            "$ref": "#/components/objects/Date.Nullable"
+            "$ref": "#/components/objects/Date"
           },
           "status": {
             "$ref": "#/components/schemas/OrderStatus"
@@ -635,11 +594,6 @@
         "type": "object",
         "properties": {},
         "nullable": false
-      },
-      "Date.Nullable": {
-        "type": "object",
-        "properties": {},
-        "nullable": true
       },
       "OrderStatus": {
         "type": "string",
@@ -757,6 +711,43 @@
         "required": [
           "result",
           "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "global.User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "name": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/global.UserType"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "userId",
+          "email",
+          "name",
+          "password",
+          "type"
         ],
         "x-typia-jsDocTags": []
       },

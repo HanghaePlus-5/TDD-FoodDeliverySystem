@@ -1,7 +1,8 @@
 import {
- BadRequestException, Controller, Get, Req,
+ BadRequestException, Controller, Get, Req, UnauthorizedException,
 } from '@nestjs/common';
 import { TypedBody, TypedRoute } from '@nestia/core';
+import { is } from 'typia';
 
 import { UserTypes } from 'src/auth/decorators';
 
@@ -27,10 +28,11 @@ export class OrdersController {
         @Req() req: Express.Request,
         @TypedBody() body: OrderCreateDto,
     ) {
-        if (req.payload.userId !== body.user.userId) {
-            throw new BadRequestException();
+        const { payload } = req;
+        if (!is<UserPayload>(payload)) {
+            throw new UnauthorizedException();
         }
 
-        return this.ordersService.createOrder(body);
+        return this.ordersService.createOrder(body, payload);
     }
 }

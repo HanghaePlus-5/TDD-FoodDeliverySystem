@@ -7,29 +7,31 @@ import { CustomConfigModule } from './config/config.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ExampleModule } from './examples/example.module';
 import { FavouritesModule } from './favourites/favourites.module';
-import { AlsModule, AlsMiddleware } from './lib/als';
+import { AlsMiddleware } from './lib/als';
 import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.module';
 import Logger from './lib/winston/logger';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    AuthModule,
-    AlsModule,
     CustomConfigModule,
-    UsersModule,
-    OrdersModule,
-    ExampleModule,
-    StoresModule,
-    ReviewsModule,
-    FavouritesModule,
-    PaymentModule,
+    PrismaModule,
+    AuthModule,
+
     DeliveryModule,
+    ExampleModule,
+    FavouritesModule,
+    OrdersModule,
+    ReviewsModule,
+    StoresModule,
+    PaymentModule,
     PaymentGatewayModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [

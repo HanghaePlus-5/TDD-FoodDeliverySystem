@@ -15,8 +15,8 @@ export class OrdersService {
     ) {}
 
     // TODO: saveOrder, saveOrderItemList, processPayment 트랜잭션 구성
-    async createOrder(orderCreateDto: OrderCreateDto) {
-        const hasOngoingOrder = await this.hasOngoingOrder(orderCreateDto.user.userId);
+    async createOrder(orderCreateDto: OrderCreateDto, { userId }: UserPayload) {
+        const hasOngoingOrder = await this.hasOngoingOrder(userId);
         if (hasOngoingOrder) {
             throw new BadRequestException('Ongoing order exists');
         }
@@ -30,7 +30,7 @@ export class OrdersService {
         await this.isValidStore(orderCreateDto.storeId);
 
         const order = {
-            userId: orderCreateDto.user.userId,
+            userId,
             storeId: orderCreateDto.storeId,
         };
         const savedOrder = await this.saveOrder(order);
