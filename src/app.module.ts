@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { HttpExceptionFilter } from './common/filters';
 import { CustomConfigModule } from './config/config.module';
@@ -33,7 +34,7 @@ import { UsersModule } from './users/users.module';
     PaymentGatewayModule,
     UsersModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     Logger,
     {

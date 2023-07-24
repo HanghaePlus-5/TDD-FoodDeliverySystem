@@ -26,9 +26,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
 
-    if (this.env.get<string>('DATABASE_RESET') === 'true') {
-      await init(this);
-    }
+    // if (this.env.get<string>('DATABASE_RESET') === 'true') {
+    //   await init(this);
+    // }
 
     this.$use(async (params, next) => {
       const store = this.als.getStore();

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Prisma, PrismaClient } from '@prisma/client';
 
-import { StoreStatus, StoreType, UserType } from 'src/types';
+import { MenuStatus, StoreStatus, StoreType, UserType } from 'src/types';
 import { clearDatabase } from 'src/utils/clearDatabase';
 
 export const init = async (client: PrismaClient) => {
@@ -97,6 +97,7 @@ const menuTemplate: Prisma.MenuUncheckedCreateInput = {
   price: 0,
   storeId: 1,
   inventory: 100,
+  status: MenuStatus.OPEN,
 };
 
 /* eslint-disable */
