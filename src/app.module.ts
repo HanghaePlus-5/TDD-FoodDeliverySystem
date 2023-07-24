@@ -15,21 +15,24 @@ import { PaymentModule } from './payment/payment.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
+    CustomConfigModule,
+    PrismaModule,
     AuthModule,
     AlsModule,
-    CustomConfigModule,
-    UsersModule,
-    OrdersModule,
-    ExampleModule,
-    StoresModule,
-    ReviewsModule,
-    FavouritesModule,
-    PaymentModule,
+
     DeliveryModule,
+    ExampleModule,
+    FavouritesModule,
+    OrdersModule,
+    ReviewsModule,
+    StoresModule,
+    PaymentModule,
     PaymentGatewayModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [
