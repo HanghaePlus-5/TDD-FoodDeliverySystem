@@ -1,11 +1,11 @@
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { StoreStatus, StoreType } from '@prisma/client';
-import { AsyncLocalStorage } from 'node:async_hooks';
 import { is } from 'typia';
 
-import { PrismaService } from 'src/prisma';
+import { PrismaModule, PrismaService } from 'src/prisma';
 import { PaymentGatewayService } from 'src/lib/payment-gateway/payment-gateway.service';
+import { clearDatabase } from 'src/utils/clearDatabase';
 import { mockingPaymentInfo } from 'src/utils/mocking-helper/mocking-payment';
 
 import { PaymentService } from './payment.service';
@@ -21,16 +21,19 @@ describe('PaymentService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PrismaModule,
+      ],
       providers: [
         PaymentService,
-        PrismaService,
         PaymentGatewayService,
-        AsyncLocalStorage,
       ],
     }).compile();
 
     service = module.get<PaymentService>(PaymentService);
     testPrisma = module.get(PrismaService);
+
+    // await clearDatabase(testPrisma);
 
     const random = Math.floor(Math.random() * 1000) + 1;
     const user = await testPrisma.user.create({
@@ -74,15 +77,8 @@ describe('PaymentService', () => {
     cancelOrderId = order.orderId;
   });
 
-  afterAll(async () => {
-    await testPrisma.order.deleteMany();
-    await testPrisma.store.deleteMany();
-    await testPrisma.user.deleteMany();
-  });
-
   afterEach(async () => {
-    const deletePayment = testPrisma.payment.deleteMany();
-    await testPrisma.$transaction([deletePayment]);
+    await testPrisma.payment.deleteMany();
   });
 
   it('should be defined', () => {

@@ -2,16 +2,10 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 
 import { StoreStatus, StoreType, UserType } from 'src/types';
+import { clearDatabase } from 'src/utils/clearDatabase';
 
 export const init = async (client: PrismaClient) => {
-  await client.review.deleteMany();
-  await client.favourite.deleteMany();
-  await client.payment.deleteMany();
-  await client.orderItem.deleteMany();
-  await client.order.deleteMany();
-  await client.menu.deleteMany();
-  await client.store.deleteMany();
-  await client.user.deleteMany();
+  await clearDatabase(client);
 
   const userCount = await client.user.count();
   if (userCount === 0) {

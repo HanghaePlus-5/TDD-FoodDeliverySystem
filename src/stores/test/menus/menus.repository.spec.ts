@@ -1,9 +1,8 @@
-import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { PrismaService } from 'src/prisma';
+import { PrismaModule, PrismaService } from 'src/prisma';
 import { MenusRepository } from 'src/stores/menus/menus.repository';
 
 describe('MenusRepository', () => {
@@ -12,7 +11,9 @@ describe('MenusRepository', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
+      imports: [
+        PrismaModule,
+      ],
       providers: [
         MenusRepository,
         PrismaService,
@@ -26,7 +27,7 @@ describe('MenusRepository', () => {
   });
 
   afterEach(async () => {
-    const deleteMenu = Prisma.menu.deleteMany();
+    const deleteMenu = Prisma.menu?.deleteMany();
     await Prisma.$transaction([deleteMenu]);
     await Prisma.$disconnect();
   });

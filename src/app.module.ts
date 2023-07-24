@@ -7,7 +7,7 @@ import { CustomConfigModule } from './config/config.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ExampleModule } from './examples/example.module';
 import { FavouritesModule } from './favourites/favourites.module';
-import { AlsModule, AlsMiddleware } from './lib/als';
+import { AlsMiddleware } from './lib/als';
 import { PaymentGatewayModule } from './lib/payment-gateway/payment-gateway.module';
 import Logger from './lib/winston/logger';
 import { OrdersModule } from './orders/orders.module';
@@ -22,7 +22,6 @@ import { UsersModule } from './users/users.module';
     CustomConfigModule,
     PrismaModule,
     AuthModule,
-    AlsModule,
 
     DeliveryModule,
     ExampleModule,
