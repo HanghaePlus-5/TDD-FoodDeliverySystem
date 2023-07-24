@@ -70,6 +70,12 @@ export default class Logger {
     this.sendLogToCloudWatch('ERROR', stringifiedMsg);
   }
 
+  public dbError(msg: DatabaseErrorLog) {
+    const stringifiedMsg = JSON.stringify(msg);
+    this.logger.error(stringifiedMsg);
+    this.sendLogToCloudWatch('DB_ERROR', stringifiedMsg);
+  }
+
   public debug(msg: CustomObjApiLog | CustomMsgApiLog) {
     this.logger.debug(msg);
   }

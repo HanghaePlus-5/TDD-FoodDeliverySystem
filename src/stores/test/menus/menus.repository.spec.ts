@@ -22,14 +22,6 @@ describe('MenusRepository', () => {
     }).compile();
     repository = module.get<MenusRepository>(MenusRepository);
     Prisma = module.get(PrismaService);
-
-    await Prisma.$connect();
-  });
-
-  afterEach(async () => {
-    const deleteMenu = Prisma.menu?.deleteMany();
-    await Prisma.$transaction([deleteMenu]);
-    await Prisma.$disconnect();
   });
 
   it('should be defined', () => {

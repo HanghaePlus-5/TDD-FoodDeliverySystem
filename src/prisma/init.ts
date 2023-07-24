@@ -44,7 +44,7 @@ export const init = async (client: PrismaClient) => {
   if (menuCount === 0) {
     console.log('menu is empty... creating menus');
     for (const store of stores) {
-      for (let i = 0; i < Math.random() * 10; i++) {
+      for (let i = 0; i < Math.random() * 10 + 3; i++) {
         const data = { ...menuTemplate };
         data.name = `${store.name}-${i}`;
         data.price = Math.floor(Math.random() * 100) * 100;
