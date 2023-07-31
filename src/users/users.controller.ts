@@ -37,6 +37,9 @@ export class UsersController {
     }
 
     const createdUser = await this.usersService.createUser(form);
+    if (!is<User>(createdUser)) {
+      throw new InternalServerErrorException();
+    }
 
     return createResponse<User>(createdUser);
   }
