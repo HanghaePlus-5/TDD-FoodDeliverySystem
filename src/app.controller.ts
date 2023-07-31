@@ -22,9 +22,10 @@ export class AppController {
   async latencyTest(
     @Res({ passthrough: true }) res: Response,
   ) {
+    // eslint-disable-next-line no-promise-executor-return
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     await sleep(600);
-    
+
     res.status(299).send('latency test');
   }
 }
