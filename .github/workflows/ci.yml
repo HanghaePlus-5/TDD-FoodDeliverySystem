@@ -35,14 +35,14 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
-      # lint 에러 발생 시 결과를 슬랙으로 전송
-      - name: Notify Slack if error exists
-        if: ${{ failure() }}
-        uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci'
+      # # lint 에러 발생 시 결과를 슬랙으로 전송
+      # - name: Notify Slack if error exists
+      #   if: ${{ failure() }}
+      #   uses: act10ns/slack@v1
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     channel: '#ci'
 
       # lint 에러 발생 시 깃헙액션 인스턴스를 종료
       - name: Block merge if error exists
@@ -114,14 +114,14 @@ jobs:
           path: reports/jest-junit.xml
           reporter: jest-junit
 
-      # 테스트 결과를 슬랙으로 전송
-      - name: Notify slack if fails
-        if: ${{ failure() }}
-        uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci'
+      # # 테스트 결과를 슬랙으로 전송
+      # - name: Notify slack if fails
+      #   if: ${{ failure() }}
+      #   uses: act10ns/slack@v1
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     channel: '#ci'
 
   Analysis:
     name: Static Analysis
