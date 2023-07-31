@@ -33,7 +33,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     this.$use(async (params, next) => {
       const store = this.als.getStore();
-      if (store === undefined || store.user === undefined) return next(params);
+      if (!store || !store.user) return next(params);
       // console.log('prisma middleware', store, params);
 
       const logMessage: DatabaseErrorLog = {

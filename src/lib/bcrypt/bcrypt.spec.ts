@@ -5,7 +5,7 @@ import { bcryptHash } from './hash';
 
 describe('bcrypt', () => {
   describe('hash', () => {
-    const SALT_ROUND = 10;
+    const SALT_ROUND = 8;
     const PLAIN = 'plain';
     const HASHED = 'HASHED';
 
